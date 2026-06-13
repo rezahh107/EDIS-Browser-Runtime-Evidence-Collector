@@ -1,0 +1,39 @@
+name: Release validation
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+      - name: Require real pnpm lockfile
+        run: test -f pnpm-lock.yaml
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm build:chrome
+      - run: pnpm build:edge
+      - run: node scripts/validate-package.mjs chrome
+      - run: node scripts/validate-package.mjs edge
+      - name: Create unsigned review archives
+        run: |
+          cd dist/chrome && zip -X -r ../../edis-runtime-collector-chrome.zip .
+          cd ../edge && zip -X -r ../../edis-runtime-collector-edge.zip .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-review-artifacts
+          path: |
+            edis-runtime-collector-chrome.zip
+            edis-runtime-collector-edge.zip
+          if-no-files-found: error

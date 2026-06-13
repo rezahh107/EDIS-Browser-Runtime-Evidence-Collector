@@ -1,0 +1,35 @@
+{
+  "artifact_type": "schema_index",
+  "captured_at": "1970-01-01T00:00:00Z",
+  "data": {
+    "schemas": [
+      {
+        "artifact_type": "artifact_envelope",
+        "path": "artifact-envelope.schema.json"
+      },
+      {
+        "artifact_type": "runtime_snapshot",
+        "path": "runtime-snapshot.schema.json"
+      },
+      {
+        "artifact_type": "capture_session",
+        "path": "capture-session.schema.json"
+      },
+      {
+        "artifact_type": "diagnostic",
+        "path": "diagnostic.schema.json"
+      },
+      {
+        "artifact_type": "package_manifest",
+        "path": "package-manifest.schema.json"
+      }
+    ]
+  },
+  "diagnostics": [],
+  "schema_version": "1.0.0",
+  "source": {
+    "collector_id": "browser.runtime",
+    "collector_version": "1.0.0"
+  },
+  "status": "AVAILABLE"
+}

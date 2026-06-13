@@ -1,0 +1,47 @@
+{
+  "$id": "urn:edis:runtime:diagnostic:1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "code": {
+      "pattern": "^EDIS_RUNTIME_[A-Z0-9_]+$",
+      "type": "string"
+    },
+    "context": {
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "boolean",
+          "null"
+        ]
+      },
+      "type": "object"
+    },
+    "message": {
+      "maxLength": 500,
+      "minLength": 1,
+      "type": "string"
+    },
+    "recoverable": {
+      "type": "boolean"
+    },
+    "severity": {
+      "enum": [
+        "INFO",
+        "WARNING",
+        "ERROR",
+        "FATAL"
+      ]
+    }
+  },
+  "required": [
+    "code",
+    "severity",
+    "message",
+    "recoverable",
+    "context"
+  ],
+  "title": "EDIS Runtime Diagnostic",
+  "type": "object"
+}

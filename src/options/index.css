@@ -1,0 +1,17 @@
+.options-shell {
+  max-inline-size: 760px;
+  margin-inline: auto;
+}
+.field-grid {
+  display: grid;
+  gap: 0.8rem;
+}
+.field-grid label {
+  display: grid;
+  gap: 0.35rem;
+}
+@media (min-width: 620px) {
+  .field-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

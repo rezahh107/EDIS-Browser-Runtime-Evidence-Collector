@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="EDIS geometric mark">
+  <rect width="128" height="128" rx="18" fill="#141618"/>
+  <path d="M26 26h76v18H44v12h48v18H44v10h58v18H26z" fill="#eef0f2"/>
+  <path d="M78 44l24 20-24 20V68H58v-8h20z" fill="#a8a29e"/>
+</svg>

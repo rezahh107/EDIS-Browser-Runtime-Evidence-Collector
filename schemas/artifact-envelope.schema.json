@@ -1,0 +1,61 @@
+{
+  "$id": "urn:edis:runtime:artifact-envelope:1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "artifact_type": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "captured_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "data": {},
+    "diagnostics": {
+      "items": {
+        "$ref": "diagnostic.schema.json"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "source": {
+      "additionalProperties": false,
+      "properties": {
+        "collector_id": {
+          "const": "browser.runtime"
+        },
+        "collector_version": {
+          "const": "1.0.0",
+          "type": "string"
+        }
+      },
+      "required": [
+        "collector_id",
+        "collector_version"
+      ],
+      "type": "object"
+    },
+    "status": {
+      "enum": [
+        "AVAILABLE",
+        "PARTIAL",
+        "UNAVAILABLE",
+        "FAILED"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "status",
+    "source",
+    "captured_at",
+    "data",
+    "diagnostics"
+  ],
+  "title": "EDIS Runtime Artifact Envelope",
+  "type": "object"
+}

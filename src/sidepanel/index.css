@@ -1,0 +1,23 @@
+body {
+  min-block-size: 100vh;
+}
+.stage-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-block: 1px solid var(--border);
+  background: var(--panel);
+}
+.stage-nav span {
+  white-space: nowrap;
+}
+.metrics-grid {
+  display: grid;
+  gap: 0.55rem;
+}
+@media (min-width: 460px) {
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

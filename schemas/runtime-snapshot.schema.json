@@ -1,0 +1,64 @@
+{
+  "$id": "urn:edis:runtime:snapshot:1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    },
+    {
+      "properties": {
+        "artifact_type": {
+          "const": "runtime_snapshot"
+        },
+        "data": {
+          "additionalProperties": false,
+          "properties": {
+            "document_metrics": {
+              "type": "object"
+            },
+            "elements": {
+              "items": {
+                "type": "object"
+              },
+              "maxItems": 2000,
+              "type": "array"
+            },
+            "evidence_source": {
+              "const": "PUBLISHED_FRONTEND"
+            },
+            "page": {
+              "type": "object"
+            },
+            "privacy": {
+              "type": "object"
+            },
+            "session_id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "snapshot_id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "viewport": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "snapshot_id",
+            "session_id",
+            "evidence_source",
+            "page",
+            "viewport",
+            "document_metrics",
+            "elements",
+            "privacy"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  ],
+  "title": "EDIS Runtime Snapshot"
+}

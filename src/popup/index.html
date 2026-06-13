@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EDIS Runtime Collector</title>
+    <link rel="stylesheet" href="../ui.css" />
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <main class="shell stack">
+      <header><h1 data-i18n="extensionName">EDIS Browser Runtime Evidence Collector</h1></header>
+      <section class="card stack" aria-labelledby="page-heading">
+        <h2 id="page-heading" data-i18n="pageStatus">Page status</h2>
+        <p id="page-status" class="status" role="status" aria-live="polite">Checking…</p>
+        <div class="metric">
+          <span data-i18n="permissionStatus">Temporary page access</span
+          ><strong id="permission-status">—</strong>
+        </div>
+      </section>
+      <section class="card stack" aria-labelledby="session-heading">
+        <h2 id="session-heading" data-i18n="currentSession">Current session</h2>
+        <label for="session-select" class="visually-hidden" data-i18n="currentSession"
+          >Current session</label
+        >
+        <select id="session-select"></select>
+        <div class="metric"><span>Actual viewport</span><strong id="viewport-value">—</strong></div>
+        <div class="metric">
+          <span data-i18n="lastCapture">Last capture</span><strong id="last-capture">—</strong>
+        </div>
+      </section>
+      <button id="capture-button" class="primary" type="button" data-i18n="captureCurrent">
+        Capture current viewport
+      </button>
+      <button id="open-panel" type="button" data-i18n="openSidePanel">Open side panel</button>
+      <p id="operation-status" class="status" role="status" aria-live="polite"></p>
+    </main>
+    <script src="index.js"></script>
+  </body>
+</html>

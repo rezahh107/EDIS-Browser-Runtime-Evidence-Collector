@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EDIS Runtime Collector Options</title>
+    <link rel="stylesheet" href="../ui.css" />
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <main class="shell options-shell stack">
+      <header class="card"><h1 data-i18n="optionsTitle">Collector options</h1></header>
+      <form id="options-form" class="card stack">
+        <label for="redaction-mode" data-i18n="redactionMode">Redaction mode</label>
+        <select id="redaction-mode">
+          <option value="STRICT" data-i18n="strict">Strict</option>
+          <option value="STANDARD" data-i18n="standard">Standard</option>
+          <option value="DIAGNOSTIC" data-i18n="diagnostic">Diagnostic</option>
+        </select>
+        <label class="switch"
+          ><input id="include-text" type="checkbox" /><span data-i18n="textPreview"
+            >Include limited text previews</span
+          ></label
+        >
+        <label class="switch"
+          ><input id="include-screenshot" type="checkbox" /><span data-i18n="screenshot"
+            >Include visible-viewport screenshot</span
+          ></label
+        >
+        <label class="switch"
+          ><input id="include-hidden" type="checkbox" /><span data-i18n="includeHidden"
+            >Include hidden elements</span
+          ></label
+        >
+        <label class="switch"
+          ><input id="include-accessibility" type="checkbox" /><span
+            data-i18n="includeAccessibility"
+            >Include accessibility metadata presence</span
+          ></label
+        >
+        <label class="switch"
+          ><input id="include-path" type="checkbox" /><span data-i18n="includePath"
+            >Include normalized URL path</span
+          ></label
+        >
+        <label class="switch"
+          ><input id="include-title" type="checkbox" /><span data-i18n="includeTitle"
+            >Include page title</span
+          ></label
+        >
+        <label class="switch"
+          ><input id="include-colors" type="checkbox" /><span data-i18n="includeColors"
+            >Include color computed styles</span
+          ></label
+        >
+        <label class="switch"
+          ><input id="retain-after-export" type="checkbox" /><span data-i18n="retainAfterExport"
+            >Retain large capture data after export</span
+          ></label
+        >
+        <p class="muted" data-i18n="privacyWarning">
+          Screenshots and text previews may contain sensitive page information.
+        </p>
+
+        <div class="field-grid">
+          <label
+            ><span data-i18n="maximumElements">Maximum collected elements</span
+            ><input id="max-elements" type="number" min="1" max="2000" step="1"
+          /></label>
+          <label
+            ><span data-i18n="maximumDepth">Maximum traversal depth</span
+            ><input id="max-depth" type="number" min="1" max="64" step="1"
+          /></label>
+          <label
+            ><span data-i18n="maximumSnapshotSize">Maximum snapshot size in bytes</span
+            ><input id="max-snapshot" type="number" min="100000" max="32000000" step="1000"
+          /></label>
+          <label
+            ><span data-i18n="maximumTextPreview">Maximum text preview length</span
+            ><input id="max-preview" type="number" min="1" max="500" step="1"
+          /></label>
+        </div>
+        <button class="primary" type="submit" data-i18n="saveOptions">Save options</button>
+        <p id="save-status" class="status" role="status" aria-live="polite"></p>
+      </form>
+
+      <section class="card stack">
+        <h2>Data and version</h2>
+        <div class="metric">
+          <span data-i18n="storageUsage">Storage usage</span><strong id="storage-usage">0 B</strong>
+        </div>
+        <div class="metric">
+          <span data-i18n="version">Version</span><strong id="version-value">—</strong>
+        </div>
+        <p><a href="../../PRIVACY.md" id="privacy-link">Privacy policy source</a></p>
+        <button id="clear-data" class="danger" type="button" data-i18n="clearAllData">
+          Clear all extension data
+        </button>
+      </section>
+    </main>
+
+    <dialog id="clear-dialog" aria-labelledby="clear-title">
+      <form method="dialog" class="stack">
+        <h2 id="clear-title" data-i18n="clearAllData">Clear all extension data</h2>
+        <p data-i18n="clearConfirm">
+          Delete all sessions, snapshots, screenshots, jobs, and preferences?
+        </p>
+        <div class="row">
+          <button value="cancel" type="submit">Cancel</button>
+          <button id="confirm-clear" class="danger" value="confirm" type="submit">Delete</button>
+        </div>
+      </form>
+    </dialog>
+    <script src="index.js"></script>
+  </body>
+</html>

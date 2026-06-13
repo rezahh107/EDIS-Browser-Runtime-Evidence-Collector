@@ -1,0 +1,7 @@
+body {
+  inline-size: 360px;
+  max-inline-size: 100vw;
+}
+h1 {
+  margin-block-end: 0;
+}

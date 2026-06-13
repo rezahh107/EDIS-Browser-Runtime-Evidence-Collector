@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+      - name: Require real pnpm lockfile
+        run: test -f pnpm-lock.yaml || { echo "Generate and review pnpm-lock.yaml with pnpm before enabling CI."; exit 1; }
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm test:unit
+      - run: node scripts/check-source.mjs
+      - run: pnpm build:chrome
+      - run: node scripts/validate-package.mjs chrome
+      - run: pnpm build:edge
+      - run: node scripts/validate-package.mjs edge
+      - run: pnpm audit --prod
+
+  e2e-nightly:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm build:chrome
+      - run: xvfb-run --auto-servernum pnpm test:e2e

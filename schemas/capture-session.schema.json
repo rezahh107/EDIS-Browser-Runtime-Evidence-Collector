@@ -1,0 +1,81 @@
+{
+  "$id": "urn:edis:runtime:capture-session:1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    },
+    {
+      "properties": {
+        "artifact_type": {
+          "const": "capture_session"
+        },
+        "data": {
+          "properties": {
+            "browser_family": {
+              "type": "string"
+            },
+            "browser_version": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "captures": {
+              "items": {
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "created_at": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "extension_version": {
+              "const": "1.0.0"
+            },
+            "match_status": {
+              "enum": [
+                "EXACT",
+                "PROBABLE",
+                "USER_CONFIRMED",
+                "UNMATCHED"
+              ]
+            },
+            "name": {
+              "maxLength": 120,
+              "minLength": 1,
+              "type": "string"
+            },
+            "session_id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "CREATED",
+                "CAPTURING",
+                "COMPLETE",
+                "PARTIAL",
+                "FAILED",
+                "CANCELLED"
+              ]
+            }
+          },
+          "required": [
+            "session_id",
+            "name",
+            "created_at",
+            "extension_version",
+            "browser_family",
+            "captures",
+            "status"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  ],
+  "title": "EDIS Capture Session"
+}

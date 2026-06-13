@@ -1,0 +1,12 @@
+{
+  "experimentalTargets": [
+    "firefox"
+  ],
+  "extensionVersion": "1.0.0",
+  "productionTargets": [
+    "chrome",
+    "edge"
+  ],
+  "schemaVersion": "1.0.0",
+  "selectedTarget": "chrome"
+}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Large DOM Fixture</title>
+    <style>
+      .node {
+        padding: 1px;
+      }
+      .deep {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="root"></main>
+    <script>
+      const root = document.getElementById("root");
+      for (let i = 0; i < 1200; i += 1) {
+        const node = document.createElement(i % 20 === 0 ? "button" : "div");
+        node.className = "node";
+        node.dataset.id = `fixture-${i}`;
+        node.textContent = `Node ${i}`;
+        root.append(node);
+      }
+      let parent = root;
+      for (let depth = 0; depth < 40; depth += 1) {
+        const child = document.createElement("section");
+        child.className = "deep";
+        parent.append(child);
+        parent = child;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,155 @@
+{
+  "capture": {
+    "message": "Capture"
+  },
+  "captureCurrent": {
+    "message": "Capture current viewport"
+  },
+  "capturedViewports": {
+    "message": "Captured viewports"
+  },
+  "clearAllData": {
+    "message": "Clear all extension data"
+  },
+  "clearConfirm": {
+    "message": "Delete all sessions, snapshots, screenshots, jobs, and preferences?"
+  },
+  "createSession": {
+    "message": "Create session"
+  },
+  "currentSession": {
+    "message": "Current session"
+  },
+  "diagnostic": {
+    "message": "Diagnostic"
+  },
+  "diagnosticCount": {
+    "message": "Diagnostics"
+  },
+  "elementCount": {
+    "message": "Elements"
+  },
+  "export": {
+    "message": "Export"
+  },
+  "exportPackage": {
+    "message": "Export local evidence package"
+  },
+  "extensionDescription": {
+    "message": "Collects local runtime layout evidence from the current page after an explicit user action."
+  },
+  "extensionName": {
+    "message": "EDIS Browser Runtime Evidence Collector"
+  },
+  "includeAccessibility": {
+    "message": "Include accessibility metadata presence"
+  },
+  "includeColors": {
+    "message": "Include color computed styles"
+  },
+  "includeHidden": {
+    "message": "Include hidden elements"
+  },
+  "includePath": {
+    "message": "Include normalized URL path"
+  },
+  "includeTitle": {
+    "message": "Include page title"
+  },
+  "lastCapture": {
+    "message": "Last capture"
+  },
+  "maximumDepth": {
+    "message": "Maximum traversal depth"
+  },
+  "maximumElements": {
+    "message": "Maximum collected elements"
+  },
+  "maximumSnapshotSize": {
+    "message": "Maximum snapshot size in bytes"
+  },
+  "maximumTextPreview": {
+    "message": "Maximum text preview length"
+  },
+  "noCaptures": {
+    "message": "No captures in this session."
+  },
+  "openSidePanel": {
+    "message": "Open side panel"
+  },
+  "optionsTitle": {
+    "message": "Collector options"
+  },
+  "overflowCount": {
+    "message": "Overflow evidence"
+  },
+  "pageStatus": {
+    "message": "Page status"
+  },
+  "permissionStatus": {
+    "message": "Temporary page access"
+  },
+  "privacySummary": {
+    "message": "Privacy summary"
+  },
+  "privacyWarning": {
+    "message": "Screenshots and text previews may contain sensitive page information. Review the page before enabling."
+  },
+  "redactionMode": {
+    "message": "Redaction mode"
+  },
+  "retainAfterExport": {
+    "message": "Retain large capture data after export"
+  },
+  "review": {
+    "message": "Review"
+  },
+  "saveOptions": {
+    "message": "Save options"
+  },
+  "screenshot": {
+    "message": "Include visible-viewport screenshot"
+  },
+  "sessionName": {
+    "message": "Session name"
+  },
+  "sessionSetup": {
+    "message": "Session setup"
+  },
+  "standard": {
+    "message": "Standard"
+  },
+  "statusComplete": {
+    "message": "Complete"
+  },
+  "statusError": {
+    "message": "Error"
+  },
+  "statusReady": {
+    "message": "Ready"
+  },
+  "statusWorking": {
+    "message": "Working"
+  },
+  "storageUsage": {
+    "message": "Storage usage"
+  },
+  "strict": {
+    "message": "Strict"
+  },
+  "supported": {
+    "message": "Ready to capture"
+  },
+  "textPreview": {
+    "message": "Include limited text previews"
+  },
+  "unsupported": {
+    "message": "This page cannot be captured"
+  },
+  "version": {
+    "message": "Version"
+  },
+  "viewportLabel": {
+    "message": "Viewport label"
+  }
+}

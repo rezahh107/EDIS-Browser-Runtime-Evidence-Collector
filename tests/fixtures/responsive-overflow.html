@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Responsive Evidence Fixture</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      .wide {
+        width: 1400px;
+        height: 40px;
+        background: #ccc;
+      }
+      .hidden {
+        display: none;
+      }
+      .fixed {
+        position: fixed;
+        right: 8px;
+        bottom: 8px;
+      }
+      .sticky {
+        position: sticky;
+        top: 0;
+      }
+      .clip {
+        width: 120px;
+        height: 40px;
+        overflow: hidden;
+      }
+      .clip span {
+        display: block;
+        width: 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="sticky">Sticky</header>
+    <div class="wide">Horizontal overflow</div>
+    <div class="hidden">Hidden evidence</div>
+    <div class="clip"><span>Clipped content</span></div>
+    <button class="fixed">Fixed action</button>
+  </body>
+</html>

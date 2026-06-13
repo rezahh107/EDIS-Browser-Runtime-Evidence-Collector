@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EDIS Runtime Collector</title>
+    <link rel="stylesheet" href="../ui.css" />
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <main class="shell stack">
+      <header class="card">
+        <h1 data-i18n="extensionName">EDIS Browser Runtime Evidence Collector</h1>
+        <p class="muted">Local-only rendered-page evidence</p>
+      </header>
+
+      <nav aria-label="Capture stages" class="stage-nav">
+        <span>1. <span data-i18n="pageStatus">Page check</span></span>
+        <span>2. <span data-i18n="sessionSetup">Session setup</span></span>
+        <span>3. <span data-i18n="capture">Capture</span></span>
+        <span>4. <span data-i18n="review">Review</span></span>
+        <span>5. <span data-i18n="export">Export</span></span>
+      </nav>
+
+      <section class="card stack" aria-labelledby="stage-page">
+        <h2 id="stage-page">1. <span data-i18n="pageStatus">Page check</span></h2>
+        <p id="page-status" class="status" role="status" aria-live="polite">Checking…</p>
+        <div class="metric">
+          <span>Actual viewport</span><strong id="actual-viewport">Not captured</strong>
+        </div>
+      </section>
+
+      <section class="card stack" aria-labelledby="stage-session">
+        <h2 id="stage-session">2. <span data-i18n="sessionSetup">Session setup</span></h2>
+        <label for="session-select" data-i18n="currentSession">Current session</label>
+        <select id="session-select"></select>
+        <label for="session-name" data-i18n="sessionName">Session name</label>
+        <input
+          id="session-name"
+          type="text"
+          maxlength="120"
+          autocomplete="off"
+          value="Runtime evidence session"
+        />
+        <button id="create-session" type="button" data-i18n="createSession">Create session</button>
+      </section>
+
+      <section class="card stack" aria-labelledby="stage-capture">
+        <h2 id="stage-capture">3. <span data-i18n="capture">Capture</span></h2>
+        <label for="viewport-label" data-i18n="viewportLabel">Viewport label</label>
+        <input
+          id="viewport-label"
+          type="text"
+          maxlength="120"
+          autocomplete="off"
+          value="Current viewport"
+        />
+        <label class="switch"
+          ><input id="screenshot-toggle" type="checkbox" /><span data-i18n="screenshot"
+            >Include visible-viewport screenshot</span
+          ></label
+        >
+        <label class="switch"
+          ><input id="text-toggle" type="checkbox" /><span data-i18n="textPreview"
+            >Include limited text previews</span
+          ></label
+        >
+        <p class="muted" data-i18n="privacyWarning">
+          Screenshots and text previews may contain sensitive page information.
+        </p>
+        <button id="capture-button" class="primary" type="button" data-i18n="captureCurrent">
+          Capture current viewport
+        </button>
+        <button id="cancel-button" type="button" disabled>Cancel active capture</button>
+        <p id="capture-status" class="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="card stack" aria-labelledby="stage-review">
+        <h2 id="stage-review">4. <span data-i18n="review">Review</span></h2>
+        <div class="metrics-grid">
+          <div class="metric">
+            <span data-i18n="elementCount">Elements</span><strong id="element-count">0</strong>
+          </div>
+          <div class="metric">
+            <span data-i18n="overflowCount">Overflow evidence</span
+            ><strong id="overflow-count">0</strong>
+          </div>
+          <div class="metric">
+            <span data-i18n="diagnosticCount">Diagnostics</span
+            ><strong id="diagnostic-count">0</strong>
+          </div>
+          <div class="metric">
+            <span data-i18n="storageUsage">Storage usage</span
+            ><strong id="storage-usage">0 B</strong>
+          </div>
+        </div>
+        <h3 data-i18n="capturedViewports">Captured viewports</h3>
+        <ul id="capture-list" class="list"></ul>
+        <h3 data-i18n="privacySummary">Privacy summary</h3>
+        <p id="privacy-summary" class="muted"></p>
+      </section>
+
+      <section class="card stack" aria-labelledby="stage-export">
+        <h2 id="stage-export">5. <span data-i18n="export">Export</span></h2>
+        <button id="export-button" class="primary" type="button" data-i18n="exportPackage">
+          Export local evidence package
+        </button>
+        <p id="export-status" class="status" role="status" aria-live="polite"></p>
+      </section>
+    </main>
+    <script src="index.js"></script>
+  </body>
+</html>

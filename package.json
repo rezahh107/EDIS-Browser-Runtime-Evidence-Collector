@@ -1,0 +1,42 @@
+{
+  "description": "Local-only Manifest V3 runtime evidence collector for EDIS.",
+  "devDependencies": {
+    "@axe-core/playwright": "4.11.3",
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.60.0",
+    "@types/chrome": "0.1.43",
+    "@types/node": "25.9.3",
+    "esbuild": "0.28.1",
+    "eslint": "10.5.0",
+    "fake-indexeddb": "6.2.5",
+    "jsdom": "29.1.1",
+    "prettier": "3.8.4",
+    "stylelint": "17.13.0",
+    "stylelint-config-standard": "40.0.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.61.0",
+    "vitest": "4.1.8"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "name": "@edis/runtime-collector",
+  "private": true,
+  "scripts": {
+    "audit": "pnpm audit --prod",
+    "build": "node build.mjs",
+    "build:chrome": "node build.mjs --target chrome",
+    "build:edge": "node build.mjs --target edge",
+    "build:firefox": "node build.mjs --target firefox",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test:unit && pnpm build",
+    "format": "prettier --write \"src/**/*.{ts,css,html}\" \"tests/**/*.{ts,html,mjs}\" \"scripts/**/*.mjs\" \"build.mjs\" \"*.config.{js,ts}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,css,html}\" \"tests/**/*.{ts,html,mjs}\" \"scripts/**/*.mjs\" \"build.mjs\" \"*.config.{js,ts}\"",
+    "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\" && stylelint \"src/**/*.css\"",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:unit": "vitest run tests/unit tests/security tests/integration",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "type": "module",
+  "version": "1.0.0"
+}

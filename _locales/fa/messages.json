@@ -1,0 +1,155 @@
+{
+  "capture": {
+    "message": "ثبت"
+  },
+  "captureCurrent": {
+    "message": "ثبت Viewport فعلی"
+  },
+  "capturedViewports": {
+    "message": "Viewportهای ثبت‌شده"
+  },
+  "clearAllData": {
+    "message": "پاک‌کردن همه داده‌های افزونه"
+  },
+  "clearConfirm": {
+    "message": "همه جلسه‌ها، Snapshotها، تصاویر، Jobها و تنظیمات حذف شوند؟"
+  },
+  "createSession": {
+    "message": "ساخت جلسه"
+  },
+  "currentSession": {
+    "message": "جلسه فعلی"
+  },
+  "diagnostic": {
+    "message": "تشخیصی"
+  },
+  "diagnosticCount": {
+    "message": "تشخیص‌ها"
+  },
+  "elementCount": {
+    "message": "عناصر"
+  },
+  "export": {
+    "message": "خروجی"
+  },
+  "exportPackage": {
+    "message": "خروجی بسته محلی شواهد"
+  },
+  "extensionDescription": {
+    "message": "پس از اقدام صریح کاربر، شواهد محلی چیدمان Runtime صفحه فعلی را جمع‌آوری می‌کند."
+  },
+  "extensionName": {
+    "message": "جمع‌آورنده شواهد Runtime مرورگر EDIS"
+  },
+  "includeAccessibility": {
+    "message": "شامل وضعیت متادیتای دسترس‌پذیری"
+  },
+  "includeColors": {
+    "message": "شامل رنگ‌های Computed Style"
+  },
+  "includeHidden": {
+    "message": "شامل عناصر پنهان"
+  },
+  "includePath": {
+    "message": "شامل مسیر نرمال‌شده URL"
+  },
+  "includeTitle": {
+    "message": "شامل عنوان صفحه"
+  },
+  "lastCapture": {
+    "message": "آخرین ثبت"
+  },
+  "maximumDepth": {
+    "message": "حداکثر عمق پیمایش"
+  },
+  "maximumElements": {
+    "message": "حداکثر عناصر جمع‌آوری‌شده"
+  },
+  "maximumSnapshotSize": {
+    "message": "حداکثر اندازه Snapshot به بایت"
+  },
+  "maximumTextPreview": {
+    "message": "حداکثر طول پیش‌نمایش متن"
+  },
+  "noCaptures": {
+    "message": "در این جلسه Capture وجود ندارد."
+  },
+  "openSidePanel": {
+    "message": "باز کردن پنل کناری"
+  },
+  "optionsTitle": {
+    "message": "تنظیمات Collector"
+  },
+  "overflowCount": {
+    "message": "شواهد Overflow"
+  },
+  "pageStatus": {
+    "message": "وضعیت صفحه"
+  },
+  "permissionStatus": {
+    "message": "دسترسی موقت صفحه"
+  },
+  "privacySummary": {
+    "message": "خلاصه حریم خصوصی"
+  },
+  "privacyWarning": {
+    "message": "تصویر و پیش‌نمایش متن ممکن است اطلاعات حساس صفحه را شامل شوند. پیش از فعال‌سازی صفحه را بازبینی کنید."
+  },
+  "redactionMode": {
+    "message": "حالت Redaction"
+  },
+  "retainAfterExport": {
+    "message": "نگهداری داده‌های حجیم پس از خروجی"
+  },
+  "review": {
+    "message": "بازبینی"
+  },
+  "saveOptions": {
+    "message": "ذخیره تنظیمات"
+  },
+  "screenshot": {
+    "message": "افزودن تصویر Viewport قابل مشاهده"
+  },
+  "sessionName": {
+    "message": "نام جلسه"
+  },
+  "sessionSetup": {
+    "message": "تنظیم جلسه"
+  },
+  "standard": {
+    "message": "استاندارد"
+  },
+  "statusComplete": {
+    "message": "کامل"
+  },
+  "statusError": {
+    "message": "خطا"
+  },
+  "statusReady": {
+    "message": "آماده"
+  },
+  "statusWorking": {
+    "message": "در حال انجام"
+  },
+  "storageUsage": {
+    "message": "مصرف ذخیره‌سازی"
+  },
+  "strict": {
+    "message": "سخت‌گیرانه"
+  },
+  "supported": {
+    "message": "آماده ثبت"
+  },
+  "textPreview": {
+    "message": "افزودن پیش‌نمایش محدود متن"
+  },
+  "unsupported": {
+    "message": "این صفحه قابل ثبت نیست"
+  },
+  "version": {
+    "message": "نسخه"
+  },
+  "viewportLabel": {
+    "message": "برچسب Viewport"
+  }
+}

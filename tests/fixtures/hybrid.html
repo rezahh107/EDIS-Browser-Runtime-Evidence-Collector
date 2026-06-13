@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Hybrid Fixture</title>
+    <style>
+      .elementor-widget {
+        margin: 12px;
+      }
+      .e-grid {
+        display: grid;
+        gap: var(--space-m, 16px);
+      }
+    </style>
+  </head>
+  <body class="elementor-page">
+    <div data-elementor-id="77">
+      <section class="elementor-widget" data-id="legacy01"><p>Legacy widget</p></section>
+      <e-grid class="e-grid" data-id="atomic01"
+        ><button class="global-class-high">Atomic button</button></e-grid
+      >
+    </div>
+  </body>
+</html>

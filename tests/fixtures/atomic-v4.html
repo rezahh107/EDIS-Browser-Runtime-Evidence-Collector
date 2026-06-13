@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Atomic V4 Fixture</title>
+    <style>
+      e-div-block {
+        display: block;
+        padding: 20px;
+      }
+      e-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      e-flexbox {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <e-div-block class="e-con" data-id="v4root"
+      ><e-grid class="e-grid" data-id="grid01"
+        ><e-flexbox class="e-flexbox" data-id="flex01"><button>Atomic action</button></e-flexbox
+        ><e-div-block data-id="block02"><h2>Atomic heading</h2></e-div-block></e-grid
+      ></e-div-block
+    >
+  </body>
+</html>

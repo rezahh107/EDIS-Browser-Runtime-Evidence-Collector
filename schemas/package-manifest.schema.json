@@ -1,0 +1,75 @@
+{
+  "$id": "urn:edis:runtime:package-manifest:1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    },
+    {
+      "properties": {
+        "artifact_type": {
+          "const": "package_manifest"
+        },
+        "data": {
+          "properties": {
+            "files": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "bytes": {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "path": {
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$",
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "path",
+                  "bytes",
+                  "sha256"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "package_id": {
+              "type": "string"
+            },
+            "package_status": {
+              "const": "COMPLETE"
+            },
+            "screenshot_count": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "session_id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "snapshot_count": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "package_id",
+            "session_id",
+            "package_status",
+            "files",
+            "screenshot_count",
+            "snapshot_count"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  ],
+  "title": "EDIS Runtime Package Manifest"
+}
