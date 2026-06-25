@@ -1,8 +1,8 @@
 import type { Diagnostic } from "./diagnostics";
 
-export const SCHEMA_VERSION = "1.0.0";
+export const SCHEMA_VERSION = "1.6.0";
 export const COLLECTOR_ID = "browser.runtime";
-export const COLLECTOR_VERSION = "1.0.0";
+export const COLLECTOR_VERSION = "1.6.19";
 
 export type ArtifactStatus = "AVAILABLE" | "PARTIAL" | "UNAVAILABLE" | "FAILED";
 export type IdentityConfidence = "EXACT" | "STRONG" | "PROBABLE" | "WEAK" | "UNMATCHED";
