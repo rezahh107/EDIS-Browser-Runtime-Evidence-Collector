@@ -1,12 +1,10 @@
 {
-  "experimentalTargets": [
-    "firefox"
-  ],
-  "extensionVersion": "1.0.0",
+  "extensionVersion": "1.6.19",
   "productionTargets": [
     "chrome",
     "edge"
   ],
-  "schemaVersion": "1.0.0",
-  "selectedTarget": "chrome"
+  "schemaVersion": "1.6.0",
+  "selectedTarget": "chrome",
+  "releaseTimestamp": "2026-06-25T00:00:00Z"
 }
