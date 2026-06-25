@@ -9,7 +9,10 @@
   </head>
   <body>
     <main class="shell stack">
-      <header><h1 data-i18n="extensionName">EDIS Browser Runtime Evidence Collector</h1></header>
+      <header class="product-header">
+        <h1>EDIS Runtime Collector</h1>
+        <span id="extension-version" class="version-badge" aria-label="Extension version">v—</span>
+      </header>
       <section class="card stack" aria-labelledby="page-heading">
         <h2 id="page-heading" data-i18n="pageStatus">Page status</h2>
         <p id="page-status" class="status" role="status" aria-live="polite">Checking…</p>
@@ -29,10 +32,23 @@
           <span data-i18n="lastCapture">Last capture</span><strong id="last-capture">—</strong>
         </div>
       </section>
+      <section class="card stack" aria-labelledby="profile-heading">
+        <h2 id="profile-heading" data-i18n="viewportProfile">Viewport profile</h2>
+        <label for="viewport-profile" data-i18n="viewportProfile">Viewport profile</label>
+        <select id="viewport-profile">
+          <option value="DESKTOP" data-i18n="profileDesktop">Desktop</option>
+          <option value="TABLET" data-i18n="profileTablet">Tablet</option>
+          <option value="MOBILE" data-i18n="profileMobile">Mobile</option>
+          <option value="CUSTOM" data-i18n="profileCustom" selected>Custom</option>
+        </select>
+      </section>
       <button id="capture-button" class="primary" type="button" data-i18n="captureCurrent">
         Capture current viewport
       </button>
       <button id="open-panel" type="button" data-i18n="openSidePanel">Open side panel</button>
+      <a class="button-link" href="../guide/index.html" target="_blank" data-i18n="openGuide"
+        >Open guide</a
+      >
       <p id="operation-status" class="status" role="status" aria-live="polite"></p>
     </main>
     <script src="index.js"></script>

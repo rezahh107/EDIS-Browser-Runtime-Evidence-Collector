@@ -21,13 +21,29 @@ export function normalizeUrl(
 
 export function normalizePath(path: string): string {
   const compact = path.replace(/\/{2,}/g, "/");
-  return compact.length > 1 && compact.endsWith("/") ? compact.slice(0, -1) : compact || "/";
+  const normalized =
+    compact.length > 1 && compact.endsWith("/") ? compact.slice(0, -1) : compact || "/";
+  return normalized
+    .split("/")
+    .map((segment) => (isSensitivePathSegment(segment) ? ":redacted" : segment))
+    .join("/");
 }
 
-export function isSensitiveElement(element: Element): boolean {
-  const attributes = ["type", "name", "id", "autocomplete", "aria-label", "placeholder"];
-  const joined = attributes.map((name) => element.getAttribute(name) ?? "").join(" ");
-  return SENSITIVE_PATTERN.test(joined) || element.matches("input, textarea, select, option");
+function isSensitivePathSegment(segment: string): boolean {
+  if (!segment) return false;
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(segment);
+  } catch {
+    return true;
+  }
+  return (
+    EMAIL_PATTERN.test(decoded) ||
+    JWT_PATTERN.test(decoded) ||
+    RANDOM_TOKEN.test(decoded) ||
+    SENSITIVE_PATTERN.test(decoded) ||
+    decoded.length > 120
+  );
 }
 
 export function sanitizeClassTokens(
@@ -43,10 +59,10 @@ export function sanitizeClassTokens(
       !/^[A-Za-z0-9_-]+$/.test(value) ||
       EMAIL_PATTERN.test(value) ||
       JWT_PATTERN.test(value) ||
-      RANDOM_TOKEN.test(value)
+      RANDOM_TOKEN.test(value) ||
+      SENSITIVE_PATTERN.test(value)
     )
       continue;
-    if (SENSITIVE_PATTERN.test(value)) continue;
     if (
       mode === "STRICT" &&
       !/^(elementor|e-|widget|section|container|grid|flex|button|heading|image|menu|nav)/i.test(
@@ -60,17 +76,6 @@ export function sanitizeClassTokens(
   return [...unique].sort();
 }
 
-export function limitedTextPreview(text: string, maxLength: number): string {
-  const normalized = text
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(EMAIL_PATTERN, "[redacted-email]")
-    .replace(JWT_PATTERN, "[redacted-token]");
-  return normalized.length <= maxLength
-    ? normalized
-    : `${normalized.slice(0, Math.max(0, maxLength - 1))}…`;
-}
-
 export function stableIdCandidate(value: string | null): string | null {
   if (!value) return null;
   const trimmed = value.trim();
@@ -78,8 +83,10 @@ export function stableIdCandidate(value: string | null): string | null {
     !trimmed ||
     trimmed.length > 80 ||
     RANDOM_TOKEN.test(trimmed) ||
-    SENSITIVE_PATTERN.test(trimmed)
+    SENSITIVE_PATTERN.test(trimmed) ||
+    EMAIL_PATTERN.test(trimmed) ||
+    JWT_PATTERN.test(trimmed)
   )
     return null;
-  return /^[A-Za-z][A-Za-z0-9_:-]*$/.test(trimmed) ? trimmed : null;
+  return /^[A-Za-z0-9][A-Za-z0-9_:-]*$/.test(trimmed) ? trimmed : null;
 }

@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0.0",
+  "suite": "edis-runtime-collector-browser-qualification",
+  "expected_total": 32,
+  "expected_files": {
+    "accessibility.spec.ts": 5,
+    "extension.spec.ts": 4,
+    "privacy-network-package.spec.ts": 5,
+    "resilience.spec.ts": 8,
+    "runtime.spec.ts": 6,
+    "wordpress7.spec.ts": 4
+  },
+  "tests": [
+    {
+      "file": "accessibility.spec.ts",
+      "title": "popup/index.html supports keyboard use, minimum width, reduced motion, status announcements, and axe"
+    },
+    {
+      "file": "accessibility.spec.ts",
+      "title": "sidepanel/index.html supports keyboard use, minimum width, reduced motion, status announcements, and axe"
+    },
+    {
+      "file": "accessibility.spec.ts",
+      "title": "options/index.html supports keyboard use, minimum width, reduced motion, status announcements, and axe"
+    },
+    {
+      "file": "accessibility.spec.ts",
+      "title": "options clear-data confirmation restores focus and has a logical keyboard order"
+    },
+    {
+      "file": "accessibility.spec.ts",
+      "title": "Persian browser locale renders extension pages as RTL with localized control names"
+    },
+    {
+      "file": "extension.spec.ts",
+      "title": "extension loading registers MV3 worker and all presentation pages without runtime errors"
+    },
+    {
+      "file": "extension.spec.ts",
+      "title": "no capture starts automatically and no persistent content script is registered"
+    },
+    {
+      "file": "extension.spec.ts",
+      "title": "capture begins only after an explicit extension-UI click and leaves the page unchanged"
+    },
+    {
+      "file": "extension.spec.ts",
+      "title": "restricted browser pages produce a clear diagnostic"
+    },
+    {
+      "file": "privacy-network-package.spec.ts",
+      "title": "default runtime evidence excludes form values, secrets, URL query, fragment, and full text"
+    },
+    {
+      "file": "privacy-network-package.spec.ts",
+      "title": "explicit text-preview opt-in is bounded, redacted, and never reads form-control values"
+    },
+    {
+      "file": "privacy-network-package.spec.ts",
+      "title": "extension-originated external network communication remains absent"
+    },
+    {
+      "file": "privacy-network-package.spec.ts",
+      "title": "real exported package is readable, canonical, checksum-valid, traversal-safe, and complete"
+    },
+    {
+      "file": "privacy-network-package.spec.ts",
+      "title": "@smoke blocked minimum feed offers a runtime-evidence fallback download"
+    },
+    {
+      "file": "resilience.spec.ts",
+      "title": "idle service-worker termination preserves persisted sessions and reconstructs UI state"
+    },
+    {
+      "file": "resilience.spec.ts",
+      "title": "real worker termination during capture ends in a recoverable complete or explicit terminal state"
+    },
+    {
+      "file": "resilience.spec.ts",
+      "title": "navigation, reload, History API changes, and tab closure never merge documents"
+    },
+    {
+      "file": "resilience.spec.ts",
+      "title": "same-tab duplicate capture start is rejected while the first job remains active"
+    },
+    {
+      "file": "resilience.spec.ts",
+      "title": "same-session capture on another tab is rejected until the active observation finishes"
+    },
+    {
+      "file": "resilience.spec.ts",
+      "title": "mutation, large DOM, deep DOM, hidden, overflow, RTL, detached, and malicious inputs remain bounded"
+    },
+    {
+      "file": "resilience.spec.ts",
+      "title": "main-world geometry monkeypatches cannot inject non-finite evidence into the isolated collector"
+    },
+    {
+      "file": "resilience.spec.ts",
+      "title": "chunk persistence and finalization remain idempotent after completed capture"
+    },
+    {
+      "file": "runtime.spec.ts",
+      "title": "runtime measurements match independent browser measurements within documented tolerances"
+    },
+    {
+      "file": "runtime.spec.ts",
+      "title": "Elementor V3, Atomic V4, hybrid, and non-Elementor identities remain factual"
+    },
+    {
+      "file": "runtime.spec.ts",
+      "title": "multi-viewport captures use actual dimensions and deterministic capture ordering"
+    },
+    {
+      "file": "runtime.spec.ts",
+      "title": "runtime determinism semantic replay is byte-identical while allowed operational fields differ"
+    },
+    {
+      "file": "runtime.spec.ts",
+      "title": "screenshot disabled and enabled modes preserve independent evidence integrity"
+    },
+    {
+      "file": "runtime.spec.ts",
+      "title": "screenshot failure produces a diagnostic without destroying JSON evidence"
+    },
+    {
+      "file": "wordpress7.spec.ts",
+      "title": "synthetic WordPress 7 viewport-hidden subtree is pruned at 390px"
+    },
+    {
+      "file": "wordpress7.spec.ts",
+      "title": "synthetic WordPress 7 viewport-hidden subtree is pruned at 600px"
+    },
+    {
+      "file": "wordpress7.spec.ts",
+      "title": "synthetic WordPress 7 viewport-hidden subtree is pruned at 1024px"
+    },
+    {
+      "file": "wordpress7.spec.ts",
+      "title": "include-hidden mode preserves WordPress 7 viewport-hidden evidence"
+    }
+  ]
+}

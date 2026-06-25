@@ -1,0 +1,162 @@
+{
+  "$id": "urn:edis:schema:browser:package-validation",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    }
+  ],
+  "properties": {
+    "artifact_type": {
+      "const": "package_validation"
+    },
+    "data": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_json_files": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "canonical_json_files": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "canonical_json_validation": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN"
+          ]
+        },
+        "capture_completeness": {
+          "enum": [
+            "COMPLETE",
+            "PARTIAL"
+          ]
+        },
+        "checksum_validation": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN"
+          ]
+        },
+        "embedded_schema_files": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "export_allowed": {
+          "type": "boolean"
+        },
+        "identity_collision_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "identity_uniqueness_validation": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN"
+          ]
+        },
+        "package_manifest_validation": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN"
+          ]
+        },
+        "partial_reasons": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "referential_integrity": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN"
+          ]
+        },
+        "relationship_integrity": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN"
+          ]
+        },
+        "schema_unvalidated_artifact_paths": {
+          "items": {
+            "maxLength": 500,
+            "type": "string"
+          },
+          "maxItems": 5000,
+          "type": "array"
+        },
+        "schema_validated_artifact_paths": {
+          "items": {
+            "maxLength": 500,
+            "type": "string"
+          },
+          "maxItems": 5000,
+          "type": "array"
+        },
+        "schema_validation": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN"
+          ]
+        },
+        "source_binding_integrity": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN"
+          ]
+        },
+        "validated_json_files": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "validation_state": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_RUN"
+          ]
+        }
+      },
+      "required": [
+        "validation_state",
+        "schema_validation",
+        "canonical_json_validation",
+        "checksum_validation",
+        "referential_integrity",
+        "identity_uniqueness_validation",
+        "relationship_integrity",
+        "source_binding_integrity",
+        "package_manifest_validation",
+        "identity_collision_count",
+        "capture_completeness",
+        "partial_reasons",
+        "validated_json_files",
+        "export_allowed",
+        "canonical_json_files",
+        "artifact_json_files",
+        "embedded_schema_files",
+        "schema_validated_artifact_paths",
+        "schema_unvalidated_artifact_paths"
+      ],
+      "type": "object"
+    },
+    "schema_id": {
+      "const": "urn:edis:schema:browser:package-validation"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    }
+  },
+  "type": "object"
+}

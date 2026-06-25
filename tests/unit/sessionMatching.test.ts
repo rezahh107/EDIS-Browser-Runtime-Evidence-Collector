@@ -1,26 +1,38 @@
 import { describe, expect, it } from "vitest";
-import { determineMatchStatus } from "../../src/domain/session";
+import { determineSourceBindingState } from "../../src/domain/session";
 
-describe("session matching", () => {
-  it("does not claim exact without combined evidence", () => {
+describe("source binding summary", () => {
+  it("requires compatible origin, document and element evidence for exact binding", () => {
     expect(
-      determineMatchStatus({
+      determineSourceBindingState({
         normalizedOriginMatches: true,
-        documentIdMatches: false,
+        documentIdMatches: true,
         elementorIdsOverlap: 2,
         userConfirmed: false,
       }),
-    ).toBe("PROBABLE");
+    ).toBe("EXACT");
   });
 
-  it("honors explicit user confirmation without claiming exact", () => {
+  it("does not let user confirmation upgrade insufficient evidence", () => {
     expect(
-      determineMatchStatus({
+      determineSourceBindingState({
         normalizedOriginMatches: false,
         documentIdMatches: false,
         elementorIdsOverlap: 0,
         userConfirmed: true,
       }),
-    ).toBe("USER_CONFIRMED");
+    ).toBe("UNMATCHED");
+  });
+
+  it("preserves conflicts as ambiguous even when the user confirmed the document", () => {
+    expect(
+      determineSourceBindingState({
+        normalizedOriginMatches: true,
+        documentIdMatches: true,
+        elementorIdsOverlap: 1,
+        userConfirmed: true,
+        conflictingEvidence: true,
+      }),
+    ).toBe("AMBIGUOUS");
   });
 });

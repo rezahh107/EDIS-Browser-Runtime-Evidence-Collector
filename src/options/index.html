@@ -9,63 +9,201 @@
   </head>
   <body>
     <main class="shell options-shell stack">
-      <header class="card"><h1 data-i18n="optionsTitle">Collector options</h1></header>
+      <header class="card stack">
+        <div class="header-row">
+          <div>
+            <h1 data-i18n="optionsTitle">Collector options</h1>
+            <p class="muted" data-i18n="optionsIntro">
+              Control capture coverage and privacy. Safe defaults are recommended for most pages.
+            </p>
+          </div>
+          <a class="button-link" href="../guide/index.html" target="_blank" data-i18n="openGuide"
+            >Open guide</a
+          >
+        </div>
+      </header>
+
       <form id="options-form" class="card stack">
+        <h2 data-i18n="coverageAndPrivacy">Coverage and privacy</h2>
+
+        <label for="capture-profile" data-i18n="captureProfile">Capture coverage profile</label>
+        <select id="capture-profile">
+          <option value="STANDARD" data-i18n="profileStandard">
+            Standard — 750 elements / depth 24
+          </option>
+          <option value="DEEP_DOM" data-i18n="profileDeepDom">
+            Deep DOM — 1000 elements / depth 40
+          </option>
+          <option value="CUSTOM" data-i18n="profileCustom">Custom limits</option>
+        </select>
+        <p id="profile-help" class="field-help" data-i18n="profileHelp">
+          Standard is faster. Deep DOM is useful for deeply nested Elementor pages.
+        </p>
+
+        <label for="capture-intent">Capture intent</label>
+        <select id="capture-intent">
+          <option value="GENERAL_AUDIT">General audit</option>
+          <option value="RESPONSIVE_COMPARISON">Responsive comparison</option>
+          <option value="TYPOGRAPHY_AUDIT">Typography evidence</option>
+          <option value="INTERACTION_AUDIT">Interaction evidence</option>
+          <option value="OVERFLOW_INVESTIGATION">Overflow investigation</option>
+        </select>
+        <p class="field-help">
+          The intent only describes why the capture was made. It does not run UX rules.
+        </p>
+
         <label for="redaction-mode" data-i18n="redactionMode">Redaction mode</label>
         <select id="redaction-mode">
           <option value="STRICT" data-i18n="strict">Strict</option>
           <option value="STANDARD" data-i18n="standard">Standard</option>
           <option value="DIAGNOSTIC" data-i18n="diagnostic">Diagnostic</option>
         </select>
-        <label class="switch"
-          ><input id="include-text" type="checkbox" /><span data-i18n="textPreview"
-            >Include limited text previews</span
-          ></label
-        >
-        <label class="switch"
-          ><input id="include-screenshot" type="checkbox" /><span data-i18n="screenshot"
-            >Include visible-viewport screenshot</span
-          ></label
-        >
-        <label class="switch"
-          ><input id="include-hidden" type="checkbox" /><span data-i18n="includeHidden"
-            >Include hidden elements</span
-          ></label
-        >
-        <label class="switch"
-          ><input id="include-accessibility" type="checkbox" /><span
-            data-i18n="includeAccessibility"
-            >Include accessibility metadata presence</span
-          ></label
-        >
-        <label class="switch"
-          ><input id="include-path" type="checkbox" /><span data-i18n="includePath"
-            >Include normalized URL path</span
-          ></label
-        >
-        <label class="switch"
-          ><input id="include-title" type="checkbox" /><span data-i18n="includeTitle"
-            >Include page title</span
-          ></label
-        >
-        <label class="switch"
-          ><input id="include-colors" type="checkbox" /><span data-i18n="includeColors"
-            >Include color computed styles</span
-          ></label
-        >
-        <label class="switch"
-          ><input id="retain-after-export" type="checkbox" /><span data-i18n="retainAfterExport"
-            >Retain large capture data after export</span
-          ></label
-        >
-        <p class="muted" data-i18n="privacyWarning">
-          Screenshots and text previews may contain sensitive page information.
+        <p class="field-help" data-i18n="redactionHelp">
+          Strict removes the most identity metadata. Diagnostic retains more bounded technical
+          identifiers.
         </p>
 
+        <div class="option-group">
+          <label class="switch"
+            ><input id="include-screenshot" type="checkbox" /><span data-i18n="screenshot"
+              >Include visible-viewport screenshot</span
+            ></label
+          >
+          <p class="field-help" data-i18n="screenshotHelp">
+            Captures only the currently visible viewport. Disabled by default because pixels may be
+            sensitive.
+          </p>
+        </div>
+
+        <div class="option-group">
+          <label class="switch"
+            ><input id="include-hidden" type="checkbox" /><span data-i18n="includeHidden"
+              >Include hidden elements</span
+            ></label
+          >
+          <p class="field-help" data-i18n="hiddenHelp">
+            Includes elements hidden by display, visibility, or opacity while remaining bounded by
+            the limits.
+          </p>
+        </div>
+
+        <div class="option-group">
+          <label class="switch"
+            ><input id="include-path" type="checkbox" /><span data-i18n="includePath"
+              >Include normalized URL path</span
+            ></label
+          >
+          <p class="field-help" data-i18n="pathHelp">
+            Query strings, fragments, and credentials are never included.
+          </p>
+        </div>
+
+        <div class="option-group">
+          <label class="switch"
+            ><input id="include-title" type="checkbox" /><span data-i18n="includeTitle"
+              >Include page title</span
+            ></label
+          >
+          <p class="field-help" data-i18n="titleHelp">
+            Page titles may reveal private content. Leave disabled unless needed for matching.
+          </p>
+        </div>
+
+        <div class="option-group">
+          <label class="switch"
+            ><input id="include-colors" type="checkbox" /><span data-i18n="includeColors"
+              >Include color computed styles</span
+            ></label
+          >
+          <p class="field-help" data-i18n="colorsHelp">
+            Adds allowlisted color facts such as text, background, and border colors.
+          </p>
+        </div>
+
+        <div class="option-group">
+          <label class="switch"
+            ><input id="include-text-shape" type="checkbox" /><span
+              >Include privacy-safe text shape</span
+            ></label
+          >
+          <p class="field-help">
+            Exports counts, wrapping, clipping, and line-box facts without raw text.
+          </p>
+        </div>
+
+        <div class="option-group">
+          <label class="switch"
+            ><input id="include-interaction-facts" type="checkbox" /><span
+              >Include interaction facts</span
+            ></label
+          >
+          <p class="field-help">
+            Exports tag, role, disabled state, tabindex, pointer-events, and similar raw facts.
+          </p>
+        </div>
+
+        <div class="option-group">
+          <label class="switch"
+            ><input id="include-relationship-graph" type="checkbox" /><span
+              >Include relationship graph</span
+            ></label
+          >
+          <p class="field-help">
+            Exports real DOM parent, nearest emitted parent, positioned, scroll, and clipping
+            ancestors.
+          </p>
+        </div>
+
+        <div class="option-group">
+          <label class="switch"
+            ><input id="include-text-preview" type="checkbox" /><span data-i18n="includeTextPreview"
+              >Include bounded redacted text previews</span
+            ></label
+          >
+          <p class="field-help" data-i18n="textPreviewHelp">
+            Form values and contenteditable text are excluded. Remaining previews are redacted and
+            length-limited.
+          </p>
+        </div>
+
+        <div class="option-group">
+          <label class="switch"
+            ><input id="prepare-full-document-images" type="checkbox" /><span
+              data-i18n="prepareFullDocumentImages"
+              >Prepare lazy-loaded images before capture</span
+            ></label
+          >
+          <p class="field-help" data-i18n="prepareFullDocumentImagesHelp">
+            Optionally performs a bounded scroll sweep and restores the original position. It may
+            trigger page side effects and is disabled by default.
+          </p>
+        </div>
+
+        <div class="option-group">
+          <label class="switch"
+            ><input id="retain-after-export" type="checkbox" /><span data-i18n="retainAfterExport"
+              >Retain large capture data after export</span
+            ></label
+          >
+          <p class="field-help" data-i18n="retentionHelp">
+            When disabled, snapshots and screenshots are removed from extension storage after a
+            successful export.
+          </p>
+        </div>
+
+        <p class="notice" data-i18n="privacyWarning">
+          Screenshots may contain sensitive page information. Review the page before enabling.
+        </p>
+
+        <h2 data-i18n="advancedLimits">Advanced bounded limits</h2>
+        <p class="field-help" data-i18n="advancedLimitsHelp">
+          These limits prevent unbounded traversal and oversized snapshots. Select Custom to edit
+          element and depth limits.
+        </p>
         <div class="field-grid">
           <label
             ><span data-i18n="maximumElements">Maximum collected elements</span
-            ><input id="max-elements" type="number" min="1" max="2000" step="1"
+            ><input id="max-elements" type="number" min="1" max="1000" step="1"
           /></label>
           <label
             ><span data-i18n="maximumDepth">Maximum traversal depth</span
@@ -76,23 +214,58 @@
             ><input id="max-snapshot" type="number" min="100000" max="32000000" step="1000"
           /></label>
           <label
-            ><span data-i18n="maximumTextPreview">Maximum text preview length</span
-            ><input id="max-preview" type="number" min="1" max="500" step="1"
+            ><span>Readiness hard timeout (ms)</span
+            ><input id="readiness-timeout" type="number" min="100" max="5000" step="100"
+          /></label>
+          <label
+            ><span data-i18n="maximumTextPreview">Maximum text preview characters</span
+            ><input id="max-text-preview" type="number" min="1" max="500" step="1"
           /></label>
         </div>
         <button class="primary" type="submit" data-i18n="saveOptions">Save options</button>
         <p id="save-status" class="status" role="status" aria-live="polite"></p>
       </form>
 
+      <section class="card stack" aria-labelledby="source-context-title">
+        <h2 id="source-context-title">WordPress Bridge Context</h2>
+        <p class="field-help">
+          Import <code>bridge/source-context.json</code> from WordPress Evidence Exporter 3.2.0. The
+          file is parsed locally and is never sent to WordPress or any remote service.
+        </p>
+        <label
+          >Source Context JSON<input
+            id="source-context-file"
+            type="file"
+            accept="application/json,.json"
+        /></label>
+        <label
+          >Selected document ID<input
+            id="source-document-id"
+            type="text"
+            maxlength="160"
+            placeholder="Leave empty when the context has one document"
+        /></label>
+        <div class="row">
+          <button id="import-source-context" type="button">Import and validate</button>
+          <button id="clear-source-context" type="button">Remove imported context</button>
+        </div>
+        <p id="source-context-status" class="status" role="status" aria-live="polite"></p>
+        <div id="source-context-summary" class="stack"></div>
+      </section>
+
       <section class="card stack">
-        <h2>Data and version</h2>
+        <h2 data-i18n="dataAndVersion">Data and version</h2>
         <div class="metric">
           <span data-i18n="storageUsage">Storage usage</span><strong id="storage-usage">0 B</strong>
         </div>
         <div class="metric">
           <span data-i18n="version">Version</span><strong id="version-value">—</strong>
         </div>
-        <p><a href="../../PRIVACY.md" id="privacy-link">Privacy policy source</a></p>
+        <p>
+          <a href="../PRIVACY.md" id="privacy-link" data-i18n="privacyPolicySource"
+            >Privacy policy source</a
+          >
+        </p>
         <button id="clear-data" class="danger" type="button" data-i18n="clearAllData">
           Clear all extension data
         </button>
@@ -106,8 +279,16 @@
           Delete all sessions, snapshots, screenshots, jobs, and preferences?
         </p>
         <div class="row">
-          <button value="cancel" type="submit">Cancel</button>
-          <button id="confirm-clear" class="danger" value="confirm" type="submit">Delete</button>
+          <button value="cancel" type="submit" data-i18n="cancel">Cancel</button>
+          <button
+            id="confirm-clear"
+            class="danger"
+            value="confirm"
+            type="submit"
+            data-i18n="delete"
+          >
+            Delete
+          </button>
         </div>
       </form>
     </dialog>

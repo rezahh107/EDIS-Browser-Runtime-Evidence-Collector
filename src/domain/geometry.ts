@@ -1,8 +1,19 @@
 import type { Rect, ViewportIntersection } from "./model";
 import { err, ok, type Result } from "./result";
 
+const GEOMETRY_DECIMALS = 6;
+
 export function finiteNumber(value: unknown): Result<number, "NON_FINITE"> {
-  return typeof value === "number" && Number.isFinite(value) ? ok(value) : err("NON_FINITE");
+  return typeof value === "number" && Number.isFinite(value)
+    ? ok(normalizeFiniteNumber(value))
+    : err("NON_FINITE");
+}
+
+export function normalizeFiniteNumber(value: number): number {
+  if (!Number.isFinite(value)) throw new Error("Non-finite geometry value.");
+  const factor = 10 ** GEOMETRY_DECIMALS;
+  const normalized = Math.round(value * factor) / factor;
+  return Object.is(normalized, -0) ? 0 : normalized;
 }
 
 export function normalizeRect(
@@ -13,7 +24,7 @@ export function normalizeRect(
   for (const key of keys) {
     const checked = finiteNumber(input[key]);
     if (!checked.ok) return checked;
-    output[key] = normalizeNegativeZero(checked.value);
+    output[key] = checked.value;
   }
   return ok(output as unknown as Rect);
 }
@@ -23,17 +34,17 @@ export function rectangleIntersection(
   viewportWidth: number,
   viewportHeight: number,
 ): ViewportIntersection {
-  const left = Math.max(0, rect.left);
-  const top = Math.max(0, rect.top);
-  const right = Math.min(viewportWidth, rect.right);
-  const bottom = Math.min(viewportHeight, rect.bottom);
-  const width = Math.max(0, right - left);
-  const height = Math.max(0, bottom - top);
-  const area = Math.max(0, rect.width * rect.height);
-  const intersectionArea = width * height;
+  const left = normalizeFiniteNumber(Math.max(0, rect.left));
+  const top = normalizeFiniteNumber(Math.max(0, rect.top));
+  const right = normalizeFiniteNumber(Math.min(viewportWidth, rect.right));
+  const bottom = normalizeFiniteNumber(Math.min(viewportHeight, rect.bottom));
+  const width = normalizeFiniteNumber(Math.max(0, right - left));
+  const height = normalizeFiniteNumber(Math.max(0, bottom - top));
+  const area = normalizeFiniteNumber(Math.max(0, rect.width * rect.height));
+  const intersectionArea = normalizeFiniteNumber(width * height);
   return {
     intersects: width > 0 && height > 0,
-    ratio: area === 0 ? 0 : Math.min(1, intersectionArea / area),
+    ratio: area === 0 ? 0 : normalizeFiniteNumber(Math.min(1, intersectionArea / area)),
     rect: { x: left, y: top, top, right, bottom, left, width, height },
   };
 }

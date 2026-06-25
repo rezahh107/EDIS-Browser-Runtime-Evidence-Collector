@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Deterministic Measurement Fixture</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #absolute-box {
+        position: absolute;
+        left: 40px;
+        top: 60px;
+        width: 240px;
+        height: 120px;
+        padding: 10px;
+        border: 2px solid black;
+        overflow: auto;
+      }
+      #absolute-box > div {
+        width: 300px;
+        height: 180px;
+      }
+      #fixed-box {
+        position: fixed;
+        right: 12px;
+        bottom: 16px;
+        width: 90px;
+        height: 40px;
+      }
+      #sticky-box {
+        position: sticky;
+        top: 0;
+        height: 32px;
+      }
+      #wrapped {
+        width: 120px;
+        white-space: normal;
+        overflow: hidden;
+      }
+      #truncated {
+        width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      #hidden-box {
+        display: none;
+      }
+      .page-wide {
+        width: 1400px;
+        height: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <header id="sticky-box">Sticky</header>
+    <div id="absolute-box" data-testid="absolute-box"><div></div></div>
+    <button id="fixed-box">Fixed</button>
+    <p id="wrapped">This deterministic text wraps onto multiple lines.</p>
+    <p id="truncated">This deterministic text is visually truncated.</p>
+    <div id="hidden-box">Hidden</div>
+    <div class="page-wide"></div>
+    <script>
+      document.documentElement.dataset.edisReady = "true";
+    </script>
+  </body>
+</html>

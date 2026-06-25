@@ -10,7 +10,7 @@ The extension records rendered-page runtime evidence for local export to EDIS Py
 2. Open a normal HTTP or HTTPS test page.
 3. Invoke the toolbar action and verify the page status.
 4. Create a session, capture the current viewport, and inspect the capture list.
-5. Keep screenshot and text-preview toggles disabled and export a ZIP.
+5. Keep the screenshot toggle disabled and export a ZIP.
 6. Confirm the ZIP contains JSON evidence, schemas, diagnostics, checksums, and no network destination.
 7. Enable screenshot only after the warning, capture again, and verify that only the visible viewport is included.
 8. Open an internal browser page or store page and verify a clear unsupported-page result.

@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:edis:schema:browser:runtime-context",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "schema_id": {
+      "const": "urn:edis:schema:browser:runtime-context"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "artifact_type": {
+      "const": "runtime_context"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtime_bundle_id",
+        "session_id",
+        "runtime_environment",
+        "capture_configuration",
+        "source_context_reference"
+      ],
+      "properties": {
+        "runtime_bundle_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runtime_environment": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "capture_configuration": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "observations"
+          ],
+          "properties": {
+            "observations": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "observation_index",
+                  "snapshot_id",
+                  "capture_intent",
+                  "capture_profile",
+                  "max_elements",
+                  "max_depth",
+                  "max_snapshot_bytes",
+                  "include_hidden_elements",
+                  "include_colors",
+                  "include_text_shape",
+                  "include_interaction_facts",
+                  "include_relationship_graph",
+                  "include_text_preview",
+                  "text_preview_limit",
+                  "readiness_hard_timeout_ms"
+                ],
+                "properties": {
+                  "observation_index": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "snapshot_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "capture_intent": {
+                    "enum": [
+                      "GENERAL_AUDIT",
+                      "RESPONSIVE_COMPARISON",
+                      "TYPOGRAPHY_AUDIT",
+                      "INTERACTION_AUDIT",
+                      "OVERFLOW_INVESTIGATION"
+                    ]
+                  },
+                  "capture_profile": {
+                    "enum": [
+                      "STANDARD",
+                      "DEEP_DOM",
+                      "CUSTOM"
+                    ]
+                  },
+                  "max_elements": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1000
+                  },
+                  "max_depth": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 64
+                  },
+                  "max_snapshot_bytes": {
+                    "type": "integer",
+                    "minimum": 100000,
+                    "maximum": 50000000
+                  },
+                  "include_hidden_elements": {
+                    "type": "boolean"
+                  },
+                  "include_colors": {
+                    "type": "boolean"
+                  },
+                  "include_text_shape": {
+                    "type": "boolean"
+                  },
+                  "include_interaction_facts": {
+                    "type": "boolean"
+                  },
+                  "include_relationship_graph": {
+                    "type": "boolean"
+                  },
+                  "include_text_preview": {
+                    "type": "boolean"
+                  },
+                  "text_preview_limit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 500
+                  },
+                  "readiness_hard_timeout_ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "source_context_reference": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

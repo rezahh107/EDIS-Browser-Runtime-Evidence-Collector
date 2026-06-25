@@ -41,9 +41,6 @@
   "extensionName": {
     "message": "جمع‌آورنده شواهد Runtime مرورگر EDIS"
   },
-  "includeAccessibility": {
-    "message": "شامل وضعیت متادیتای دسترس‌پذیری"
-  },
   "includeColors": {
     "message": "شامل رنگ‌های Computed Style"
   },
@@ -52,6 +49,9 @@
   },
   "includePath": {
     "message": "شامل مسیر نرمال‌شده URL"
+  },
+  "includeTextPreview": {
+    "message": "افزودن پیش‌نمایش محدود و پالایش‌شده متن"
   },
   "includeTitle": {
     "message": "شامل عنوان صفحه"
@@ -69,7 +69,7 @@
     "message": "حداکثر اندازه Snapshot به بایت"
   },
   "maximumTextPreview": {
-    "message": "حداکثر طول پیش‌نمایش متن"
+    "message": "حداکثر نویسه‌های پیش‌نمایش متن"
   },
   "noCaptures": {
     "message": "در این جلسه Capture وجود ندارد."
@@ -93,7 +93,7 @@
     "message": "خلاصه حریم خصوصی"
   },
   "privacyWarning": {
-    "message": "تصویر و پیش‌نمایش متن ممکن است اطلاعات حساس صفحه را شامل شوند. پیش از فعال‌سازی صفحه را بازبینی کنید."
+    "message": "تصویر صفحه ممکن است شامل اطلاعات حساس باشد. پیش از فعال‌سازی، صفحه را بررسی کنید."
   },
   "redactionMode": {
     "message": "حالت Redaction"
@@ -140,8 +140,8 @@
   "supported": {
     "message": "آماده ثبت"
   },
-  "textPreview": {
-    "message": "افزودن پیش‌نمایش محدود متن"
+  "textPreviewWarning": {
+    "message": "پیش‌نمایش متن ممکن است شامل محتوای صفحه باشد. مقدار کنترل‌های فرم هرگز جمع‌آوری نمی‌شود و پیش‌نمایش‌ها پالایش و محدود می‌شوند."
   },
   "unsupported": {
     "message": "این صفحه قابل ثبت نیست"
@@ -151,5 +151,559 @@
   },
   "viewportLabel": {
     "message": "برچسب Viewport"
+  },
+  "openGuide": {
+    "message": "باز کردن راهنما"
+  },
+  "guideTitle": {
+    "message": "راهنمای جمع‌آورنده Runtime EDIS"
+  },
+  "guideIntro": {
+    "message": "توضیح کاربردی همه صفحه‌ها، گزینه‌ها، وضعیت‌ها و فایل‌های خروجی."
+  },
+  "localOnlyEvidence": {
+    "message": "شواهد محلی از صفحه رندرشده"
+  },
+  "pageStatusHelp": {
+    "message": "بررسی می‌کند تب فعال یک صفحه معمولی HTTP یا HTTPS و قابل دسترسی موقت باشد."
+  },
+  "actualViewport": {
+    "message": "ابعاد واقعی Viewport"
+  },
+  "notCaptured": {
+    "message": "هنوز ثبت نشده"
+  },
+  "sessionHelp": {
+    "message": "Session چند مشاهده از Viewportهای مختلف یک صفحه یا یک کار بررسی را گروه‌بندی می‌کند."
+  },
+  "captureHelp": {
+    "message": "یک Snapshot واقعی از DOM و Viewport فعلی ثبت می‌کند. برچسب فقط توضیح شماست."
+  },
+  "cancelCapture": {
+    "message": "لغو Capture فعال"
+  },
+  "reviewHelp": {
+    "message": "سلامت پکیج درباره درستی فایل‌هاست؛ کامل‌بودن Capture نشان می‌دهد محدودیت‌های کنترل‌شده چیزی را حذف کرده‌اند یا نه."
+  },
+  "packageIntegrity": {
+    "message": "سلامت پکیج"
+  },
+  "pendingExportValidation": {
+    "message": "در انتظار اعتبارسنجی هنگام خروجی"
+  },
+  "captureCompleteness": {
+    "message": "کامل‌بودن Capture"
+  },
+  "truncatedBranches": {
+    "message": "شاخه‌های قطع‌شده"
+  },
+  "identityCollisions": {
+    "message": "Identityهای مبهم"
+  },
+  "partialReasons": {
+    "message": "دلیل Partial بودن Capture"
+  },
+  "exportHelp": {
+    "message": "پیش از دانلود ZIP، Schema، JSON Canonical، Checksum، Reference، Identity و Manifest را بررسی می‌کند."
+  },
+  "selectSession": {
+    "message": "یک Session انتخاب کنید"
+  },
+  "elementsShort": {
+    "message": "عنصر"
+  },
+  "overflowShort": {
+    "message": "شاهد Overflow"
+  },
+  "diagnosticsShort": {
+    "message": "Diagnostic"
+  },
+  "screenshotIncluded": {
+    "message": "تصویر"
+  },
+  "privacyLocalOnly": {
+    "message": "شواهد JSON فقط محلی"
+  },
+  "privacyScreenshotEnabled": {
+    "message": "تصویر Viewport فعال است"
+  },
+  "privacyScreenshotDisabled": {
+    "message": "تصویر غیرفعال است"
+  },
+  "privacyTextEnabled": {
+    "message": "پیش‌نمایش محدود و پالایش‌شده متن فعال است"
+  },
+  "privacyTextDisabled": {
+    "message": "پیش‌نمایش متن غیرفعال است"
+  },
+  "privacyAlwaysExcluded": {
+    "message": "مقادیر فرم، Cookie، History، Query و Fragment حذف می‌شوند"
+  },
+  "captureCancelled": {
+    "message": "Capture لغو شد."
+  },
+  "selectSessionFirst": {
+    "message": "ابتدا یک Session بسازید یا انتخاب کنید."
+  },
+  "currentViewport": {
+    "message": "Viewport فعلی"
+  },
+  "captureJobMissing": {
+    "message": "Job مربوط به Capture پیدا نشد."
+  },
+  "captureStatusLabel": {
+    "message": "وضعیت Capture"
+  },
+  "captureTimeout": {
+    "message": "پیگیری وضعیت Capture به پایان زمان مجاز رسید. پنل را دوباره باز کنید."
+  },
+  "validatingPackage": {
+    "message": "در حال اعتبارسنجی پکیج پیش از خروجی…"
+  },
+  "validatedPass": {
+    "message": "اعتبارسنجی: PASS"
+  },
+  "entries": {
+    "message": "فایل"
+  },
+  "validationPassed": {
+    "message": "Self-validation موفق بود"
+  },
+  "validationFailed": {
+    "message": "اعتبارسنجی ناموفق"
+  },
+  "completenessComplete": {
+    "message": "کامل"
+  },
+  "completenessPartial": {
+    "message": "ناقص (Partial)"
+  },
+  "reasonDepthLimit": {
+    "message": "حداکثر عمق DOM رسیده است؛ در صورت نیاز از Deep DOM استفاده کنید."
+  },
+  "reasonElementLimit": {
+    "message": "بودجه تعیین‌شده عناصر پر شده است."
+  },
+  "reasonScanLimit": {
+    "message": "بودجه محدود Scan DOM پر شده است."
+  },
+  "reasonIdentityCollision": {
+    "message": "یک یا چند Identity قابل اثبات به‌صورت یکتا نبودند."
+  },
+  "reasonPartialIdentity": {
+    "message": "یک یا چند عنصر Identity با اطمینان پایین‌تر داشتند."
+  },
+  "reasonGeometry": {
+    "message": "عنصر جداشده یا هندسه غیرمتناهی حذف شده است."
+  },
+  "reasonScreenshot": {
+    "message": "تصویر اختیاری ناموفق بود، اما شواهد JSON حفظ شد."
+  },
+  "captureProfile": {
+    "message": "پروفایل پوشش Capture"
+  },
+  "profileStandard": {
+    "message": "استاندارد — ۷۵۰ عنصر / عمق ۲۴"
+  },
+  "profileDeepDom": {
+    "message": "Deep DOM — ۱۰۰۰ عنصر / عمق ۴۰"
+  },
+  "profileCustom": {
+    "message": "سفارشی"
+  },
+  "profileHelp": {
+    "message": "Standard سریع‌تر است. Deep DOM برای صفحات Elementor با Nesting عمیق مناسب است."
+  },
+  "optionsIntro": {
+    "message": "پوشش Capture و حریم خصوصی را کنترل کنید. تنظیمات امن پیش‌فرض برای بیشتر صفحات مناسب‌اند."
+  },
+  "coverageAndPrivacy": {
+    "message": "پوشش و حریم خصوصی"
+  },
+  "redactionHelp": {
+    "message": "Strict بیشترین متادیتای هویتی را حذف می‌کند. Diagnostic شناسه‌های فنی محدود بیشتری نگه می‌دارد."
+  },
+  "screenshotHelp": {
+    "message": "فقط بخش قابل مشاهده تب را ثبت می‌کند. به دلیل احتمال اطلاعات حساس، پیش‌فرض خاموش است."
+  },
+  "hiddenHelp": {
+    "message": "عناصر پنهان‌شده به‌صورت مستقیم یا توسط Ancestor را شامل می‌شود. در حالت خاموش، فرزندان عملاً پنهان از خروجی حذف می‌شوند و Traversal همچنان محدود می‌ماند."
+  },
+  "pathHelp": {
+    "message": "در حالت خاموش، Path خام Locator صادر نمی‌شود و فقط Hash مستعار و حساس به حریم خصوصی باقی می‌ماند. Query، Fragment و Credential هرگز صادر نمی‌شوند."
+  },
+  "titleHelp": {
+    "message": "عنوان صفحه ممکن است اطلاعات خصوصی داشته باشد؛ فقط در صورت نیاز فعال کنید."
+  },
+  "colorsHelp": {
+    "message": "رنگ‌های مجاز مانند متن، پس‌زمینه و Border را اضافه می‌کند."
+  },
+  "textPreviewHelp": {
+    "message": "مقادیر فرم و متن Contenteditable حذف می‌شوند؛ متن باقی‌مانده پالایش و محدود می‌شود."
+  },
+  "retentionHelp": {
+    "message": "اگر خاموش باشد، پس از خروجی موفق Snapshot و Screenshot از ذخیره‌سازی افزونه پاک می‌شوند."
+  },
+  "advancedLimits": {
+    "message": "محدودیت‌های پیشرفته و کنترل‌شده"
+  },
+  "advancedLimitsHelp": {
+    "message": "این حدود از پیمایش نامحدود و Snapshot بسیار بزرگ جلوگیری می‌کنند. برای ویرایش عمق و تعداد، Custom را انتخاب کنید."
+  },
+  "dataAndVersion": {
+    "message": "داده و نسخه"
+  },
+  "privacyPolicySource": {
+    "message": "متن سیاست حریم خصوصی"
+  },
+  "cancel": {
+    "message": "لغو"
+  },
+  "delete": {
+    "message": "حذف"
+  },
+  "optionsSaved": {
+    "message": "تنظیمات ذخیره شد."
+  },
+  "allDataCleared": {
+    "message": "همه داده‌های افزونه پاک شد."
+  },
+  "pageEvidenceCard": {
+    "message": "شواهد صفحه و منبع"
+  },
+  "pageEvidenceCardHelp": {
+    "message": "صفحه رندرشده را جدا از اسناد منبع وردپرس نشان می‌دهد. Binding مرورگر شواهد اولیه است و Correlation نهایی Python نیست."
+  },
+  "sourceContextLabel": {
+    "message": "Source Context وردپرس"
+  },
+  "sourceContextImported": {
+    "message": "به‌صورت محلی وارد و اعتبارسنجی شده"
+  },
+  "sourceContextNotImported": {
+    "message": "وارد نشده؛ Capture فقط مرورگر همچنان معتبر است"
+  },
+  "pageBindingLabel": {
+    "message": "اتصال اولیه صفحه"
+  },
+  "sourceDocumentLabel": {
+    "message": "سند منبع انتخاب‌شده"
+  },
+  "sourceDocumentsPresentLabel": {
+    "message": "اسناد منبع حاضر در صفحه"
+  },
+  "pageFingerprintLabel": {
+    "message": "اثر انگشت صفحه"
+  },
+  "structureSummary": {
+    "message": "ساختار: $SOURCESECTIONS$ سکشن منبع · $RUNTIMESECTIONS$ سکشن Runtime · $CONTAINERS$ کانتینر Runtime · $WIDGETMARKERS$ Marker ویجت · $SOURCEWIDGETS$ ویجت منبع · $REGIONS$ ناحیه",
+    "placeholders": {
+      "sourcesections": {
+        "content": "$1"
+      },
+      "runtimesections": {
+        "content": "$2"
+      },
+      "containers": {
+        "content": "$3"
+      },
+      "widgetmarkers": {
+        "content": "$4"
+      },
+      "sourcewidgets": {
+        "content": "$5"
+      },
+      "regions": {
+        "content": "$6"
+      }
+    }
+  },
+  "bindingReasonsLabel": {
+    "message": "شواهد اتصال: $REASONS$",
+    "placeholders": {
+      "reasons": {
+        "content": "$1"
+      }
+    }
+  },
+  "notAvailable": {
+    "message": "در دسترس نیست"
+  },
+  "reasonReadinessUnstable": {
+    "message": "آمادگی Capture ناپایدار بود؛ شواهد Readiness را بررسی کنید."
+  },
+  "skippedHiddenSubtrees": {
+    "message": "زیرشاخه‌های مخفی کنارگذاشته‌شده"
+  },
+  "captureEnvironmentWarnings": {
+    "message": "هشدارهای محیط Capture"
+  },
+  "environmentWarningsShort": {
+    "message": "هشدار محیطی"
+  },
+  "exportPreflightTitle": {
+    "message": "پیش‌بررسی خروجی"
+  },
+  "exportPreflightIntro": {
+    "message": "پیش از ساخت ZIP محلی، پوشش شواهد را بررسی کنید. هشدارها واقعیت‌ها را تغییر نمی‌دهند و هیچ قانون تحلیلی اجرا نمی‌کنند."
+  },
+  "exportPreflightBlockers": {
+    "message": "الزام‌های مسدودکننده"
+  },
+  "exportPreflightWarnings": {
+    "message": "هشدارهای غیرمسدودکنندهٔ پوشش"
+  },
+  "preflightBlockingWithRuntimeFallback": {
+    "message": "حداقل خوراک پایتون هنوز قابل خروجی نیست. به Capture برگردید یا واقعیت‌های فعلی را به‌صورت Runtime Evidence صادر کنید."
+  },
+  "preflightBlockingNoFallback": {
+    "message": "تا زمان رفع الزام‌های مسدودکننده، این خروجی قابل ادامه نیست."
+  },
+  "exportRuntimeInstead": {
+    "message": "خروجی Runtime Evidence به‌جای خوراک پایتون"
+  },
+  "returnToReview": {
+    "message": "بازگشت به بررسی"
+  },
+  "exportAnyway": {
+    "message": "خروجی با همین وضعیت"
+  },
+  "preflightObservations": {
+    "message": "تعداد مشاهده‌ها: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "preflightRuntimeNodes": {
+    "message": "گره‌های Runtime: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "preflightDistinctViewports": {
+    "message": "Viewportهای اندازه‌گیری‌شده متمایز: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "preflightScreenshots": {
+    "message": "اسکرین‌شات‌ها: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "preflightSourceAvailable": {
+    "message": "Source Context: وارد شده"
+  },
+  "preflightSourceMissing": {
+    "message": "Source Context: وارد نشده"
+  },
+  "preflightIncompleteImages": {
+    "message": "تصاویر ناقص مشاهده‌شده: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "preflightWarningSourceContext": {
+    "message": "Source Context موجود نیست؛ هم‌بستگی نهایی Source و Runtime در دسترس نخواهد بود."
+  },
+  "preflightWarningSingleViewport": {
+    "message": "فقط یک Viewport اندازه‌گیری‌شده وجود دارد؛ مقایسه Responsive کافی نیست."
+  },
+  "preflightWarningScreenshot": {
+    "message": "هیچ شاهد اسکرین‌شاتی در بسته قرار نمی‌گیرد."
+  },
+  "preflightWarningHidden": {
+    "message": "عناصر مخفی در همه مشاهده‌ها کنار گذاشته شده‌اند."
+  },
+  "preflightWarningImages": {
+    "message": "هنگام Capture یک یا چند تصویر هنوز کامل نشده بود."
+  },
+  "preflightBlockingNoObservations": {
+    "message": "خروجی مسدود است، چون Session هیچ مشاهده Runtime ندارد."
+  },
+  "preflightBlockingCaptureInProgress": {
+    "message": "تا زمان پایان Capture فعال، خروجی مسدود است."
+  },
+  "preflightBlockingSessionFailed": {
+    "message": "خروجی مسدود است، چون Session در وضعیت شکست قرار دارد."
+  },
+  "prepareFullDocumentImages": {
+    "message": "آماده‌سازی تصاویر Lazy-load پیش از Capture"
+  },
+  "prepareFullDocumentImagesHelp": {
+    "message": "به‌صورت اختیاری یک پیمایش محدود انجام می‌دهد و به موقعیت اولیه بازمی‌گردد. ممکن است رفتارهای جانبی صفحه را فعال کند و به‌طور پیش‌فرض خاموش است."
+  },
+  "viewportProfile": {
+    "message": "پروفایل درخواستی Viewport"
+  },
+  "viewportProfileHelp": {
+    "message": "پروفایل درخواستی فقط Provenance است؛ افزونه همیشه اندازه واقعی Viewport را ثبت می‌کند."
+  },
+  "profileDesktop": {
+    "message": "دسکتاپ"
+  },
+  "profileTablet": {
+    "message": "تبلت"
+  },
+  "profileMobile": {
+    "message": "موبایل"
+  },
+  "exportPythonFeed": {
+    "message": "اعتبارسنجی و خروجی حداقل خوراک پایتون"
+  },
+  "preflightDistinctViewportWidths": {
+    "message": "تعداد عرض‌های متمایز Viewport: $1"
+  },
+  "preflightPythonFeedReadiness": {
+    "message": "آمادگی خوراک پایتون: $1"
+  },
+  "preflightRequestedProfiles": {
+    "message": "پروفایل‌های درخواستی موجود: $1"
+  },
+  "preflightBlockingSourceRequired": {
+    "message": "حداقل خوراک پایتون به Source Context وردپرسِ واردشده و متصل به این Session نیاز دارد."
+  },
+  "preflightBlockingSourceIncompatible": {
+    "message": "Source Context واردشده تأیید نشده یا Hash/هویت سند آن با Session سازگار نیست."
+  },
+  "preflightBlockingObservations": {
+    "message": "حداقل خوراک پایتون به دست‌کم سه Observation زمان اجرا نیاز دارد."
+  },
+  "preflightBlockingDistinctWidths": {
+    "message": "حداقل خوراک پایتون به دست‌کم سه عرض واقعی و متمایز Viewport نیاز دارد."
+  },
+  "preflightBlockingProfiles": {
+    "message": "هر سه پروفایل درخواستی دسکتاپ، تبلت و موبایل باید ثبت شوند."
+  },
+  "preflightBlockingPageMismatch": {
+    "message": "تمام Observationها باید Page Fingerprint زمان اجرای یکسان داشته باشند."
+  },
+  "preflightBlockingSourceMismatch": {
+    "message": "تمام Observationها باید به همان Source Context متصل به Session اشاره کنند."
+  },
+  "preflightBlockingObservationIndex": {
+    "message": "Observation indexها نامعتبر، تکراری یا ناپیوسته‌اند."
+  },
+  "openSourceContextOptions": {
+    "message": "باز کردن تنظیمات Source Context"
+  },
+  "captureWorkflow": {
+    "message": "گردش کار ثبت شواهد"
+  },
+  "workflowPythonFeed": {
+    "message": "حداقل خوراک پایتون"
+  },
+  "workflowRuntimeEvidence": {
+    "message": "شواهد Runtime"
+  },
+  "captureWorkflowHelp": {
+    "message": "حالت خوراک پایتون پیش از ثبت شواهد، Capture ناقص یا تکراری را مسدود می‌کند."
+  },
+  "currentMeasuredViewport": {
+    "message": "اندازه واقعی Viewport فعلی"
+  },
+  "pythonFeedSteps": {
+    "message": "مراحل حداقل خوراک پایتون"
+  },
+  "feedStepSource": {
+    "message": "Source Context را وارد و تأیید کنید"
+  },
+  "feedStepDesktop": {
+    "message": "Desktop را با یک عرض متمایز Capture کنید"
+  },
+  "feedStepTablet": {
+    "message": "اندازه را تغییر دهید و Tablet را Capture کنید"
+  },
+  "feedStepMobile": {
+    "message": "اندازه را تغییر دهید و Mobile را Capture کنید"
+  },
+  "feedStepExport": {
+    "message": "خوراک پایتون را اعتبارسنجی و صادر کنید"
+  },
+  "runtimeEvidenceCaptureAvailable": {
+    "message": "Capture شواهد Runtime مجاز است. عرض تکراری در این حالت مجاز است."
+  },
+  "pythonFeedCaptureAvailable": {
+    "message": "این Viewport برای Observation بعدی خوراک پایتون معتبر است."
+  },
+  "feedGuardSourceRequired": {
+    "message": "پیش از Capture، Source Context وردپرس متناظر را وارد و تأیید کنید."
+  },
+  "feedGuardSourceIncompatible": {
+    "message": "Source Context انتخاب‌شده با این Session سازگار نیست."
+  },
+  "feedGuardDuplicateWidth": {
+    "message": "اندازه صفحه هدف را تغییر دهید؛ این عرض Viewport قبلاً ثبت شده است."
+  },
+  "feedGuardDuplicateProfile": {
+    "message": "پروفایلی را انتخاب کنید که قبلاً در این Session ثبت نشده باشد."
+  },
+  "feedGuardRequiredProfile": {
+    "message": "حداقل خوراک پایتون فقط پروفایل‌های Desktop، Tablet و Mobile را می‌پذیرد."
+  },
+  "feedGuardPageMismatch": {
+    "message": "صفحه فعلی با صفحه ثبت‌شده در این Session یکسان نیست."
+  },
+  "feedGuardCanonicalScroll": {
+    "message": "پیش از Capture خوراک پایتون، صفحه هدف را به موقعیت اسکرول صفر برگردانید."
+  },
+  "feedGuardPageNotVisible": {
+    "message": "صفحه هدف باید پیش از Capture خوراک پایتون قابل مشاهده باشد."
+  },
+  "feedGuardPagePrerendering": {
+    "message": "صفحه هدف در حالت prerender است و هنوز قابل Capture نیست."
+  },
+  "feedGuardAdminBar": {
+    "message": "شواهد Admin Bar وردپرس موجود یا مبهم است. از نمای Frontend بدون Toolbar استفاده کنید."
+  },
+  "feedGuardElementorEditor": {
+    "message": "پیش‌نمایش ویرایشگر Elementor محیط Canonical برای Capture Frontend منتشرشده نیست."
+  },
+  "feedGuardIframe": {
+    "message": "Capture خوراک پایتون باید در صفحه سطح بالا انجام شود، نه داخل iframe."
+  },
+  "feedGuardImagesNotReady": {
+    "message": "یک یا چند تصویر داخل Viewport پس از انتظار محدود هنوز آماده نیست."
+  },
+  "feedGuardWorkflowModeMismatch": {
+    "message": "این Session به Workflow دیگری قفل شده است."
+  },
+  "preflightBlockingCanonicalScroll": {
+    "message": "یک یا چند Observation در موقعیت canonical اسکرول صفر ثبت نشده‌اند."
+  },
+  "preflightBlockingPageNotVisible": {
+    "message": "یک یا چند Observation زمانی ثبت شده‌اند که صفحه visible نبوده است."
+  },
+  "preflightBlockingPagePrerendering": {
+    "message": "یک یا چند Observation هنگام prerender شدن صفحه ثبت شده‌اند."
+  },
+  "preflightBlockingAdminBar": {
+    "message": "در یک یا چند Observation شواهد Admin Bar وردپرس موجود یا مبهم است."
+  },
+  "preflightBlockingElementorEditor": {
+    "message": "در یک یا چند Observation پیش‌نمایش ویرایشگر Elementor فعال بوده است."
+  },
+  "preflightBlockingIframe": {
+    "message": "یک یا چند Observation داخل iframe ثبت شده‌اند."
+  },
+  "preflightBlockingImagesNotReady": {
+    "message": "یک یا چند تصویر Viewport پس از انتظار محدود حل‌نشده باقی مانده‌اند."
+  },
+  "preflightBlockingWorkflowMode": {
+    "message": "Workflow Session با این نوع خروجی سازگار نیست."
+  },
+  "preflightBlockingStorageBudget": {
+    "message": "حجم شواهد Session از بودجهٔ قطعی خروجی محلی بیشتر شده است."
   }
 }

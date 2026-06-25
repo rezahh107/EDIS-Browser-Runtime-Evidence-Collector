@@ -1,0 +1,207 @@
+{
+  "$id": "urn:edis:schema:browser:source-binding-evidence",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "availability": {
+      "enum": [
+        "AVAILABLE",
+        "PARTIAL",
+        "INSUFFICIENT",
+        "DISABLED",
+        "UNAVAILABLE",
+        "NOT_APPLICABLE",
+        "ERROR"
+      ]
+    },
+    "binding_basis": {
+      "enum": [
+        "DIRECT_VALIDATED_MARKER",
+        "ANCESTOR_VALIDATED_MARKER",
+        "RAW_MARKER_ONLY",
+        "NO_SOURCE_CONTEXT",
+        "NO_MATCH"
+      ]
+    },
+    "binding_state": {
+      "enum": [
+        "EXACT",
+        "PROBABLE",
+        "AMBIGUOUS",
+        "UNMATCHED"
+      ]
+    },
+    "confirmation_state": {
+      "enum": [
+        "NOT_CONFIRMED",
+        "CONFIRMED"
+      ]
+    },
+    "elementor_ancestor_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "elementor_element_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "nearest_elementor_ancestor_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "page_elementor_document_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reason_codes": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "runtime_id_occurrence_count": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "source_architecture_kind": {
+      "maxLength": 120,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_document_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_document_type": {
+      "maxLength": 120,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_editor_label": {
+      "maxLength": 300,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_editor_label_source": {
+      "enum": [
+        "ELEMENTOR_EDITOR_METADATA",
+        null
+      ],
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_element_key": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_element_kind": {
+      "maxLength": 120,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_id_occurrence_count": {
+      "minimum": 0,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "source_record_sha256": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_section_element_id": {
+      "maxLength": 160,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_section_key": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_section_kind": {
+      "maxLength": 120,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_widget_type": {
+      "maxLength": 160,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "unique_in_runtime_document": {
+      "type": "boolean"
+    },
+    "unique_in_source_document": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "availability",
+    "binding_state",
+    "binding_basis",
+    "page_elementor_document_id",
+    "elementor_element_id",
+    "nearest_elementor_ancestor_id",
+    "elementor_ancestor_ids",
+    "runtime_id_occurrence_count",
+    "source_id_occurrence_count",
+    "source_document_id",
+    "source_element_key",
+    "source_record_sha256",
+    "unique_in_runtime_document",
+    "unique_in_source_document",
+    "confirmation_state",
+    "reason_codes",
+    "source_document_type",
+    "source_element_kind",
+    "source_widget_type",
+    "source_architecture_kind",
+    "source_editor_label",
+    "source_editor_label_source",
+    "source_section_key",
+    "source_section_element_id",
+    "source_section_kind"
+  ],
+  "schema_version": "1.0.0",
+  "title": "EDIS Browser Source Binding Evidence",
+  "type": "object"
+}

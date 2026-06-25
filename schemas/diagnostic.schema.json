@@ -1,47 +1,57 @@
 {
-  "$id": "urn:edis:runtime:diagnostic:1.0.0",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:edis:schema:shared:diagnostic",
+  "type": "object",
   "additionalProperties": false,
+  "required": [
+    "code",
+    "severity",
+    "scope",
+    "message_key",
+    "context"
+  ],
   "properties": {
     "code": {
-      "pattern": "^EDIS_RUNTIME_[A-Z0-9_]+$",
-      "type": "string"
-    },
-    "context": {
-      "additionalProperties": {
-        "type": [
-          "string",
-          "number",
-          "boolean",
-          "null"
-        ]
-      },
-      "type": "object"
-    },
-    "message": {
-      "maxLength": 500,
-      "minLength": 1,
-      "type": "string"
-    },
-    "recoverable": {
-      "type": "boolean"
+      "type": "string",
+      "pattern": "^EDIS_[A-Z0-9_]{1,120}$"
     },
     "severity": {
       "enum": [
         "INFO",
         "WARNING",
-        "ERROR",
-        "FATAL"
+        "ERROR"
+      ]
+    },
+    "scope": {
+      "enum": [
+        "SEMANTIC",
+        "OPERATIONAL"
+      ]
+    },
+    "message_key": {
+      "type": "string",
+      "pattern": "^diagnostic\\.[a-z0-9_.-]{1,160}$"
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "failure_boundary": {
+      "enum": [
+        "REQUEST_CONSTRUCTION_FAILURE",
+        "TRANSPORT_FAILURE",
+        "LISTENER_FAILURE",
+        "CONTENT_CAPTURE_FAILURE",
+        "CHUNK_VALIDATION_FAILURE",
+        "STORAGE_WRITE_FAILURE",
+        "MIGRATION_STORAGE_READ_FAILURE",
+        "EXPORT_PREFLIGHT_FAILURE",
+        "PACKAGE_GENERATION_FAILURE",
+        "BROWSER_QUALIFICATION_FAILURE",
+        "SERVICE_WORKER_RESTART_RECOVERY_FAILURE",
+        "RESTRICTED_PAGE_ACTIVE_TAB_SCRIPTING_INJECTION_FAILURE",
+        "RESPONSE_ENVELOPE_VALIDATION_FAILURE"
       ]
     }
-  },
-  "required": [
-    "code",
-    "severity",
-    "message",
-    "recoverable",
-    "context"
-  ],
-  "title": "EDIS Runtime Diagnostic",
-  "type": "object"
+  }
 }

@@ -2,44 +2,45 @@
 
 ## Build tool
 
-esbuild bundles local TypeScript modules without runtime dependencies. Production output excludes source maps and remote assets.
+esbuild bundles local TypeScript modules without runtime dependencies. Production output contains no source maps or remote assets.
 
 ## ZIP implementation
 
-A small tested store-only ZIP writer implements local file headers, UTF-8 names, CRC-32, central-directory records, safe relative paths, deterministic ordering, and fixed ZIP timestamps. Compression is intentionally omitted to avoid a runtime dependency and simplify review.
+A tested store-only ZIP writer emits UTF-8 paths, CRC-32, central-directory records, deterministic ordering, fixed timestamps, and safe relative paths. Compression is omitted to simplify review and avoid a runtime dependency.
 
 ## Storage architecture
 
-Sync storage contains only small preferences. Session storage contains small coordination records. IndexedDB contains versioned sessions, jobs, chunks, snapshots, and optional screenshot bytes. Migrations are idempotent.
+Extension-local storage contains preferences. Session storage contains only small active-job coordination keys. IndexedDB contains versioned sessions, jobs, chunks, snapshots, and optional screenshot bytes.
 
 ## Message validation
 
-A narrow versioned protocol uses discriminated message types, runtime payload checks, sender-ID and origin checks, tab binding for content messages, request correlation, timeouts, cancellation, and chunk-size limits.
-
-## Browser abstraction
-
-Domain code has no browser-specific types. Browser APIs are wrapped by an adapter. Chromium uses a service worker and Side Panel API; Firefox uses an experimental event-script manifest and sidebar fallback.
+A versioned protocol uses exact envelope keys, UUID request IDs, runtime payload checks, sender and origin checks, tab and URL binding, active-job checks, timeouts, cancellation, chunk limits, and conflicting-duplicate detection.
 
 ## Element identity
 
-Real Elementor identifiers have the highest confidence. Documented markers and stable DOM references follow. References combine tag, bounded `nth-of-type` segments, sanitized stable identifiers, parent reference, and sibling index. Random IDs are not generated.
+Real Elementor identifiers have the highest confidence. Sanitized stable HTML IDs and bounded structural references follow. Random-looking or sensitive identifiers are discarded.
 
 ## Computed styles
 
-Only an explicit layout, sizing, flex/grid, spacing, typography, and visibility allowlist is collected. Colors are optional and disabled by default. Raw strings are preserved for EDIS Python.
-
-## Text privacy
-
-Default evidence contains metrics rather than full text. Limited previews require opt-in and are never collected from form controls, password-like fields, authentication-like fields, card-like fields, or contenteditable regions under strict mode.
+Only an explicit layout, sizing, flex/grid, spacing, typography, visibility, and optional color allowlist is collected. Raw strings are preserved for downstream deterministic analysis.
 
 ## Screenshot
 
-Only the visible active viewport is supported. It requires explicit opt-in and temporary active-tab access. Screenshot and JSON hashes are independent, and screenshot failure is diagnostic only.
-
-## Firefox boundary
-
-Firefox keeps non-persistent background scripts rather than Chromium service workers. The adapter and fallback UI preserve the boundary, but a release claim waits for Firefox-specific end-to-end results.
+Only the visible active viewport is supported. It requires explicit opt-in, is size bounded, is stored separately, and receives an independent SHA-256 checksum.
 
 ## Excluded powerful access
 
-The developer-protocol permission is excluded because DOM APIs satisfy version 1.0 and the permission is disproportionately powerful. Broad wildcard host access is excluded because temporary user-invoked active-tab access is sufficient.
+The release excludes broad host permissions, debugger, cookies, history, web request, native messaging, clipboard, geolocation, and management permissions.
+
+
+## Hidden subtree pruning
+
+When hidden collection is disabled, the bounded walker evaluates effective visibility before queuing descendants. A hidden subtree is pruned and counted. Only the direct-child lower bound is recorded; the collector does not perform a second unbounded walk to claim an exact omitted descendant count.
+
+## Runtime instance and cardinality evidence
+
+Direct validated source markers form candidate groups. Repeated groups are labeled `REPEATED_TEMPLATE` only for validated `loop-item` source documents; otherwise they remain `MULTIPLE_RUNTIME_ROOTS`. Candidate counts never become final correlation.
+
+## Computed-style origin
+
+Version 1.6.9 records availability and feed readiness only. CSSOM rule inspection and Variable/Class origin attribution are deliberately not implemented.

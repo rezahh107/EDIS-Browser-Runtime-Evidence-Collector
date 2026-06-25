@@ -1,0 +1,1 @@
+Capture local, deterministic DOM and viewport evidence from the active page for offline EDIS analysis.

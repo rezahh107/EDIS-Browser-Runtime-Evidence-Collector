@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Mutation Stress Fixture</title>
+    <style>
+      .shifted {
+        margin-left: 24px;
+      }
+      .wide {
+        width: 1300px;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="root"></main>
+    <script>
+      const root = document.getElementById("root");
+      for (let index = 0; index < 1000; index += 1) {
+        const element = document.createElement(index % 50 === 0 ? "button" : "div");
+        element.id = `stress-${index}`;
+        element.className = index % 20 === 0 ? "wide" : "node";
+        root.append(element);
+      }
+      let mutationCount = 0;
+      const timer = setInterval(() => {
+        mutationCount += 1;
+        const first = root.firstElementChild;
+        if (first) first.classList.toggle("shifted");
+        const transient = document.createElement("span");
+        transient.dataset.transient = String(mutationCount);
+        root.append(transient);
+        if (root.children.length > 1020) root.lastElementChild?.remove();
+        if (mutationCount >= 200) clearInterval(timer);
+      }, 2);
+      document.documentElement.dataset.edisReady = "true";
+    </script>
+  </body>
+</html>

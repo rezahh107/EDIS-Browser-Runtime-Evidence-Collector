@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:edis:schema:browser:observation-set",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "schema_id": {
+      "const": "urn:edis:schema:browser:observation-set"
+    },
+    "schema_version": {
+      "const": "1.1.0"
+    },
+    "artifact_type": {
+      "const": "observation_set"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtime_bundle_id",
+        "observation_set_id",
+        "analysis_set_id",
+        "session_id",
+        "source_context_reference",
+        "observations"
+      ],
+      "properties": {
+        "runtime_bundle_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "observation_set_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "analysis_set_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "source_context_reference": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "observations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "observation_index",
+              "snapshot_id",
+              "user_label",
+              "requested_profile_id",
+              "captured_at",
+              "measured_viewport_width",
+              "measured_viewport_height",
+              "page_fingerprint",
+              "runtime_structure_sha256",
+              "snapshot_path",
+              "screenshot_path"
+            ],
+            "properties": {
+              "observation_index": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "snapshot_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "user_label": {
+                "type": "string"
+              },
+              "captured_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "measured_viewport_width": {
+                "type": "number",
+                "minimum": 0
+              },
+              "measured_viewport_height": {
+                "type": "number",
+                "minimum": 0
+              },
+              "page_fingerprint": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "runtime_structure_sha256": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "snapshot_path": {
+                "type": "string"
+              },
+              "screenshot_path": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "requested_profile_id": {
+                "enum": [
+                  "DESKTOP",
+                  "TABLET",
+                  "MOBILE",
+                  "CUSTOM"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "$id": "urn:edis:schema:browser:source-runtime-cardinality",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "schema_id": {
+      "const": "urn:edis:schema:browser:source-runtime-cardinality"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "artifact_type": {
+      "const": "source_runtime_cardinality"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observations"
+      ],
+      "properties": {
+        "observations": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "observation_index",
+              "snapshot_id",
+              "page_context_id",
+              "cardinality"
+            ],
+            "properties": {
+              "observation_index": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "snapshot_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "page_context_id": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "cardinality": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "availability",
+                  "source_elements_imported",
+                  "source_elements_with_zero_candidates",
+                  "source_elements_with_one_candidate",
+                  "source_elements_with_multiple_candidates",
+                  "runtime_nodes_without_source_candidate",
+                  "records"
+                ],
+                "properties": {
+                  "availability": {
+                    "enum": [
+                      "AVAILABLE",
+                      "PARTIAL",
+                      "INSUFFICIENT",
+                      "DISABLED",
+                      "UNAVAILABLE",
+                      "NOT_APPLICABLE",
+                      "ERROR"
+                    ]
+                  },
+                  "source_elements_imported": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "source_elements_with_zero_candidates": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "source_elements_with_one_candidate": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "source_elements_with_multiple_candidates": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "runtime_nodes_without_source_candidate": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "records": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "source_document_id",
+                        "source_element_key",
+                        "runtime_candidate_count",
+                        "runtime_candidate_node_ids",
+                        "cardinality_state",
+                        "absence_reason_codes"
+                      ],
+                      "properties": {
+                        "source_document_id": {
+                          "type": "string",
+                          "maxLength": 160
+                        },
+                        "source_element_key": {
+                          "type": "string",
+                          "pattern": "^sha256:[0-9a-f]{64}$"
+                        },
+                        "runtime_candidate_count": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "runtime_candidate_node_ids": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "pattern": "^node-[0-9]{6}$"
+                          },
+                          "maxItems": 1000
+                        },
+                        "cardinality_state": {
+                          "enum": [
+                            "ZERO",
+                            "ONE",
+                            "ONE_TO_MANY"
+                          ]
+                        },
+                        "absence_reason_codes": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "maxLength": 160
+                          },
+                          "maxItems": 20
+                        }
+                      }
+                    },
+                    "maxItems": 50000
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

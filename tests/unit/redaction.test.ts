@@ -1,10 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  limitedTextPreview,
-  normalizeUrl,
-  sanitizeClassTokens,
-  stableIdCandidate,
-} from "../../src/domain/redaction";
+import { normalizeUrl, sanitizeClassTokens, stableIdCandidate } from "../../src/domain/redaction";
 
 describe("redaction", () => {
   it("removes URL query and fragment", () => {
@@ -22,14 +17,9 @@ describe("redaction", () => {
     expect(tokens).toEqual(["elementor-widget", "layout"]);
   });
 
-  it("redacts emails and truncates previews", () => {
-    expect(limitedTextPreview("Contact user@example.com for a very long response", 30)).toBe(
-      "Contact [redacted-email] for …",
-    );
-  });
-
-  it("rejects unstable identifiers", () => {
+  it("rejects unstable or sensitive identifiers", () => {
     expect(stableIdCandidate("a4f7b19c2d3e4f5a6b7c8d9e0f1a2b3c")).toBeNull();
+    expect(stableIdCandidate("password-field")).toBeNull();
     expect(stableIdCandidate("hero-section")).toBe("hero-section");
   });
 });

@@ -11,7 +11,15 @@ describe("message schemas", () => {
     ).toBe(true);
   });
 
-  it("rejects unknown message types and malformed capture payloads", () => {
+  it("rejects unknown types, extra envelope keys, and malformed capture payloads", () => {
+    expect(
+      isBaseMessage({
+        protocolVersion: PROTOCOL_VERSION,
+        type: "PAGE_CHECK",
+        requestId,
+        unexpected: true,
+      }),
+    ).toBe(false);
     expect(isBaseMessage({ protocolVersion: PROTOCOL_VERSION, type: "UNKNOWN", requestId })).toBe(
       false,
     );
@@ -20,14 +28,20 @@ describe("message schemas", () => {
         sessionId: requestId,
         userLabel: "",
         evidenceLabel: "MOBILE",
-        officialBreakpointId: null,
       }),
     ).toBe(false);
   });
 
   it("accepts bounded chunk payloads", () => {
     expect(
-      validatePayload("CONTENT_CHUNK", { jobId: requestId, index: 0, total: 1, data: "{}" }),
+      validatePayload("CONTENT_CHUNK", {
+        jobId: requestId,
+        index: 0,
+        total: 1,
+        data: "{}",
+        sha256: "0".repeat(64),
+        byteLength: 2,
+      }),
     ).toBe(true);
     expect(
       validatePayload("CONTENT_CHUNK", {
@@ -35,6 +49,8 @@ describe("message schemas", () => {
         index: 0,
         total: 1,
         data: "x".repeat(524_289),
+        sha256: "0".repeat(64),
+        byteLength: 524_289,
       }),
     ).toBe(false);
   });

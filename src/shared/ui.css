@@ -197,3 +197,37 @@ dialog::backdrop {
     animation: none !important;
   }
 }
+
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.6rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: var(--panel);
+  text-decoration: none;
+  font-weight: 650;
+}
+.button-link:hover {
+  background: var(--panel-muted);
+}
+.section-help,
+.field-help {
+  margin: -0.35rem 0 0;
+  color: var(--muted);
+  max-width: 72ch;
+}
+.field-help {
+  font-size: 0.88rem;
+}
+.notice {
+  margin: 0;
+  padding: 0.7rem;
+  border: 1px solid var(--border);
+  border-inline-start: 0.3rem solid #b45309;
+  border-radius: var(--radius);
+  background: var(--panel-muted);
+}

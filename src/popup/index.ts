@@ -1,26 +1,45 @@
-import type { CaptureJob, CaptureSession } from "../domain/model";
-import { clearChildren, localizeDocument, request, requiredElement, setStatus } from "../shared/ui";
+import type { Diagnostic } from "../domain/diagnostics";
+import {
+  isRequestedViewportProfile,
+  type CaptureJob,
+  type CaptureSession,
+  type CaptureSessionSummary,
+  type PageProbeEvidence,
+  type RequestedViewportProfile,
+} from "../domain/model";
+import {
+  clearChildren,
+  diagnosticUiMessage,
+  localizeDocument,
+  request,
+  requiredElement,
+  setStatus,
+} from "../shared/ui";
 
 interface State {
   readonly currentSessionId: string | null;
-  readonly sessions: readonly CaptureSession[];
+  readonly currentSession: CaptureSession | null;
+  readonly sessions: readonly CaptureSessionSummary[];
   readonly storageUsage: number;
 }
 interface PageCheck {
   readonly capturable: boolean;
-  readonly diagnostic?: { readonly message: string };
+  readonly diagnostic?: Diagnostic;
 }
 
 const pageStatus = requiredElement<HTMLElement>("#page-status");
 const permissionStatus = requiredElement<HTMLElement>("#permission-status");
 const operationStatus = requiredElement<HTMLElement>("#operation-status");
 const sessionSelect = requiredElement<HTMLSelectElement>("#session-select");
+const viewportProfile = requiredElement<HTMLSelectElement>("#viewport-profile");
 const captureButton = requiredElement<HTMLButtonElement>("#capture-button");
 const openPanelButton = requiredElement<HTMLButtonElement>("#open-panel");
 const viewportValue = requiredElement<HTMLElement>("#viewport-value");
 const lastCapture = requiredElement<HTMLElement>("#last-capture");
+const extensionVersion = requiredElement<HTMLElement>("#extension-version");
 
 localizeDocument();
+extensionVersion.textContent = `v${chrome.runtime.getManifest().version}`;
 void initialize();
 
 async function initialize(): Promise<void> {
@@ -33,7 +52,9 @@ async function initialize(): Promise<void> {
       pageStatus,
       page.capturable
         ? chrome.i18n.getMessage("supported")
-        : (page.diagnostic?.message ?? chrome.i18n.getMessage("unsupported")),
+        : page.diagnostic
+          ? diagnosticUiMessage(page.diagnostic)
+          : chrome.i18n.getMessage("unsupported"),
       page.capturable ? "complete" : "error",
     );
     permissionStatus.textContent = page.capturable
@@ -41,6 +62,7 @@ async function initialize(): Promise<void> {
       : chrome.i18n.getMessage("statusError");
     captureButton.disabled = !page.capturable;
     renderSessions(state);
+    if (page.capturable) await refreshMeasuredViewport();
   } catch (error: unknown) {
     setStatus(pageStatus, safeMessage(error), "error");
     captureButton.disabled = true;
@@ -60,14 +82,12 @@ function renderSessions(state: State): void {
   }
   for (const session of state.sessions) {
     const option = document.createElement("option");
-    option.value = session.data.session_id;
-    option.textContent = session.data.name;
-    option.selected = session.data.session_id === state.currentSessionId;
+    option.value = session.session_id;
+    option.textContent = session.name;
+    option.selected = session.session_id === state.currentSessionId;
     sessionSelect.append(option);
   }
-  renderLastCapture(
-    state.sessions.find((session) => session.data.session_id === sessionSelect.value),
-  );
+  renderLastCapture(state.currentSession ?? undefined);
 }
 
 function renderLastCapture(session: CaptureSession | undefined): void {
@@ -77,12 +97,10 @@ function renderLastCapture(session: CaptureSession | undefined): void {
 }
 
 sessionSelect.addEventListener("change", () => {
-  if (sessionSelect.value) void request("SESSION_SELECT", { sessionId: sessionSelect.value });
-  void request<State>("STATE_GET").then((state) =>
-    renderLastCapture(
-      state.sessions.find((session) => session.data.session_id === sessionSelect.value),
-    ),
-  );
+  if (!sessionSelect.value) return;
+  void request("SESSION_SELECT", { sessionId: sessionSelect.value })
+    .then(() => request<State>("STATE_GET"))
+    .then((state) => renderLastCapture(state.currentSession ?? undefined));
 });
 
 captureButton.addEventListener("click", () => {
@@ -107,10 +125,12 @@ async function captureCurrent(): Promise<void> {
     const job = await request<CaptureJob>("CAPTURE_START", {
       sessionId,
       userLabel: "Current viewport",
-      evidenceLabel: "SIMULATED_VIEWPORT",
-      officialBreakpointId: null,
+      evidenceLabel: "USER_LABELED_VIEWPORT",
+      requestedProfileId: selectedViewportProfile(),
+      workflowMode: "RUNTIME_EVIDENCE",
     });
-    setStatus(operationStatus, `Capture started: ${job.status}`, "working");
+    setStatus(operationStatus, `Capture status: ${job.status}`, "working");
+    await waitForCompletion(job.id);
   } catch (error: unknown) {
     setStatus(operationStatus, safeMessage(error), "error");
   } finally {
@@ -118,6 +138,47 @@ async function captureCurrent(): Promise<void> {
   }
 }
 
+async function waitForCompletion(jobId: string): Promise<void> {
+  const deadline = Date.now() + 60_000;
+  let pollDelayMs = 250;
+  while (Date.now() < deadline) {
+    await delay(pollDelayMs);
+    const job = await request<CaptureJob | undefined>("CAPTURE_STATUS", { jobId });
+    if (!job) throw new Error("Capture job was not found.");
+    if (job.status === "COMPLETE") {
+      const state = await request<State>("STATE_GET");
+      renderSessions(state);
+      setStatus(operationStatus, "Capture complete.", "complete");
+      return;
+    }
+    if (["FAILED", "CANCELLED", "NAVIGATED", "INTERRUPTED"].includes(job.status))
+      throw new Error(lastDiagnosticMessage(job) ?? `Capture ended with ${job.status}.`);
+    setStatus(operationStatus, `Capture status: ${job.status}`, "working");
+    pollDelayMs = Math.min(Math.ceil(pollDelayMs * 1.5), 2_000);
+  }
+  throw new Error("Capture status timed out. Open the side panel to inspect the persisted job.");
+}
+
+async function refreshMeasuredViewport(): Promise<void> {
+  const probe = await request<PageProbeEvidence>("PAGE_PROBE");
+  viewportValue.textContent = `${probe.inner_width} × ${probe.inner_height}`;
+}
+
+function selectedViewportProfile(): RequestedViewportProfile {
+  if (!isRequestedViewportProfile(viewportProfile.value))
+    throw new Error("The selected viewport profile is invalid.");
+  return viewportProfile.value;
+}
+
+function delay(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
 function safeMessage(error: unknown): string {
   return error instanceof Error ? error.message : "The operation failed safely.";
+}
+
+function lastDiagnosticMessage(job: CaptureJob): string | null {
+  const item = job.diagnostics.at(-1);
+  return item ? diagnosticUiMessage(item) : null;
 }

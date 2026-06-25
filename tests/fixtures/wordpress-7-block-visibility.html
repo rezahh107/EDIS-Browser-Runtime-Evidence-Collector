@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Synthetic WordPress 7 Block Visibility Fixture</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+      }
+      main {
+        display: grid;
+        gap: 12px;
+        padding: 16px;
+      }
+      section {
+        border: 1px solid #999;
+        padding: 8px;
+      }
+      @media (width <= 480px) {
+        .wp-block-hidden-mobile {
+          display: none !important;
+        }
+      }
+      @media (480px < width <= 782px) {
+        .wp-block-hidden-tablet {
+          display: none !important;
+        }
+      }
+      @media (width > 782px) {
+        .wp-block-hidden-desktop {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="content">
+      <section
+        id="wp7-always-visible"
+        class="wp-block-group always-visible"
+        data-fixture="always-visible"
+      >
+        <h1>Always visible</h1>
+        <button type="button">Visible action</button>
+      </section>
+
+      <section
+        id="wp7-hidden-mobile"
+        class="wp-block-group wp-block-hidden-mobile"
+        data-fixture="hidden-mobile"
+      >
+        <div>
+          <div>
+            <div><button type="button">Mobile-hidden action</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="wp7-hidden-tablet"
+        class="wp-block-group wp-block-hidden-tablet"
+        data-fixture="hidden-tablet"
+      >
+        <div>
+          <div>
+            <div><button type="button">Tablet-hidden action</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="wp7-hidden-desktop"
+        class="wp-block-group wp-block-hidden-desktop"
+        data-fixture="hidden-desktop"
+      >
+        <div>
+          <div>
+            <div><button type="button">Desktop-hidden action</button></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+      document.documentElement.dataset.edisReady = "true";
+    </script>
+  </body>
+</html>

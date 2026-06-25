@@ -22,7 +22,7 @@
     }
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
+    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'"
   },
   "default_locale": "en",
   "description": "__MSG_extensionDescription__",
@@ -47,5 +47,5 @@
   "side_panel": {
     "default_path": "sidepanel/index.html"
   },
-  "version": "1.0.0"
+  "version": "1.6.19"
 }

@@ -9,29 +9,82 @@
   </head>
   <body>
     <main class="shell stack">
-      <header class="card">
-        <h1 data-i18n="extensionName">EDIS Browser Runtime Evidence Collector</h1>
-        <p class="muted">Local-only rendered-page evidence</p>
+      <header class="card stack">
+        <div class="header-row">
+          <div>
+            <div class="product-title-row">
+              <h1>EDIS Runtime Collector</h1>
+              <span id="extension-version" class="version-badge" aria-label="Extension version"
+                >v—</span
+              >
+            </div>
+            <p class="muted" data-i18n="localOnlyEvidence">Local-only rendered-page evidence</p>
+          </div>
+          <a class="button-link" href="../guide/index.html" target="_blank" data-i18n="openGuide"
+            >Open guide</a
+          >
+        </div>
       </header>
 
       <nav aria-label="Capture stages" class="stage-nav">
-        <span>1. <span data-i18n="pageStatus">Page check</span></span>
-        <span>2. <span data-i18n="sessionSetup">Session setup</span></span>
-        <span>3. <span data-i18n="capture">Capture</span></span>
-        <span>4. <span data-i18n="review">Review</span></span>
-        <span>5. <span data-i18n="export">Export</span></span>
+        <a href="#stage-page">1. <span data-i18n="pageStatus">Page check</span></a>
+        <a href="#stage-session">2. <span data-i18n="sessionSetup">Session setup</span></a>
+        <a href="#stage-capture">3. <span data-i18n="capture">Capture</span></a>
+        <a href="#stage-review">4. <span data-i18n="review">Review</span></a>
+        <a href="#stage-export">5. <span data-i18n="export">Export</span></a>
       </nav>
 
       <section class="card stack" aria-labelledby="stage-page">
         <h2 id="stage-page">1. <span data-i18n="pageStatus">Page check</span></h2>
+        <p class="section-help" data-i18n="pageStatusHelp">
+          Confirms that the active tab is a normal HTTP or HTTPS page that can receive temporary
+          access.
+        </p>
         <p id="page-status" class="status" role="status" aria-live="polite">Checking…</p>
-        <div class="metric">
-          <span>Actual viewport</span><strong id="actual-viewport">Not captured</strong>
+        <div class="page-card stack" aria-label="Page and source evidence">
+          <h3 data-i18n="pageEvidenceCard">Page and source evidence</h3>
+          <p class="section-help" data-i18n="pageEvidenceCardHelp">
+            Shows the rendered page separately from imported WordPress source documents. Browser
+            binding is preliminary evidence, not Python final correlation.
+          </p>
+          <div class="metrics-grid">
+            <div class="metric">
+              <span data-i18n="sourceContextLabel">WordPress Source Context</span
+              ><strong id="source-context-state">—</strong>
+            </div>
+            <div class="metric">
+              <span data-i18n="pageBindingLabel">Page binding</span
+              ><strong id="page-binding-state">—</strong>
+            </div>
+            <div class="metric">
+              <span data-i18n="sourceDocumentLabel">Selected source document</span
+              ><strong id="source-document">—</strong>
+            </div>
+            <div class="metric">
+              <span data-i18n="sourceDocumentsPresentLabel">Source documents present</span
+              ><strong id="source-document-count">0</strong>
+            </div>
+            <div class="metric">
+              <span data-i18n="pageFingerprintLabel">Page fingerprint</span
+              ><strong id="page-fingerprint">—</strong>
+            </div>
+            <div class="metric">
+              <span data-i18n="actualViewport">Actual viewport</span
+              ><strong id="actual-viewport" data-i18n="notCaptured">Not captured</strong>
+            </div>
+          </div>
+          <p id="page-binding-reasons" class="muted"></p>
+          <button id="open-source-options" type="button" data-i18n="openSourceContextOptions">
+            Open Source Context options
+          </button>
         </div>
       </section>
 
       <section class="card stack" aria-labelledby="stage-session">
         <h2 id="stage-session">2. <span data-i18n="sessionSetup">Session setup</span></h2>
+        <p class="section-help" data-i18n="sessionHelp">
+          A session groups several viewport observations of the same page or review task.
+        </p>
         <label for="session-select" data-i18n="currentSession">Current session</label>
         <select id="session-select"></select>
         <label for="session-name" data-i18n="sessionName">Session name</label>
@@ -47,6 +100,56 @@
 
       <section class="card stack" aria-labelledby="stage-capture">
         <h2 id="stage-capture">3. <span data-i18n="capture">Capture</span></h2>
+        <p class="section-help" data-i18n="captureHelp">
+          Records one factual snapshot of the current DOM and viewport. The label is descriptive
+          only.
+        </p>
+        <label for="workflow-mode" data-i18n="captureWorkflow">Capture workflow</label>
+        <select id="workflow-mode">
+          <option value="RUNTIME_EVIDENCE" data-i18n="workflowRuntimeEvidence" selected>
+            Runtime Evidence
+          </option>
+          <option value="MINIMUM_PYTHON_FEED" data-i18n="workflowPythonFeed">
+            Minimum Python Feed
+          </option>
+        </select>
+        <p class="muted" data-i18n="captureWorkflowHelp">
+          Python Feed mode blocks incomplete or duplicate captures before evidence is written.
+        </p>
+        <label for="viewport-profile" data-i18n="viewportProfile">Requested viewport profile</label>
+        <select id="viewport-profile">
+          <option value="DESKTOP" data-i18n="profileDesktop">Desktop</option>
+          <option value="TABLET" data-i18n="profileTablet">Tablet</option>
+          <option value="MOBILE" data-i18n="profileMobile">Mobile</option>
+          <option value="CUSTOM" data-i18n="profileCustom">Custom</option>
+        </select>
+        <p class="muted" data-i18n="viewportProfileHelp">
+          The requested profile is provenance only. The collector always records the measured
+          viewport.
+        </p>
+        <div class="metrics-grid">
+          <div class="metric">
+            <span data-i18n="currentMeasuredViewport">Current measured viewport</span>
+            <strong id="measured-viewport">—</strong>
+          </div>
+        </div>
+        <p id="python-feed-guard-status" class="status" role="status" aria-live="polite"></p>
+        <div class="feed-steps stack" aria-labelledby="feed-steps-title">
+          <h3 id="feed-steps-title" data-i18n="pythonFeedSteps">Minimum Python Feed steps</h3>
+          <ol class="compact-list">
+            <li id="feed-step-source" data-i18n="feedStepSource">
+              Import and confirm Source Context
+            </li>
+            <li id="feed-step-desktop" data-i18n="feedStepDesktop">
+              Capture Desktop at a distinct width
+            </li>
+            <li id="feed-step-tablet" data-i18n="feedStepTablet">Resize and capture Tablet</li>
+            <li id="feed-step-mobile" data-i18n="feedStepMobile">Resize and capture Mobile</li>
+            <li id="feed-step-export" data-i18n="feedStepExport">
+              Validate and export the Python Feed
+            </li>
+          </ol>
+        </div>
         <label for="viewport-label" data-i18n="viewportLabel">Viewport label</label>
         <input
           id="viewport-label"
@@ -61,23 +164,39 @@
           ></label
         >
         <label class="switch"
-          ><input id="text-toggle" type="checkbox" /><span data-i18n="textPreview"
-            >Include limited text previews</span
+          ><input id="text-preview-toggle" type="checkbox" /><span data-i18n="includeTextPreview"
+            >Include bounded redacted text previews</span
           ></label
         >
-        <p class="muted" data-i18n="privacyWarning">
-          Screenshots and text previews may contain sensitive page information.
+        <p class="notice" data-i18n="privacyWarning">
+          Screenshots may contain sensitive page information. Review the page before enabling.
         </p>
         <button id="capture-button" class="primary" type="button" data-i18n="captureCurrent">
           Capture current viewport
         </button>
-        <button id="cancel-button" type="button" disabled>Cancel active capture</button>
+        <button id="cancel-button" type="button" disabled data-i18n="cancelCapture">
+          Cancel active capture
+        </button>
         <p id="capture-status" class="status" role="status" aria-live="polite"></p>
       </section>
 
       <section class="card stack" aria-labelledby="stage-review">
         <h2 id="stage-review">4. <span data-i18n="review">Review</span></h2>
+        <p class="section-help" data-i18n="reviewHelp">
+          Package integrity describes file correctness. Capture completeness describes whether
+          bounded limits omitted evidence.
+        </p>
         <div class="metrics-grid">
+          <div class="metric">
+            <span data-i18n="packageIntegrity">Package integrity</span
+            ><strong id="package-integrity" data-i18n="pendingExportValidation"
+              >Pending export validation</strong
+            >
+          </div>
+          <div class="metric">
+            <span data-i18n="captureCompleteness">Capture completeness</span
+            ><strong id="capture-completeness">—</strong>
+          </div>
           <div class="metric">
             <span data-i18n="elementCount">Elements</span><strong id="element-count">0</strong>
           </div>
@@ -90,9 +209,29 @@
             ><strong id="diagnostic-count">0</strong>
           </div>
           <div class="metric">
+            <span data-i18n="truncatedBranches">Truncated branches</span
+            ><strong id="truncated-branches">0</strong>
+          </div>
+          <div class="metric">
+            <span data-i18n="identityCollisions">Ambiguous identities</span
+            ><strong id="identity-collisions">0</strong>
+          </div>
+          <div class="metric">
+            <span data-i18n="skippedHiddenSubtrees">Skipped hidden subtrees</span
+            ><strong id="skipped-hidden-subtrees">0</strong>
+          </div>
+          <div class="metric">
+            <span data-i18n="captureEnvironmentWarnings">Capture environment warnings</span
+            ><strong id="capture-environment-warnings">0</strong>
+          </div>
+          <div class="metric">
             <span data-i18n="storageUsage">Storage usage</span
             ><strong id="storage-usage">0 B</strong>
           </div>
+        </div>
+        <div id="partial-reasons-box" class="notice" hidden>
+          <strong data-i18n="partialReasons">Why this capture is partial</strong>
+          <ul id="partial-reasons" class="compact-list"></ul>
         </div>
         <h3 data-i18n="capturedViewports">Captured viewports</h3>
         <ul id="capture-list" class="list"></ul>
@@ -102,12 +241,65 @@
 
       <section class="card stack" aria-labelledby="stage-export">
         <h2 id="stage-export">5. <span data-i18n="export">Export</span></h2>
-        <button id="export-button" class="primary" type="button" data-i18n="exportPackage">
-          Export local evidence package
+        <p class="section-help" data-i18n="exportHelp">
+          Runs schema, canonical JSON, checksum, reference, identity, and manifest checks before
+          downloading the ZIP.
+        </p>
+        <button id="export-button" type="button" data-i18n="exportPackage">
+          Validate and export runtime evidence
+        </button>
+        <button
+          id="export-python-feed-button"
+          class="primary"
+          type="button"
+          data-i18n="exportPythonFeed"
+        >
+          Validate and export minimum Python feed
         </button>
         <p id="export-status" class="status" role="status" aria-live="polite"></p>
       </section>
     </main>
+
+    <dialog id="export-preflight-dialog" aria-labelledby="export-preflight-title">
+      <form method="dialog" class="stack">
+        <h2 id="export-preflight-title" data-i18n="exportPreflightTitle">Export preflight</h2>
+        <p data-i18n="exportPreflightIntro">
+          Review evidence coverage before creating the local ZIP. Warnings do not change facts or
+          run analysis rules.
+        </p>
+        <ul id="export-preflight-list" class="compact-list"></ul>
+        <div id="export-preflight-blockers-box" class="notice preflight-blockers" hidden>
+          <strong data-i18n="exportPreflightBlockers">Blocking requirements</strong>
+          <p id="export-preflight-blocking-message" class="field-help"></p>
+          <ul id="export-preflight-blockers" class="compact-list"></ul>
+        </div>
+        <div id="export-preflight-warnings-box" class="notice">
+          <strong data-i18n="exportPreflightWarnings">Non-blocking coverage warnings</strong>
+          <ul id="export-preflight-warnings" class="compact-list"></ul>
+        </div>
+        <div class="button-row">
+          <button type="submit" value="cancel" data-i18n="returnToReview">Return to review</button>
+          <button
+            id="export-runtime-instead"
+            type="submit"
+            value="runtime-evidence"
+            data-i18n="exportRuntimeInstead"
+            hidden
+          >
+            Export runtime evidence instead
+          </button>
+          <button
+            id="confirm-export"
+            class="primary"
+            type="submit"
+            value="export"
+            data-i18n="exportAnyway"
+          >
+            Export anyway
+          </button>
+        </div>
+      </form>
+    </dialog>
     <script src="index.js"></script>
   </body>
 </html>

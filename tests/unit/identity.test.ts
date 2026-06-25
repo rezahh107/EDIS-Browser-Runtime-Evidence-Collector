@@ -1,17 +1,22 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
-import { buildElementIdentity, stableDomReference } from "../../src/domain/identity";
+import {
+  buildElementIdentity,
+  runtimeElementorMarkers,
+  stableDomReference,
+} from "../../src/domain/identity";
 
 describe("element identity", () => {
-  it("prefers real Elementor identifiers", () => {
+  it("preserves raw Elementor markers separately from runtime identity", () => {
     document.body.textContent = "";
     const element = document.createElement("section");
     element.className = "elementor-element";
     element.setAttribute("data-id", "abc123");
     document.body.append(element);
     const identity = buildElementIdentity(element, "STANDARD");
-    expect(identity.data_id).toBe("abc123");
-    expect(identity.identity_confidence).toBe("STRONG");
+    const markers = runtimeElementorMarkers(element);
+    expect(markers.data_id).toBe("abc123");
+    expect(identity.stable_dom_reference).not.toContain("abc123");
   });
 
   it("builds deterministic structural references", () => {

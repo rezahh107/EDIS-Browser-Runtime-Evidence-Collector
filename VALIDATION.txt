@@ -1,0 +1,64 @@
+EDIS Browser Runtime Evidence Collector 1.6.16
+Validation date: 2026-06-25
+Release profile: RELEASE_INTEGRITY_AND_CLEAN_GATE
+Runtime Snapshot Schema: 1.6.0
+Observation Set Schema: 1.1.0
+Runtime Package Manifest Schema: 1.4.1
+Python Feed Readiness Schema: 1.1.0
+Capture Session Schema: 1.1.0
+Canonical JSON profile: EDIS-CJ-1
+
+RELEASE SCOPE
+
+- Starts release qualification from a clean evidence directory.
+- Executes repository test preparation, the real Vitest process, and test-report validation as separate mandatory gates.
+- Pins all GitHub Actions dependencies to immutable full commit SHAs and rejects rolling references.
+- Produces a deterministic source ZIP from the source generation manifest.
+- Extracts that source ZIP, rebuilds Chrome and Edge, and requires byte-identical equality with shipped browser ZIPs.
+- Corrects current package/schema documentation without changing evidence schemas.
+- Preserves permissions, network behavior, package layout, and Browser/Python ownership boundaries.
+
+EXECUTED NO-BROWSER RELEASE VALIDATION
+
+- Clean release evidence directory: PASS
+- GitHub Actions pin policy: 12/12 references PASS
+- TypeScript: PASS
+- ESLint: PASS
+- Stylelint: PASS
+- Format: PASS
+- Repository total: 222 PASS in 59 files
+- Unit tests: 121 PASS
+- Security tests: 11 PASS
+- Integration tests: 90 PASS
+- Failed: 0
+- Skipped/pending/todo: 0
+- Schema validation: 20 documents, 19 unique identifiers PASS
+- Independent package validation: 4/4 PASS
+- Source security scan: 215 files PASS
+- Chrome package validation: PASS
+- Edge package validation: PASS
+- Chrome/Edge equality excluding manifest: 49 files PASS
+- Reproducible build: 102 files including ZIP bytes PASS
+- Source generation manifest: PASS
+- Deterministic source package: PASS
+- Source-to-shipped Chrome artifact: BYTE-IDENTICAL PASS
+- Source-to-shipped Edge artifact: BYTE-IDENTICAL PASS
+- Store/manual validation: 27 documents PASS
+- Production dependency audit: 0 vulnerabilities
+
+BROWSER QUALIFICATION
+
+- Existing service-worker lifecycle tests: IMPLEMENTED
+- Automated Playwright Chromium: INSUFFICIENT_EVIDENCE in this environment.
+- Chrome executable discovery: no usable executable was provided.
+- Playwright Chromium runtime: absent in the local Playwright cache.
+- Exact Google Chrome runtime: INSUFFICIENT_EVIDENCE.
+- Exact Microsoft Edge runtime: INSUFFICIENT_EVIDENCE.
+- No blocked or unavailable browser execution is represented as passed.
+
+RELEASE INTERPRETATION
+
+- Repository, clean no-browser gate, deterministic packaging and source/build provenance: PASSED.
+- Runtime behavior on an actual extension-capable Chromium browser: INSUFFICIENT_EVIDENCE.
+- Exact Google Chrome and Microsoft Edge claims: NOT AUTHORIZED by this environment.
+- Store submission readiness: NOT DECLARED.

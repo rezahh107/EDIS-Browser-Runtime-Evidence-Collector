@@ -23,9 +23,9 @@ beforeAll(() => {
     runtime: {
       id: "extension-id",
       getURL: (path: string) => `chrome-extension://extension-id/${path.replace(/^\//, "")}`,
-      getManifest: () => ({ version: "1.0.0" }),
+      getManifest: () => ({ version: "1.6.9" }),
     },
-    storage: { sync: storageArea, session: storageArea },
+    storage: { sync: storageArea, session: storageArea, local: storageArea },
     tabs: { query: vi.fn(async () => []) },
     scripting: { executeScript: vi.fn(async () => []) },
     sidePanel: {},
@@ -45,5 +45,29 @@ describe("popup to service worker routing", () => {
       { id: "extension-id", url: "chrome-extension://extension-id/popup/index.html" },
     );
     expect(response.success).toBe(true);
+
+    const state = await routeMessage(
+      {
+        protocolVersion: PROTOCOL_VERSION,
+        type: "STATE_GET",
+        requestId: "223e4567-e89b-12d3-a456-426614174000",
+      },
+      { id: "extension-id", url: "chrome-extension://extension-id/popup/index.html" },
+    );
+    expect(state.success).toBe(true);
+    if (!state.success) throw new Error("Expected STATE_GET to succeed.");
+    const payload = state.data as {
+      readonly currentSession: unknown;
+      readonly sessions: readonly Record<string, unknown>[];
+    };
+    expect(payload.currentSession).not.toBeNull();
+    expect(payload.sessions).toHaveLength(1);
+    expect(payload.sessions[0]).toEqual(
+      expect.objectContaining({
+        name: "Integration session",
+        capture_count: 0,
+      }),
+    );
+    expect(payload.sessions[0]).not.toHaveProperty("data");
   });
 });

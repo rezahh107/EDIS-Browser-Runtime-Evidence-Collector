@@ -1,0 +1,135 @@
+{
+  "profile": "EDIS-CJ-1",
+  "version": "1.0.0",
+  "encoding": "UTF-8",
+  "final_newline": "LF",
+  "unicode_normalization": "NONE",
+  "number_model": "IEEE-754 binary64; integers must be within ±9007199254740991",
+  "cases": [
+    {
+      "id": "key-order",
+      "input": {
+        "z": 0,
+        "a": 1,
+        "middle": {
+          "b": 2,
+          "a": 1
+        }
+      },
+      "canonical": "{\"a\":1,\"middle\":{\"a\":1,\"b\":2},\"z\":0}\n"
+    },
+    {
+      "id": "nested-empty",
+      "input": {
+        "array": [
+          {},
+          [],
+          null,
+          true,
+          false
+        ],
+        "empty": ""
+      },
+      "canonical": "{\"array\":[{},[],null,true,false],\"empty\":\"\"}\n"
+    },
+    {
+      "id": "persian-rtl",
+      "input": {
+        "fa": "سلام دنیا",
+        "rtl": "مثال فارسی ۱۲۳"
+      },
+      "canonical": "{\"fa\":\"سلام دنیا\",\"rtl\":\"مثال فارسی ۱۲۳\"}\n"
+    },
+    {
+      "id": "unicode-no-normalization-composed",
+      "input": "é",
+      "canonical": "\"é\"\n"
+    },
+    {
+      "id": "unicode-no-normalization-decomposed",
+      "input": "é",
+      "canonical": "\"é\"\n"
+    },
+    {
+      "id": "escaping",
+      "input": {
+        "control": "\b\t\n\f\r\u0001",
+        "quote": "\\\"",
+        "slash": "a/b"
+      },
+      "canonical": "{\"control\":\"\\b\\t\\n\\f\\r\\u0001\",\"quote\":\"\\\\\\\"\",\"slash\":\"a/b\"}\n"
+    },
+    {
+      "id": "negative-zero",
+      "input": -0.0,
+      "canonical": "0\n"
+    },
+    {
+      "id": "fraction",
+      "input": 1.25,
+      "canonical": "1.25\n"
+    },
+    {
+      "id": "negative-fraction",
+      "input": -12.5,
+      "canonical": "-12.5\n"
+    },
+    {
+      "id": "small-exponent",
+      "input": 1e-07,
+      "canonical": "1e-7\n"
+    },
+    {
+      "id": "safe-large-integer",
+      "input": 9007199254740991,
+      "canonical": "9007199254740991\n"
+    },
+    {
+      "id": "emoji-surrogate-pair",
+      "input": "🧭",
+      "canonical": "\"🧭\"\n"
+    }
+  ],
+  "rejection_cases": [
+    {
+      "id": "nan",
+      "input_kind": "special_number",
+      "input_token": "NaN",
+      "error_code": "NON_FINITE_NUMBER"
+    },
+    {
+      "id": "positive-infinity",
+      "input_kind": "special_number",
+      "input_token": "Infinity",
+      "error_code": "NON_FINITE_NUMBER"
+    },
+    {
+      "id": "negative-infinity",
+      "input_kind": "special_number",
+      "input_token": "-Infinity",
+      "error_code": "NON_FINITE_NUMBER"
+    },
+    {
+      "id": "unsafe-large-integer",
+      "input_kind": "special_number",
+      "input_token": "9007199254740992",
+      "error_code": "UNSAFE_INTEGER"
+    },
+    {
+      "id": "undefined-object-value",
+      "input_kind": "undefined_object_value",
+      "error_code": "UNSUPPORTED_VALUE"
+    },
+    {
+      "id": "unpaired-high-surrogate",
+      "input_kind": "unpaired_high_surrogate",
+      "error_code": "INVALID_UNICODE"
+    },
+    {
+      "id": "prototype-key",
+      "input_kind": "dangerous_key",
+      "input_token": "__proto__",
+      "error_code": "UNSAFE_KEY"
+    }
+  ]
+}

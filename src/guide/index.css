@@ -1,0 +1,55 @@
+.guide-shell {
+  max-width: 70rem;
+  margin-inline: auto;
+}
+dl {
+  display: grid;
+  grid-template-columns: minmax(10rem, 15rem) 1fr;
+  gap: 0.65rem 1rem;
+  margin: 0;
+}
+dt {
+  font-weight: 750;
+}
+dd {
+  margin: 0;
+}
+.steps,
+ol,
+ul {
+  margin-block: 0;
+  padding-inline-start: 1.5rem;
+}
+ol li,
+ul li,
+.steps li {
+  margin-block: 0.45rem;
+}
+.callout {
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-inline-start: 0.3rem solid #15803d;
+  border-radius: var(--radius);
+  background: var(--panel-muted);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,
+td {
+  border: 1px solid var(--border);
+  padding: 0.55rem;
+  text-align: start;
+}
+code {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  dl {
+    grid-template-columns: 1fr;
+  }
+  dt {
+    margin-block-start: 0.5rem;
+  }
+}

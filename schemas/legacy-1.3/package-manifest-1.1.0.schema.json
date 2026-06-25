@@ -1,0 +1,103 @@
+{
+  "$id": "urn:edis:runtime:package-manifest:1.1.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EDIS Runtime Package Manifest",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "artifact_type": {
+          "const": "package_manifest"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "package_id": {
+              "type": "string"
+            },
+            "session_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "package_status": {
+              "const": "COMPLETE"
+            },
+            "capture_completeness": {
+              "enum": [
+                "COMPLETE",
+                "PARTIAL"
+              ]
+            },
+            "partial_reasons": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 100
+              }
+            },
+            "validation_path": {
+              "const": "validation.json"
+            },
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "required": [
+                  "path",
+                  "bytes",
+                  "sha256"
+                ]
+              }
+            },
+            "canonicalization": {
+              "const": "EDIS-CJ-1"
+            },
+            "hash_algorithm": {
+              "const": "SHA-256"
+            },
+            "screenshot_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "snapshot_count": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "package_id",
+            "session_id",
+            "package_status",
+            "capture_completeness",
+            "partial_reasons",
+            "validation_path",
+            "files",
+            "canonicalization",
+            "hash_algorithm",
+            "screenshot_count",
+            "snapshot_count"
+          ]
+        }
+      }
+    }
+  ]
+}

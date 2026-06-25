@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:edis:schema:browser:source-binding-coverage",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "schema_id": {
+      "const": "urn:edis:schema:browser:source-binding-coverage"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "artifact_type": {
+      "const": "source_binding_coverage"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "availability",
+        "source_context_imported",
+        "selected_document_id",
+        "elements_total",
+        "exact",
+        "probable",
+        "ambiguous",
+        "unmatched",
+        "pages",
+        "elements_with_binding_evidence"
+      ],
+      "properties": {
+        "availability": {
+          "enum": [
+            "AVAILABLE",
+            "PARTIAL",
+            "INSUFFICIENT",
+            "DISABLED",
+            "UNAVAILABLE",
+            "NOT_APPLICABLE",
+            "ERROR"
+          ]
+        },
+        "source_context_imported": {
+          "type": "boolean"
+        },
+        "selected_document_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "elements_total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "exact": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "probable": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ambiguous": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unmatched": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pages": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "total",
+            "exact",
+            "probable",
+            "ambiguous",
+            "unmatched"
+          ],
+          "properties": {
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "exact": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "probable": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ambiguous": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unmatched": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "elements_with_binding_evidence": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

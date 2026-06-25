@@ -1,0 +1,41 @@
+{
+  "$id": "urn:edis:schema:browser:diagnostics-artifact",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    }
+  ],
+  "properties": {
+    "artifact_type": {
+      "const": "diagnostics"
+    },
+    "data": {
+      "additionalProperties": false,
+      "properties": {
+        "diagnostics": {
+          "items": {
+            "$ref": "diagnostic.schema.json"
+          },
+          "maxItems": 100000,
+          "type": "array"
+        }
+      },
+      "required": [
+        "diagnostics"
+      ],
+      "type": "object"
+    },
+    "schema_id": {
+      "const": "urn:edis:schema:browser:diagnostics-artifact"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "diagnostics": {
+      "type": "array",
+      "maxItems": 0
+    }
+  },
+  "type": "object"
+}

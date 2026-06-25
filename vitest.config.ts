@@ -5,5 +5,6 @@ export default defineConfig({
     environment: "node",
     include: ["tests/{unit,integration,security}/**/*.test.ts"],
     coverage: { reporter: ["text", "json-summary"] },
+    testTimeout: 10000,
   },
 });

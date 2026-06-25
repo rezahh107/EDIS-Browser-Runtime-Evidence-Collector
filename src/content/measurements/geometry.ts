@@ -1,6 +1,12 @@
-import { normalizeRect, rectangleIntersection } from "../../domain/geometry";
+import { normalizeFiniteNumber, normalizeRect, rectangleIntersection } from "../../domain/geometry";
 import type { Rect, ViewportIntersection } from "../../domain/model";
 import { err, ok, type Result } from "../../domain/result";
+import {
+  ancestorMeasurementsFor,
+  boundingRectFor,
+  computedStyleFor,
+  type CaptureMeasurementContext,
+} from "./context";
 
 export interface GeometryEvidence {
   readonly rect: Rect;
@@ -15,9 +21,14 @@ export interface GeometryEvidence {
 
 export function measureGeometry(
   element: Element,
+  context?: CaptureMeasurementContext,
 ): Result<GeometryEvidence, "DETACHED" | "NON_FINITE"> {
-  if (!element.isConnected) return err("DETACHED");
-  const source = element.getBoundingClientRect();
+  if (context && context.document === element.ownerDocument) {
+    const cached = context.geometry.get(element);
+    if (cached) return cached;
+  }
+  if (!element.isConnected) return cacheGeometry(context, element, err("DETACHED"));
+  const source = boundingRectFor(element, context);
   const normalized = normalizeRect({
     x: source.x,
     y: source.y,
@@ -28,47 +39,55 @@ export function measureGeometry(
     width: source.width,
     height: source.height,
   });
-  if (!normalized.ok) return err("NON_FINITE");
+  if (!normalized.ok) return cacheGeometry(context, element, err("NON_FINITE"));
   const rect = normalized.value;
-  const documentX = rect.x + window.scrollX;
-  const documentY = rect.y + window.scrollY;
-  if (![documentX, documentY].every(Number.isFinite)) return err("NON_FINITE");
+  const documentX = normalizeFiniteNumber(rect.x + window.scrollX);
+  const documentY = normalizeFiniteNumber(rect.y + window.scrollY);
+  if (![documentX, documentY].every(Number.isFinite))
+    return cacheGeometry(context, element, err("NON_FINITE"));
   const intersection = rectangleIntersection(rect, window.innerWidth, window.innerHeight);
-  const style = getComputedStyle(element);
-  return ok({
-    rect,
-    documentX,
-    documentY,
-    intersection,
-    area: Math.max(0, rect.width * rect.height),
-    clipped: detectClipping(element, rect),
-    offscreen: !intersection.intersects,
-    positioning: normalizePosition(style.position),
-  });
+  const style = computedStyleFor(element, context);
+  return cacheGeometry(
+    context,
+    element,
+    ok({
+      rect,
+      documentX,
+      documentY,
+      intersection,
+      area: normalizeFiniteNumber(Math.max(0, rect.width * rect.height)),
+      clipped: detectClipping(element, rect, context),
+      offscreen: !intersection.intersects,
+      positioning: normalizePosition(style.position),
+    }),
+  );
 }
 
-function detectClipping(element: Element, rect: Rect): boolean {
-  let parent = element.parentElement;
-  let checked = 0;
-  while (parent && checked < 6) {
-    const style = getComputedStyle(parent);
+function detectClipping(
+  element: Element,
+  rect: Rect,
+  context?: CaptureMeasurementContext,
+): boolean {
+  for (const parent of ancestorMeasurementsFor(element, context).clippingAncestors) {
+    const parentRect = boundingRectFor(parent, context);
     if (
-      ["hidden", "clip", "scroll", "auto"].includes(style.overflowX) ||
-      ["hidden", "clip", "scroll", "auto"].includes(style.overflowY)
-    ) {
-      const parentRect = parent.getBoundingClientRect();
-      if (
-        rect.left < parentRect.left - 0.5 ||
-        rect.right > parentRect.right + 0.5 ||
-        rect.top < parentRect.top - 0.5 ||
-        rect.bottom > parentRect.bottom + 0.5
-      )
-        return true;
-    }
-    parent = parent.parentElement;
-    checked += 1;
+      rect.left < parentRect.left - 0.5 ||
+      rect.right > parentRect.right + 0.5 ||
+      rect.top < parentRect.top - 0.5 ||
+      rect.bottom > parentRect.bottom + 0.5
+    )
+      return true;
   }
   return false;
+}
+
+function cacheGeometry(
+  context: CaptureMeasurementContext | undefined,
+  element: Element,
+  value: Result<GeometryEvidence, "DETACHED" | "NON_FINITE">,
+): Result<GeometryEvidence, "DETACHED" | "NON_FINITE"> {
+  if (context && context.document === element.ownerDocument) context.geometry.set(element, value);
+  return value;
 }
 
 function normalizePosition(value: string): GeometryEvidence["positioning"] {

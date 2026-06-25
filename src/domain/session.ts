@@ -1,14 +1,19 @@
-import type { MatchStatus } from "./model";
+import type { BindingState } from "./model";
 
-export interface MatchEvidence {
+export interface BindingSummaryEvidence {
   readonly normalizedOriginMatches: boolean;
   readonly documentIdMatches: boolean;
   readonly elementorIdsOverlap: number;
   readonly userConfirmed: boolean;
+  readonly conflictingEvidence?: boolean;
 }
 
-export function determineMatchStatus(evidence: MatchEvidence): MatchStatus {
-  if (evidence.userConfirmed) return "USER_CONFIRMED";
+/**
+ * Produces a session-level summary of preliminary browser binding evidence.
+ * User confirmation is provenance only and never upgrades ambiguous evidence.
+ */
+export function determineSourceBindingState(evidence: BindingSummaryEvidence): BindingState {
+  if (evidence.conflictingEvidence) return "AMBIGUOUS";
   if (
     evidence.normalizedOriginMatches &&
     evidence.documentIdMatches &&

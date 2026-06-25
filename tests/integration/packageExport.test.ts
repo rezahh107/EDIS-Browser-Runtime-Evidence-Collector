@@ -12,5 +12,11 @@ describe("capture to package export", () => {
     expect([...result.bytes.slice(0, 4)]).toEqual([0x50, 0x4b, 0x03, 0x04]);
     expect(result.filename).toMatch(/^edis-runtime-package-/);
     expect(result.entryCount).toBeGreaterThanOrEqual(7);
+    const repeated = await buildEvidencePackage({
+      session: makeSession(),
+      snapshots: [makeSnapshot()],
+      screenshots: [],
+    });
+    expect(repeated.bytes).toEqual(result.bytes);
   });
 });

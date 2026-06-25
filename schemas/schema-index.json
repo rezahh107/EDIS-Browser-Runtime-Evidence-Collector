@@ -1,35 +1,115 @@
 {
+  "schema_id": "urn:edis:schema:browser:schema-index",
+  "schema_version": "1.0.0",
   "artifact_type": "schema_index",
-  "captured_at": "1970-01-01T00:00:00Z",
+  "producer": {
+    "product": "EDIS Browser Runtime Evidence Collector",
+    "version": "1.6.11"
+  },
+  "captured_at": "2026-06-14T00:00:00.000Z",
+  "canonicalization": {
+    "profile": "EDIS-CJ-1",
+    "hash_algorithm": "sha256"
+  },
   "data": {
+    "schema_index_version": "1.0.0",
     "schemas": [
       {
-        "artifact_type": "artifact_envelope",
-        "path": "artifact-envelope.schema.json"
+        "path": "artifact-envelope.schema.json",
+        "schema_id": "urn:edis:schema:shared:artifact-envelope",
+        "version": "1.0.0"
       },
       {
-        "artifact_type": "runtime_snapshot",
-        "path": "runtime-snapshot.schema.json"
+        "path": "bridge-context.schema.json",
+        "schema_id": "urn:edis:schema:wordpress:bridge-context",
+        "version": "1.0.0"
       },
       {
-        "artifact_type": "capture_session",
-        "path": "capture-session.schema.json"
+        "path": "capture-session.schema.json",
+        "schema_id": "urn:edis:schema:browser:capture-session",
+        "version": "1.1.0"
       },
       {
-        "artifact_type": "diagnostic",
-        "path": "diagnostic.schema.json"
+        "path": "diagnostic.schema.json",
+        "schema_id": "urn:edis:schema:shared:diagnostic",
+        "version": "1.0.0"
       },
       {
-        "artifact_type": "package_manifest",
-        "path": "package-manifest.schema.json"
+        "path": "diagnostics-artifact.schema.json",
+        "schema_id": "urn:edis:schema:browser:diagnostics-artifact",
+        "version": "1.0.0"
+      },
+      {
+        "path": "evidence-coverage.schema.json",
+        "schema_id": "urn:edis:schema:browser:evidence-coverage",
+        "version": "1.0.0"
+      },
+      {
+        "path": "observation-set.schema.json",
+        "schema_id": "urn:edis:schema:browser:observation-set",
+        "version": "1.1.0"
+      },
+      {
+        "path": "package-manifest.schema.json",
+        "schema_id": "urn:edis:schema:browser:package-manifest",
+        "version": "1.4.1"
+      },
+      {
+        "path": "package-validation.schema.json",
+        "schema_id": "urn:edis:schema:browser:package-validation",
+        "version": "1.0.0"
+      },
+      {
+        "path": "page-structure-summary.schema.json",
+        "schema_id": "urn:edis:schema:browser:page-structure-summary",
+        "version": "1.0.0"
+      },
+      {
+        "path": "python-feed-readiness.schema.json",
+        "schema_id": "urn:edis:schema:browser:python-feed-readiness",
+        "version": "1.1.0"
+      },
+      {
+        "path": "runtime-context.schema.json",
+        "schema_id": "urn:edis:schema:browser:runtime-context",
+        "version": "1.0.0"
+      },
+      {
+        "path": "runtime-coverage.schema.json",
+        "schema_id": "urn:edis:schema:browser:runtime-coverage",
+        "version": "1.0.0"
+      },
+      {
+        "path": "runtime-snapshot.schema.json",
+        "schema_id": "urn:edis:schema:browser:runtime-snapshot",
+        "version": "1.6.0"
+      },
+      {
+        "path": "schema-index.schema.json",
+        "schema_id": "urn:edis:schema:browser:schema-index",
+        "version": "1.0.0"
+      },
+      {
+        "path": "source-binding-coverage.schema.json",
+        "schema_id": "urn:edis:schema:browser:source-binding-coverage",
+        "version": "1.0.0"
+      },
+      {
+        "path": "source-binding-evidence.schema.json",
+        "schema_id": "urn:edis:schema:browser:source-binding-evidence",
+        "version": "1.0.0"
+      },
+      {
+        "path": "source-context-reference.schema.json",
+        "schema_id": "urn:edis:schema:browser:source-context-reference",
+        "version": "1.0.0"
+      },
+      {
+        "path": "source-runtime-cardinality.schema.json",
+        "schema_id": "urn:edis:schema:browser:source-runtime-cardinality",
+        "version": "1.0.0"
       }
     ]
   },
-  "diagnostics": [],
-  "schema_version": "1.0.0",
-  "source": {
-    "collector_id": "browser.runtime",
-    "collector_version": "1.0.0"
-  },
-  "status": "AVAILABLE"
+  "diagnostics": []
 }

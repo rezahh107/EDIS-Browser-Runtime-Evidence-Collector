@@ -1,0 +1,322 @@
+{
+  "$id": "urn:edis:schema:wordpress:bridge-context",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    }
+  ],
+  "properties": {
+    "artifact_type": {
+      "const": "edis_source_context"
+    },
+    "data": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_set_id": {
+          "format": "uuid",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "documents": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "architecture_kinds": {
+                "items": {
+                  "maxLength": 100,
+                  "type": "string"
+                },
+                "maxItems": 20,
+                "type": "array"
+              },
+              "document_fingerprint": {
+                "pattern": "^sha256:[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "document_id": {
+                "maxLength": 160,
+                "minLength": 1,
+                "type": "string"
+              },
+              "document_type": {
+                "maxLength": 120,
+                "type": "string"
+              },
+              "elements": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "ancestor_elementor_ids": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "maxItems": 256,
+                      "type": "array"
+                    },
+                    "architecture_kind": {
+                      "maxLength": 120,
+                      "type": "string"
+                    },
+                    "document_id": {
+                      "maxLength": 160,
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "document_order": {
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "editor_label": {
+                      "maxLength": 300,
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "editor_label_source": {
+                      "enum": [
+                        "ELEMENTOR_EDITOR_METADATA",
+                        null
+                      ],
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "el_type": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "element_kind": {
+                      "maxLength": 120,
+                      "type": "string"
+                    },
+                    "elementor_element_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "id_occurrence_count": {
+                      "maximum": 100000,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "id_uniqueness": {
+                      "enum": [
+                        "UNIQUE",
+                        "DUPLICATE",
+                        "MISSING"
+                      ]
+                    },
+                    "parent_elementor_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "source_availability": {
+                      "enum": [
+                        "AVAILABLE",
+                        "PARTIAL",
+                        "INSUFFICIENT",
+                        "DISABLED",
+                        "UNAVAILABLE",
+                        "NOT_APPLICABLE",
+                        "ERROR"
+                      ]
+                    },
+                    "source_element_key": {
+                      "pattern": "^sha256:[0-9a-f]{64}$",
+                      "type": "string"
+                    },
+                    "source_path": {
+                      "maxLength": 2000,
+                      "type": "string"
+                    },
+                    "source_record_sha256": {
+                      "pattern": "^sha256:[0-9a-f]{64}$",
+                      "type": "string"
+                    },
+                    "source_truth_state": {
+                      "enum": [
+                        "VERIFIED",
+                        "PARTIAL",
+                        "UNKNOWN",
+                        "UNSUPPORTED"
+                      ]
+                    },
+                    "widget_type": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "document_id",
+                    "source_element_key",
+                    "source_record_sha256",
+                    "elementor_element_id",
+                    "id_occurrence_count",
+                    "id_uniqueness",
+                    "parent_elementor_id",
+                    "ancestor_elementor_ids",
+                    "source_path",
+                    "document_order",
+                    "element_kind",
+                    "el_type",
+                    "widget_type",
+                    "architecture_kind",
+                    "source_truth_state",
+                    "source_availability"
+                  ],
+                  "type": "object"
+                },
+                "maxItems": 50000,
+                "type": "array"
+              },
+              "page_locator_candidates": {
+                "items": {
+                  "pattern": "^sha256:[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "maxItems": 100,
+                "type": "array"
+              },
+              "public_routability": {
+                "maxLength": 100,
+                "type": "string"
+              },
+              "saved_source_sha256": {
+                "pattern": "^sha256:[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "source_availability": {
+                "enum": [
+                  "AVAILABLE",
+                  "PARTIAL",
+                  "INSUFFICIENT",
+                  "DISABLED",
+                  "UNAVAILABLE",
+                  "NOT_APPLICABLE",
+                  "ERROR"
+                ]
+              },
+              "source_state": {
+                "maxLength": 100,
+                "type": "string"
+              },
+              "source_storage_kind": {
+                "maxLength": 100,
+                "type": "string"
+              },
+              "source_truth_state": {
+                "enum": [
+                  "VERIFIED",
+                  "PARTIAL",
+                  "UNKNOWN",
+                  "UNSUPPORTED"
+                ]
+              }
+            },
+            "required": [
+              "document_id",
+              "document_type",
+              "document_fingerprint",
+              "saved_source_sha256",
+              "page_locator_candidates",
+              "public_routability",
+              "source_storage_kind",
+              "source_state",
+              "architecture_kinds",
+              "source_truth_state",
+              "source_availability",
+              "elements"
+            ],
+            "type": "object"
+          },
+          "maxItems": 500,
+          "type": "array"
+        },
+        "multisite_mode": {
+          "maxLength": 100,
+          "type": "string"
+        },
+        "site_fingerprint": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "site_locator_candidates": {
+          "items": {
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "maxItems": 100,
+          "type": "array"
+        },
+        "site_path_scope": {
+          "maxLength": 500,
+          "type": "string"
+        },
+        "source_availability": {
+          "enum": [
+            "AVAILABLE",
+            "PARTIAL",
+            "INSUFFICIENT",
+            "DISABLED",
+            "UNAVAILABLE",
+            "NOT_APPLICABLE",
+            "ERROR"
+          ]
+        },
+        "source_export_root_sha256": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "source_truth_state": {
+          "enum": [
+            "VERIFIED",
+            "PARTIAL",
+            "UNKNOWN",
+            "UNSUPPORTED"
+          ]
+        },
+        "url_normalization_profile": {
+          "const": "EDIS-URL-1"
+        },
+        "wordpress_bundle_id": {
+          "format": "uuid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "analysis_set_id",
+        "wordpress_bundle_id",
+        "source_export_root_sha256",
+        "site_fingerprint",
+        "url_normalization_profile",
+        "site_locator_candidates",
+        "multisite_mode",
+        "site_path_scope",
+        "source_truth_state",
+        "source_availability",
+        "documents"
+      ],
+      "type": "object"
+    },
+    "schema_id": {
+      "const": "urn:edis:schema:wordpress:bridge-context"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    }
+  },
+  "type": "object"
+}

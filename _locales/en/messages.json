@@ -41,9 +41,6 @@
   "extensionName": {
     "message": "EDIS Browser Runtime Evidence Collector"
   },
-  "includeAccessibility": {
-    "message": "Include accessibility metadata presence"
-  },
   "includeColors": {
     "message": "Include color computed styles"
   },
@@ -52,6 +49,9 @@
   },
   "includePath": {
     "message": "Include normalized URL path"
+  },
+  "includeTextPreview": {
+    "message": "Include bounded redacted text previews"
   },
   "includeTitle": {
     "message": "Include page title"
@@ -69,7 +69,7 @@
     "message": "Maximum snapshot size in bytes"
   },
   "maximumTextPreview": {
-    "message": "Maximum text preview length"
+    "message": "Maximum text preview characters"
   },
   "noCaptures": {
     "message": "No captures in this session."
@@ -93,7 +93,7 @@
     "message": "Privacy summary"
   },
   "privacyWarning": {
-    "message": "Screenshots and text previews may contain sensitive page information. Review the page before enabling."
+    "message": "Screenshots may contain sensitive page information. Review the page before enabling."
   },
   "redactionMode": {
     "message": "Redaction mode"
@@ -140,8 +140,8 @@
   "supported": {
     "message": "Ready to capture"
   },
-  "textPreview": {
-    "message": "Include limited text previews"
+  "textPreviewWarning": {
+    "message": "Text previews may contain page content. Values from form controls are never collected, and previews are redacted and length-limited."
   },
   "unsupported": {
     "message": "This page cannot be captured"
@@ -151,5 +151,559 @@
   },
   "viewportLabel": {
     "message": "Viewport label"
+  },
+  "openGuide": {
+    "message": "Open guide"
+  },
+  "guideTitle": {
+    "message": "EDIS Runtime Collector guide"
+  },
+  "guideIntro": {
+    "message": "A practical explanation of every screen, option, status, and exported file."
+  },
+  "localOnlyEvidence": {
+    "message": "Local-only rendered-page evidence"
+  },
+  "pageStatusHelp": {
+    "message": "Confirms that the active tab is a normal HTTP or HTTPS page that can receive temporary access."
+  },
+  "actualViewport": {
+    "message": "Actual viewport"
+  },
+  "notCaptured": {
+    "message": "Not captured"
+  },
+  "sessionHelp": {
+    "message": "A session groups several viewport observations of the same page or review task."
+  },
+  "captureHelp": {
+    "message": "Records one factual snapshot of the current DOM and viewport. The label is descriptive only."
+  },
+  "cancelCapture": {
+    "message": "Cancel active capture"
+  },
+  "reviewHelp": {
+    "message": "Package integrity describes file correctness. Capture completeness describes whether bounded limits omitted evidence."
+  },
+  "packageIntegrity": {
+    "message": "Package integrity"
+  },
+  "pendingExportValidation": {
+    "message": "Pending export validation"
+  },
+  "captureCompleteness": {
+    "message": "Capture completeness"
+  },
+  "truncatedBranches": {
+    "message": "Truncated branches"
+  },
+  "identityCollisions": {
+    "message": "Ambiguous identities"
+  },
+  "partialReasons": {
+    "message": "Why this capture is partial"
+  },
+  "exportHelp": {
+    "message": "Runs schema, canonical JSON, checksum, reference, identity, and manifest checks before downloading the ZIP."
+  },
+  "selectSession": {
+    "message": "Select a session"
+  },
+  "elementsShort": {
+    "message": "elements"
+  },
+  "overflowShort": {
+    "message": "overflow facts"
+  },
+  "diagnosticsShort": {
+    "message": "diagnostics"
+  },
+  "screenshotIncluded": {
+    "message": "screenshot"
+  },
+  "privacyLocalOnly": {
+    "message": "local-only JSON evidence"
+  },
+  "privacyScreenshotEnabled": {
+    "message": "visible screenshot enabled"
+  },
+  "privacyScreenshotDisabled": {
+    "message": "screenshot disabled"
+  },
+  "privacyTextEnabled": {
+    "message": "bounded redacted text previews enabled"
+  },
+  "privacyTextDisabled": {
+    "message": "text preview disabled"
+  },
+  "privacyAlwaysExcluded": {
+    "message": "form values, cookies, history, URL query, and URL fragment excluded"
+  },
+  "captureCancelled": {
+    "message": "Capture cancelled."
+  },
+  "selectSessionFirst": {
+    "message": "Create or select a session first."
+  },
+  "currentViewport": {
+    "message": "Current viewport"
+  },
+  "captureJobMissing": {
+    "message": "Capture job was not found."
+  },
+  "captureStatusLabel": {
+    "message": "Capture status"
+  },
+  "captureTimeout": {
+    "message": "Capture status timed out. Reopen the panel to inspect the persisted job."
+  },
+  "validatingPackage": {
+    "message": "Validating package before export…"
+  },
+  "validatedPass": {
+    "message": "Validated: PASS"
+  },
+  "entries": {
+    "message": "entries"
+  },
+  "validationPassed": {
+    "message": "self-validation passed"
+  },
+  "validationFailed": {
+    "message": "Validation failed"
+  },
+  "completenessComplete": {
+    "message": "Complete"
+  },
+  "completenessPartial": {
+    "message": "Partial"
+  },
+  "reasonDepthLimit": {
+    "message": "Maximum DOM depth was reached. Use Deep DOM when appropriate."
+  },
+  "reasonElementLimit": {
+    "message": "The configured element budget was reached."
+  },
+  "reasonScanLimit": {
+    "message": "The bounded DOM scan budget was reached."
+  },
+  "reasonIdentityCollision": {
+    "message": "One or more identity candidates were ambiguous."
+  },
+  "reasonPartialIdentity": {
+    "message": "One or more elements had lower-confidence identity evidence."
+  },
+  "reasonGeometry": {
+    "message": "A detached element or non-finite geometry was omitted."
+  },
+  "reasonScreenshot": {
+    "message": "The optional screenshot failed; JSON evidence was preserved."
+  },
+  "captureProfile": {
+    "message": "Capture coverage profile"
+  },
+  "profileStandard": {
+    "message": "Standard — 750 elements / depth 24"
+  },
+  "profileDeepDom": {
+    "message": "Deep DOM — 1000 elements / depth 40"
+  },
+  "profileCustom": {
+    "message": "Custom"
+  },
+  "profileHelp": {
+    "message": "Standard is faster. Deep DOM is useful for deeply nested Elementor pages."
+  },
+  "optionsIntro": {
+    "message": "Control capture coverage and privacy. Safe defaults are recommended for most pages."
+  },
+  "coverageAndPrivacy": {
+    "message": "Coverage and privacy"
+  },
+  "redactionHelp": {
+    "message": "Strict removes the most identity metadata. Diagnostic retains more bounded technical identifiers."
+  },
+  "screenshotHelp": {
+    "message": "Captures only the currently visible viewport. Disabled by default because pixels may be sensitive."
+  },
+  "hiddenHelp": {
+    "message": "Includes elements hidden directly or by an ancestor. When disabled, effectively hidden descendants are excluded while traversal remains bounded."
+  },
+  "pathHelp": {
+    "message": "When disabled, raw locator path facts are withheld and only privacy-sensitive pseudonymous locator hashes remain. Query strings, fragments, and credentials are never included."
+  },
+  "titleHelp": {
+    "message": "Page titles may reveal private content. Leave disabled unless needed for matching."
+  },
+  "colorsHelp": {
+    "message": "Adds allowlisted color facts such as text, background, and border colors."
+  },
+  "textPreviewHelp": {
+    "message": "Form values and contenteditable text are excluded. Remaining previews are redacted and length-limited."
+  },
+  "retentionHelp": {
+    "message": "When disabled, snapshots and screenshots are removed from extension storage after a successful export."
+  },
+  "advancedLimits": {
+    "message": "Advanced bounded limits"
+  },
+  "advancedLimitsHelp": {
+    "message": "These limits prevent unbounded traversal and oversized snapshots. Select Custom to edit element and depth limits."
+  },
+  "dataAndVersion": {
+    "message": "Data and version"
+  },
+  "privacyPolicySource": {
+    "message": "Privacy policy source"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "delete": {
+    "message": "Delete"
+  },
+  "optionsSaved": {
+    "message": "Options saved."
+  },
+  "allDataCleared": {
+    "message": "All extension data was cleared."
+  },
+  "pageEvidenceCard": {
+    "message": "Page and source evidence"
+  },
+  "pageEvidenceCardHelp": {
+    "message": "Shows the rendered page separately from imported WordPress source documents. Browser binding is preliminary evidence, not Python final correlation."
+  },
+  "sourceContextLabel": {
+    "message": "WordPress Source Context"
+  },
+  "sourceContextImported": {
+    "message": "Imported and validated locally"
+  },
+  "sourceContextNotImported": {
+    "message": "Not imported; browser-only capture remains valid"
+  },
+  "pageBindingLabel": {
+    "message": "Page binding"
+  },
+  "sourceDocumentLabel": {
+    "message": "Selected source document"
+  },
+  "sourceDocumentsPresentLabel": {
+    "message": "Source documents present"
+  },
+  "pageFingerprintLabel": {
+    "message": "Page fingerprint"
+  },
+  "structureSummary": {
+    "message": "Structure: $SOURCESECTIONS$ source sections · $RUNTIMESECTIONS$ runtime sections · $CONTAINERS$ runtime containers · $WIDGETMARKERS$ widget markers · $SOURCEWIDGETS$ source widgets · $REGIONS$ regions",
+    "placeholders": {
+      "sourcesections": {
+        "content": "$1"
+      },
+      "runtimesections": {
+        "content": "$2"
+      },
+      "containers": {
+        "content": "$3"
+      },
+      "widgetmarkers": {
+        "content": "$4"
+      },
+      "sourcewidgets": {
+        "content": "$5"
+      },
+      "regions": {
+        "content": "$6"
+      }
+    }
+  },
+  "bindingReasonsLabel": {
+    "message": "Binding evidence: $REASONS$",
+    "placeholders": {
+      "reasons": {
+        "content": "$1"
+      }
+    }
+  },
+  "notAvailable": {
+    "message": "Not available"
+  },
+  "reasonReadinessUnstable": {
+    "message": "Capture readiness was unstable; inspect readiness facts."
+  },
+  "skippedHiddenSubtrees": {
+    "message": "Skipped hidden subtrees"
+  },
+  "captureEnvironmentWarnings": {
+    "message": "Capture environment warnings"
+  },
+  "environmentWarningsShort": {
+    "message": "environment warnings"
+  },
+  "exportPreflightTitle": {
+    "message": "Export preflight"
+  },
+  "exportPreflightIntro": {
+    "message": "Review evidence coverage before creating the local ZIP. Warnings do not change facts or run analysis rules."
+  },
+  "exportPreflightBlockers": {
+    "message": "Blocking requirements"
+  },
+  "exportPreflightWarnings": {
+    "message": "Non-blocking coverage warnings"
+  },
+  "preflightBlockingWithRuntimeFallback": {
+    "message": "The Minimum Python Feed cannot be exported yet. Return to capture or export the current facts as Runtime Evidence."
+  },
+  "preflightBlockingNoFallback": {
+    "message": "This export cannot continue until the blocking requirements are resolved."
+  },
+  "exportRuntimeInstead": {
+    "message": "Export runtime evidence instead"
+  },
+  "returnToReview": {
+    "message": "Return to review"
+  },
+  "exportAnyway": {
+    "message": "Export anyway"
+  },
+  "preflightObservations": {
+    "message": "Observations: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "preflightRuntimeNodes": {
+    "message": "Runtime nodes: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "preflightDistinctViewports": {
+    "message": "Distinct measured viewports: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "preflightScreenshots": {
+    "message": "Screenshots: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "preflightSourceAvailable": {
+    "message": "Source Context: imported"
+  },
+  "preflightSourceMissing": {
+    "message": "Source Context: not imported"
+  },
+  "preflightIncompleteImages": {
+    "message": "Incomplete images observed: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "preflightWarningSourceContext": {
+    "message": "Source Context is missing; final source/runtime correlation remains unavailable."
+  },
+  "preflightWarningSingleViewport": {
+    "message": "Only one measured viewport is available; responsive comparison remains insufficient."
+  },
+  "preflightWarningScreenshot": {
+    "message": "No screenshot evidence is included."
+  },
+  "preflightWarningHidden": {
+    "message": "Hidden elements were excluded from every observation."
+  },
+  "preflightWarningImages": {
+    "message": "One or more images were incomplete when captured."
+  },
+  "preflightBlockingNoObservations": {
+    "message": "Export is blocked because the session has no runtime observations."
+  },
+  "preflightBlockingCaptureInProgress": {
+    "message": "Export is blocked while a capture is in progress."
+  },
+  "preflightBlockingSessionFailed": {
+    "message": "Export is blocked because the session is in a failed state."
+  },
+  "prepareFullDocumentImages": {
+    "message": "Prepare lazy-loaded images before capture"
+  },
+  "prepareFullDocumentImagesHelp": {
+    "message": "Optionally performs a bounded scroll sweep and restores the original position. It may trigger page side effects and is disabled by default."
+  },
+  "viewportProfile": {
+    "message": "Requested viewport profile"
+  },
+  "viewportProfileHelp": {
+    "message": "The requested profile is provenance only. The collector always records the measured viewport."
+  },
+  "profileDesktop": {
+    "message": "Desktop"
+  },
+  "profileTablet": {
+    "message": "Tablet"
+  },
+  "profileMobile": {
+    "message": "Mobile"
+  },
+  "exportPythonFeed": {
+    "message": "Validate and export minimum Python feed"
+  },
+  "preflightDistinctViewportWidths": {
+    "message": "Distinct viewport widths: $1"
+  },
+  "preflightPythonFeedReadiness": {
+    "message": "Python feed readiness: $1"
+  },
+  "preflightRequestedProfiles": {
+    "message": "Requested profiles present: $1"
+  },
+  "preflightBlockingSourceRequired": {
+    "message": "Minimum Python feed requires the imported WordPress Source Context attached to this session."
+  },
+  "preflightBlockingSourceIncompatible": {
+    "message": "The imported Source Context is not confirmed or its hash/document identity does not match the session."
+  },
+  "preflightBlockingObservations": {
+    "message": "Minimum Python feed requires at least three runtime observations."
+  },
+  "preflightBlockingDistinctWidths": {
+    "message": "Minimum Python feed requires at least three distinct measured viewport widths."
+  },
+  "preflightBlockingProfiles": {
+    "message": "Desktop, Tablet, and Mobile requested profiles must all be captured."
+  },
+  "preflightBlockingPageMismatch": {
+    "message": "All observations must have the same runtime page fingerprint."
+  },
+  "preflightBlockingSourceMismatch": {
+    "message": "All observations must reference the same Source Context as the session."
+  },
+  "preflightBlockingObservationIndex": {
+    "message": "Observation indexes are invalid, duplicated, or non-contiguous."
+  },
+  "openSourceContextOptions": {
+    "message": "Open Source Context options"
+  },
+  "captureWorkflow": {
+    "message": "Capture workflow"
+  },
+  "workflowPythonFeed": {
+    "message": "Minimum Python Feed"
+  },
+  "workflowRuntimeEvidence": {
+    "message": "Runtime Evidence"
+  },
+  "captureWorkflowHelp": {
+    "message": "Python Feed mode blocks incomplete or duplicate captures before evidence is written."
+  },
+  "currentMeasuredViewport": {
+    "message": "Current measured viewport"
+  },
+  "pythonFeedSteps": {
+    "message": "Minimum Python Feed steps"
+  },
+  "feedStepSource": {
+    "message": "Import and confirm Source Context"
+  },
+  "feedStepDesktop": {
+    "message": "Capture Desktop at a distinct width"
+  },
+  "feedStepTablet": {
+    "message": "Resize and capture Tablet"
+  },
+  "feedStepMobile": {
+    "message": "Resize and capture Mobile"
+  },
+  "feedStepExport": {
+    "message": "Validate and export the Python Feed"
+  },
+  "runtimeEvidenceCaptureAvailable": {
+    "message": "Runtime Evidence capture is available. Duplicate widths are allowed in this mode."
+  },
+  "pythonFeedCaptureAvailable": {
+    "message": "This viewport is valid for the next Minimum Python Feed observation."
+  },
+  "feedGuardSourceRequired": {
+    "message": "Import and confirm the matching WordPress Source Context before capturing."
+  },
+  "feedGuardSourceIncompatible": {
+    "message": "The selected Source Context does not match this session."
+  },
+  "feedGuardDuplicateWidth": {
+    "message": "Resize the target page. This measured viewport width already exists in the session."
+  },
+  "feedGuardDuplicateProfile": {
+    "message": "Choose a profile that has not already been captured in this session."
+  },
+  "feedGuardRequiredProfile": {
+    "message": "Minimum Python Feed accepts Desktop, Tablet, and Mobile profiles only."
+  },
+  "feedGuardPageMismatch": {
+    "message": "The current page does not match the page already captured in this session."
+  },
+  "feedGuardCanonicalScroll": {
+    "message": "Return the target page to scroll position 0 before capturing a Python Feed observation."
+  },
+  "feedGuardPageNotVisible": {
+    "message": "The target page must be visible before Python Feed capture."
+  },
+  "feedGuardPagePrerendering": {
+    "message": "The target page is prerendering and cannot be captured yet."
+  },
+  "feedGuardAdminBar": {
+    "message": "WordPress Admin Bar evidence is present or ambiguous. Use a frontend view without the toolbar."
+  },
+  "feedGuardElementorEditor": {
+    "message": "Elementor editor preview is not a canonical published-frontend capture environment."
+  },
+  "feedGuardIframe": {
+    "message": "Python Feed capture must run in the top-level page, not inside an iframe."
+  },
+  "feedGuardImagesNotReady": {
+    "message": "One or more images in the current viewport are unresolved after the bounded readiness wait."
+  },
+  "feedGuardWorkflowModeMismatch": {
+    "message": "This session is locked to a different capture workflow."
+  },
+  "preflightBlockingCanonicalScroll": {
+    "message": "One or more observations were not captured at canonical scroll position 0."
+  },
+  "preflightBlockingPageNotVisible": {
+    "message": "One or more observations were captured while the page was not visible."
+  },
+  "preflightBlockingPagePrerendering": {
+    "message": "One or more observations were captured while the page was prerendering."
+  },
+  "preflightBlockingAdminBar": {
+    "message": "WordPress Admin Bar evidence is present or ambiguous in one or more observations."
+  },
+  "preflightBlockingElementorEditor": {
+    "message": "Elementor editor preview was present in one or more observations."
+  },
+  "preflightBlockingIframe": {
+    "message": "One or more observations were captured inside an iframe."
+  },
+  "preflightBlockingImagesNotReady": {
+    "message": "One or more viewport images remained unresolved after the bounded readiness wait."
+  },
+  "preflightBlockingWorkflowMode": {
+    "message": "The session workflow mode is inconsistent with this export."
+  },
+  "preflightBlockingStorageBudget": {
+    "message": "The session evidence exceeds the deterministic local export budget."
   }
 }

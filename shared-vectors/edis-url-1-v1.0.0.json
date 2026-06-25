@@ -1,0 +1,306 @@
+{
+  "profile": "EDIS-URL-1",
+  "version": "1.0.0",
+  "cases": [
+    {
+      "id": "default-https-port",
+      "input_url": "https://EXAMPLE.com:443",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:8c79625612e9795eb1435ef43d83fbb90b2f0103289d7c7bfa2baa80e78f9ece"
+    },
+    {
+      "id": "non-default-port-repeated-slashes",
+      "input_url": "http://Example.com:8080/a//b",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "http",
+        "host_ascii": "example.com",
+        "port": 8080,
+        "path": "/a//b",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:2e4628e42300062dcc8fb55b8a252cf44bdb47b689105ee95a58f810f1a4490a"
+    },
+    {
+      "id": "idn-and-unicode-path",
+      "input_url": "https://مثال.ایران/مسیر",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "xn--mgbh0fb.xn--mgba3a4f16a",
+        "port": null,
+        "path": "/%D9%85%D8%B3%DB%8C%D8%B1",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:1dd705ee24cc9c7405b220b4c959628e58d1a20614a7b11f576cfda3af51b27e"
+    },
+    {
+      "id": "percent-unreserved-and-reserved",
+      "input_url": "https://example.com/%7euser/%41/%2f",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/~user/A/%2F",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:12c017a6575d385a61be797e1905e2905e3587740ab19664533683d2fd57f263"
+    },
+    {
+      "id": "dot-segments",
+      "input_url": "https://example.com/a/./b/../c",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/a/c",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:fb284e21eed2f5771563c73e8026e5bd8e8a6904a95c745a3cc30ffa636f5f40"
+    },
+    {
+      "id": "path-case-trailing-slash",
+      "input_url": "https://example.com/Case/Path/",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/Case/Path/",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:053c0a86477d7a9252bb70f8cfa19a87d39b8e607cc8c9cf12eb3fb8a03def45"
+    },
+    {
+      "id": "query-and-fragment-excluded",
+      "input_url": "https://example.com/path?token=secret#fragment",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/path",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:7b00a02954c49488f80624ff516bb9c8766c9b6aaa0cd6fea46dfe390c738cfe"
+    },
+    {
+      "id": "subdirectory-wordpress-scope",
+      "input_url": "https://example.com/wp/site/page",
+      "site_path_scope": "/wp/site",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/wp/site/page",
+        "site_path_scope": "/wp/site/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:8a6c9521638e3cdd5f8099beaa2ffc0a0297dd6d95f908e2ab435e194ebc83ec"
+    },
+    {
+      "id": "plain-permalink",
+      "input_url": "https://example.com/?p=123",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:8c79625612e9795eb1435ef43d83fbb90b2f0103289d7c7bfa2baa80e78f9ece"
+    },
+    {
+      "id": "preview-query",
+      "input_url": "https://example.com/post/?preview=true&preview_id=123&_wpnonce=abc",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/post/",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:bbfa83f1e2179ef69b19181547ebb014c0c50a3cd962fcb41bc7dce1bfa5b2b2"
+    },
+    {
+      "id": "token-like-path-redaction",
+      "input_url": "https://example.com/account/auth-token/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/account/[REDACTED_SEGMENT]/[REDACTED_SEGMENT]",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 2,
+      "expected_page_locator_sha256": "sha256:cc01a84ab3cc8c4a805077c34340fca31df477993c33b0ac6f13993bf660098d"
+    },
+    {
+      "id": "encoded-email-redaction",
+      "input_url": "https://example.com/person%40example.com",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/[REDACTED_SEGMENT]",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 1,
+      "expected_page_locator_sha256": "sha256:94e9c0ff1a516d4e384c693ea29eeba89b2ed3b5244ebc2de855708f0cb33d41"
+    },
+    {
+      "id": "oversized-segment-redaction",
+      "input_url": "https://example.com/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/[REDACTED_SEGMENT]",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 1,
+      "expected_page_locator_sha256": "sha256:94e9c0ff1a516d4e384c693ea29eeba89b2ed3b5244ebc2de855708f0cb33d41"
+    },
+    {
+      "id": "invalid-percent-escape-redacted",
+      "input_url": "https://example.com/%ZZ",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/[REDACTED_SEGMENT]",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 1,
+      "expected_page_locator_sha256": "sha256:94e9c0ff1a516d4e384c693ea29eeba89b2ed3b5244ebc2de855708f0cb33d41"
+    },
+    {
+      "id": "front-page",
+      "input_url": "https://example.com",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:8c79625612e9795eb1435ef43d83fbb90b2f0103289d7c7bfa2baa80e78f9ece"
+    },
+    {
+      "id": "multisite-subsite",
+      "input_url": "https://example.com/network/site/page",
+      "site_path_scope": "/network/site",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/network/site/page",
+        "site_path_scope": "/network/site/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:c4d586b61c18e5c8e8e44f5193c20e33ca4484fa0b695096702f93ecbffff988"
+    },
+    {
+      "id": "multilingual-path",
+      "input_url": "https://example.com/fa/%D9%85%D8%AD%D8%B5%D9%88%D9%84",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/fa/%D9%85%D8%AD%D8%B5%D9%88%D9%84",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:0d46fd3a1d786c800fb5b3ada8835dc59c65896110546fe531bd020668ae726b"
+    },
+    {
+      "id": "reverse-proxy-public-origin",
+      "input_url": "https://public.example.com/app/page",
+      "site_path_scope": "/app",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "public.example.com",
+        "port": null,
+        "path": "/app/page",
+        "site_path_scope": "/app/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:01fd4da8525d996830fade7e8d35433abb2814c0c0ec8560849a912ed3208f27"
+    },
+    {
+      "id": "nonce-like-path-redaction",
+      "input_url": "https://example.com/download/wp_nonce/123",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/download/[REDACTED_SEGMENT]/123",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 1,
+      "expected_page_locator_sha256": "sha256:817c4a3e25168feaf4a3484ac3e679073367e9b0ad5b2b713a93df74b7017f1a"
+    },
+    {
+      "id": "retained-reserved-escapes",
+      "input_url": "https://example.com/a%3ab/%3fkeep",
+      "site_path_scope": "/",
+      "expected_facts": {
+        "scheme": "https",
+        "host_ascii": "example.com",
+        "port": null,
+        "path": "/a%3Ab/%3Fkeep",
+        "site_path_scope": "/"
+      },
+      "expected_redacted_segment_count": 0,
+      "expected_page_locator_sha256": "sha256:7682fef025da1423186f680a061ed6fabe53aef2c52e170ecf49e5951fafd781"
+    }
+  ],
+  "rejection_cases": [
+    {
+      "id": "credentials",
+      "input_url": "https://user:pass@example.com/path",
+      "site_path_scope": "/",
+      "error_code": "CREDENTIALS_REJECTED"
+    },
+    {
+      "id": "unsupported-scheme",
+      "input_url": "file:///tmp/index.html",
+      "site_path_scope": "/",
+      "error_code": "UNSUPPORTED_SCHEME"
+    },
+    {
+      "id": "oversized-url",
+      "input_url": "https://example.com/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "site_path_scope": "/",
+      "error_code": "URL_OUT_OF_BOUNDS"
+    }
+  ]
+}

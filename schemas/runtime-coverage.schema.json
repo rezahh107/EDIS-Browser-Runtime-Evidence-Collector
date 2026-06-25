@@ -1,0 +1,289 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:edis:schema:browser:runtime-coverage",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "schema_id": {
+      "const": "urn:edis:schema:browser:runtime-coverage"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "artifact_type": {
+      "const": "runtime_coverage"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtime_availability",
+        "observations",
+        "elements_discovered",
+        "elements_emitted",
+        "truncated_branch_count",
+        "maximum_depth_observed",
+        "modules",
+        "screenshots",
+        "traversal",
+        "capture_completeness",
+        "readiness",
+        "multi_viewport",
+        "error_diagnostics"
+      ],
+      "properties": {
+        "runtime_availability": {
+          "enum": [
+            "AVAILABLE",
+            "PARTIAL",
+            "INSUFFICIENT",
+            "DISABLED",
+            "UNAVAILABLE",
+            "NOT_APPLICABLE",
+            "ERROR"
+          ]
+        },
+        "observations": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "elements_discovered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "elements_emitted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "truncated_branch_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maximum_depth_observed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "modules": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "geometry",
+            "computed_styles",
+            "relationships",
+            "interaction_facts",
+            "text_shape",
+            "capture_readiness"
+          ],
+          "properties": {
+            "geometry": {
+              "enum": [
+                "AVAILABLE",
+                "PARTIAL",
+                "INSUFFICIENT",
+                "DISABLED",
+                "UNAVAILABLE",
+                "NOT_APPLICABLE",
+                "ERROR"
+              ]
+            },
+            "computed_styles": {
+              "enum": [
+                "AVAILABLE",
+                "PARTIAL",
+                "INSUFFICIENT",
+                "DISABLED",
+                "UNAVAILABLE",
+                "NOT_APPLICABLE",
+                "ERROR"
+              ]
+            },
+            "relationships": {
+              "enum": [
+                "AVAILABLE",
+                "PARTIAL",
+                "INSUFFICIENT",
+                "DISABLED",
+                "UNAVAILABLE",
+                "NOT_APPLICABLE",
+                "ERROR"
+              ]
+            },
+            "interaction_facts": {
+              "enum": [
+                "AVAILABLE",
+                "PARTIAL",
+                "INSUFFICIENT",
+                "DISABLED",
+                "UNAVAILABLE",
+                "NOT_APPLICABLE",
+                "ERROR"
+              ]
+            },
+            "text_shape": {
+              "enum": [
+                "AVAILABLE",
+                "PARTIAL",
+                "INSUFFICIENT",
+                "DISABLED",
+                "UNAVAILABLE",
+                "NOT_APPLICABLE",
+                "ERROR"
+              ]
+            },
+            "capture_readiness": {
+              "enum": [
+                "AVAILABLE",
+                "PARTIAL",
+                "INSUFFICIENT",
+                "DISABLED",
+                "UNAVAILABLE",
+                "NOT_APPLICABLE",
+                "ERROR"
+              ]
+            }
+          }
+        },
+        "screenshots": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "requested",
+            "available",
+            "failed"
+          ],
+          "properties": {
+            "requested": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "available": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failed": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "traversal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "element_budget_total",
+            "element_budget_used",
+            "scan_budget_total",
+            "scan_budget_used"
+          ],
+          "properties": {
+            "element_budget_total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "element_budget_used": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "scan_budget_total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "scan_budget_used": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "capture_completeness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "complete_observations",
+            "partial_observations"
+          ],
+          "properties": {
+            "complete_observations": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "partial_observations": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "readiness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "STABLE",
+            "UNSTABLE",
+            "TIMEOUT",
+            "INSUFFICIENT",
+            "ERROR"
+          ],
+          "properties": {
+            "STABLE": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "UNSTABLE": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "TIMEOUT": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "INSUFFICIENT": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ERROR": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "multi_viewport": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "observation_count",
+            "distinct_measured_dimensions",
+            "availability"
+          ],
+          "properties": {
+            "observation_count": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "distinct_measured_dimensions": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "availability": {
+              "enum": [
+                "AVAILABLE",
+                "PARTIAL",
+                "INSUFFICIENT",
+                "DISABLED",
+                "UNAVAILABLE",
+                "NOT_APPLICABLE",
+                "ERROR"
+              ]
+            }
+          }
+        },
+        "error_diagnostics": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

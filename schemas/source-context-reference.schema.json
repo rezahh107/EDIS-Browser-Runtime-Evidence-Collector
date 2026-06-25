@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:edis:schema:browser:source-context-reference",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "schema_id": {
+      "const": "urn:edis:schema:browser:source-context-reference"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "artifact_type": {
+      "const": "source_context_reference"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "analysis_set_id",
+        "wordpress_bundle_id",
+        "imported_source_context_sha256",
+        "source_export_root_sha256",
+        "site_fingerprint",
+        "selected_document_id",
+        "selected_document_fingerprint",
+        "confirmation_state"
+      ],
+      "properties": {
+        "analysis_set_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "wordpress_bundle_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "imported_source_context_sha256": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "source_export_root_sha256": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "site_fingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "selected_document_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "selected_document_fingerprint": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "confirmation_state": {
+          "enum": [
+            "NOT_CONFIRMED",
+            "CONFIRMED"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,42 @@
 import { diagnostic, type Diagnostic } from "../../domain/diagnostics";
 import { err, ok, type Result } from "../../domain/result";
 
+export interface RawPageProbe {
+  readonly url: string;
+  readonly innerWidth: number;
+  readonly innerHeight: number;
+  readonly pageMarkerPresent: boolean;
+  readonly rawDataElementorIds: readonly string[];
+  readonly scrollX: number;
+  readonly scrollY: number;
+  readonly documentVisibilityState: DocumentVisibilityState;
+  readonly documentPrerendering: boolean;
+  readonly adminBar: Readonly<{
+    bodyAdminBarClass: boolean;
+    wpadminbarElementPresent: boolean;
+    wpadminbarComputedDisplay: string | null;
+    wpadminbarComputedVisibility: string | null;
+    wpadminbarRectHeight: number | null;
+    htmlComputedMarginTop: string;
+    bodyComputedMarginTop: string | null;
+    detectionState: "ABSENT" | "PRESENT" | "AMBIGUOUS";
+  }>;
+  readonly elementorEditorPreviewPresent: boolean;
+  readonly iframeCapture: boolean;
+  readonly viewportImageReadiness: Readonly<{
+    candidateCount: number;
+    loadedCount: number;
+    brokenCount: number;
+    pendingCount: number;
+    decodeFailedCount: number;
+    timedOutCount: number;
+    waitTimeMs: number;
+    timeoutMs: number;
+    timeoutPolicyId: string;
+    timeoutPolicyVersion: number;
+  }>;
+}
+
 export interface ActiveTab {
   readonly id: number;
   readonly windowId: number;
@@ -10,6 +46,7 @@ export interface ActiveTab {
 export interface BrowserAdapter {
   getActiveTab(): Promise<Result<ActiveTab, Diagnostic>>;
   injectCollector(tabId: number): Promise<Result<void, Diagnostic>>;
+  probePage(tabId: number): Promise<Result<RawPageProbe, Diagnostic>>;
   captureVisibleViewport(windowId: number): Promise<Result<string, Diagnostic>>;
   openWorkflow(tabId: number): Promise<Result<void, Diagnostic>>;
   getVersion(): string;
@@ -38,5 +75,13 @@ export function isCapturableUrl(raw: string): Result<URL, Diagnostic> {
 }
 
 function unsupported(message: string): Diagnostic {
-  return diagnostic("EDIS_RUNTIME_UNSUPPORTED_PAGE", "ERROR", message, false);
+  return diagnostic(
+    "EDIS_RUNTIME_UNSUPPORTED_PAGE",
+    "ERROR",
+    message,
+    false,
+    {},
+    "OPERATIONAL",
+    "RESTRICTED_PAGE_ACTIVE_TAB_SCRIPTING_INJECTION_FAILURE",
+  );
 }

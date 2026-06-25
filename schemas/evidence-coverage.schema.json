@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:edis:schema:browser:evidence-coverage",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "schema_id": {
+      "const": "urn:edis:schema:browser:evidence-coverage"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "artifact_type": {
+      "const": "evidence_coverage"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtime_observations",
+        "runtime_nodes",
+        "source_context_imported",
+        "source_binding",
+        "screenshots",
+        "distinct_viewports",
+        "hidden_elements_included",
+        "colors_included",
+        "text_preview_included",
+        "statuses"
+      ],
+      "properties": {
+        "runtime_observations": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "runtime_nodes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_context_imported": {
+          "type": "boolean"
+        },
+        "source_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "exact",
+            "probable",
+            "ambiguous",
+            "unmatched"
+          ],
+          "properties": {
+            "exact": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "probable": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ambiguous": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unmatched": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "screenshots": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "distinct_viewports": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "hidden_elements_included": {
+          "type": "boolean"
+        },
+        "colors_included": {
+          "type": "boolean"
+        },
+        "text_preview_included": {
+          "type": "boolean"
+        },
+        "statuses": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "runtime_evidence",
+            "source_context",
+            "source_runtime_binding",
+            "responsive_comparison",
+            "visual_verification"
+          ],
+          "properties": {
+            "runtime_evidence": {
+              "enum": [
+                "AVAILABLE",
+                "PARTIAL",
+                "INSUFFICIENT",
+                "DISABLED",
+                "UNAVAILABLE",
+                "NOT_APPLICABLE",
+                "ERROR"
+              ]
+            },
+            "source_context": {
+              "enum": [
+                "AVAILABLE",
+                "PARTIAL",
+                "INSUFFICIENT",
+                "DISABLED",
+                "UNAVAILABLE",
+                "NOT_APPLICABLE",
+                "ERROR"
+              ]
+            },
+            "source_runtime_binding": {
+              "enum": [
+                "AVAILABLE",
+                "PARTIAL",
+                "INSUFFICIENT",
+                "DISABLED",
+                "UNAVAILABLE",
+                "NOT_APPLICABLE",
+                "ERROR"
+              ]
+            },
+            "responsive_comparison": {
+              "enum": [
+                "AVAILABLE",
+                "PARTIAL",
+                "INSUFFICIENT",
+                "DISABLED",
+                "UNAVAILABLE",
+                "NOT_APPLICABLE",
+                "ERROR"
+              ]
+            },
+            "visual_verification": {
+              "enum": [
+                "AVAILABLE",
+                "PARTIAL",
+                "INSUFFICIENT",
+                "DISABLED",
+                "UNAVAILABLE",
+                "NOT_APPLICABLE",
+                "ERROR"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

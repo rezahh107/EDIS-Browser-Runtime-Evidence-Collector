@@ -14,6 +14,27 @@ describe("diagnostics", () => {
     expect(value.context.limit).toBe(500);
   });
 
+  it("records a non-sensitive failure boundary and redacts URL query context", () => {
+    const value = diagnostic(
+      "EDIS_RUNTIME_BROWSER_QUALIFICATION_FAILED",
+      "ERROR",
+      "Browser qualification failed.",
+      true,
+      {
+        artifact_zip_sha: "a".repeat(64),
+        page_url: "https://example.test/path?token=secret#frag",
+        token: "must-not-appear",
+      },
+      "OPERATIONAL",
+      "BROWSER_QUALIFICATION_FAILURE",
+    );
+
+    expect(isDiagnostic(value)).toBe(true);
+    expect(value.failure_boundary).toBe("BROWSER_QUALIFICATION_FAILURE");
+    expect(value.context.page_url).toBe("https://example.test/path?redacted");
+    expect(value.context).not.toHaveProperty("token");
+  });
+
   it("rejects arbitrary codes", () => {
     expect(
       isDiagnostic({

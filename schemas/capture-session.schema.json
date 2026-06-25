@@ -1,81 +1,303 @@
 {
-  "$id": "urn:edis:runtime:capture-session:1.0.0",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:edis:schema:browser:capture-session",
   "allOf": [
     {
       "$ref": "artifact-envelope.schema.json"
-    },
-    {
-      "properties": {
-        "artifact_type": {
-          "const": "capture_session"
-        },
-        "data": {
-          "properties": {
-            "browser_family": {
-              "type": "string"
-            },
-            "browser_version": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "captures": {
-              "items": {
-                "type": "object"
-              },
-              "type": "array"
-            },
-            "created_at": {
-              "format": "date-time",
-              "type": "string"
-            },
-            "extension_version": {
-              "const": "1.0.0"
-            },
-            "match_status": {
-              "enum": [
-                "EXACT",
-                "PROBABLE",
-                "USER_CONFIRMED",
-                "UNMATCHED"
-              ]
-            },
-            "name": {
-              "maxLength": 120,
-              "minLength": 1,
-              "type": "string"
-            },
-            "session_id": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "status": {
-              "enum": [
-                "CREATED",
-                "CAPTURING",
-                "COMPLETE",
-                "PARTIAL",
-                "FAILED",
-                "CANCELLED"
-              ]
-            }
-          },
-          "required": [
-            "session_id",
-            "name",
-            "created_at",
-            "extension_version",
-            "browser_family",
-            "captures",
-            "status"
-          ],
-          "type": "object"
-        }
-      },
-      "type": "object"
     }
   ],
-  "title": "EDIS Capture Session"
+  "type": "object",
+  "properties": {
+    "schema_id": {
+      "const": "urn:edis:schema:browser:capture-session"
+    },
+    "schema_version": {
+      "const": "1.1.0"
+    },
+    "artifact_type": {
+      "const": "capture_session"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "session_id",
+        "observation_set_id",
+        "name",
+        "created_at",
+        "extension_version",
+        "browser_family",
+        "browser_version",
+        "runtime_environment",
+        "source_context_reference",
+        "source_binding_state",
+        "workflow_mode",
+        "captures",
+        "status"
+      ],
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "observation_set_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "extension_version": {
+          "type": "string"
+        },
+        "browser_family": {
+          "type": "string"
+        },
+        "browser_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "runtime_environment": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "source_context_reference": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "captures": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "snapshot_id",
+              "label",
+              "captured_at",
+              "actual_width",
+              "actual_height",
+              "page_context_id",
+              "page_fingerprint",
+              "page_binding_state",
+              "page_binding_reason_codes",
+              "source_document_id",
+              "source_document_type",
+              "source_document_count",
+              "source_section_count",
+              "source_widget_count",
+              "runtime_region_count",
+              "runtime_widget_marker_count",
+              "runtime_container_region_count",
+              "runtime_section_region_count",
+              "exact_binding_count",
+              "probable_binding_count",
+              "ambiguous_binding_count",
+              "unmatched_runtime_node_count",
+              "element_count",
+              "overflow_count",
+              "diagnostic_count",
+              "screenshot_available",
+              "completeness_status",
+              "partial_reasons",
+              "truncated_branch_count",
+              "identity_collision_count",
+              "status",
+              "skipped_hidden_subtree_count",
+              "capture_environment_warning_count"
+            ],
+            "properties": {
+              "snapshot_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "label": {
+                "type": "string"
+              },
+              "captured_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "actual_width": {
+                "type": "number",
+                "minimum": 0
+              },
+              "actual_height": {
+                "type": "number",
+                "minimum": 0
+              },
+              "page_context_id": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "page_fingerprint": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "page_binding_state": {
+                "enum": [
+                  "EXACT",
+                  "PROBABLE",
+                  "AMBIGUOUS",
+                  "UNMATCHED"
+                ]
+              },
+              "page_binding_reason_codes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source_document_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source_document_type": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source_document_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "runtime_region_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "exact_binding_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "probable_binding_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "ambiguous_binding_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "unmatched_runtime_node_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "element_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "overflow_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "diagnostic_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "screenshot_available": {
+                "type": "boolean"
+              },
+              "completeness_status": {
+                "enum": [
+                  "COMPLETE",
+                  "PARTIAL"
+                ]
+              },
+              "partial_reasons": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "truncated_branch_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "identity_collision_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "status": {
+                "enum": [
+                  "CREATED",
+                  "CAPTURING",
+                  "COMPLETE",
+                  "PARTIAL",
+                  "FAILED",
+                  "CANCELLED"
+                ]
+              },
+              "source_section_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "source_widget_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "runtime_section_region_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "runtime_container_region_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "runtime_widget_marker_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "skipped_hidden_subtree_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "capture_environment_warning_count": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "status": {
+          "enum": [
+            "CREATED",
+            "CAPTURING",
+            "COMPLETE",
+            "PARTIAL",
+            "FAILED",
+            "CANCELLED"
+          ]
+        },
+        "source_binding_state": {
+          "enum": [
+            "EXACT",
+            "PROBABLE",
+            "AMBIGUOUS",
+            "UNMATCHED"
+          ]
+        },
+        "workflow_mode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "RUNTIME_EVIDENCE",
+            "MINIMUM_PYTHON_FEED",
+            null
+          ]
+        }
+      }
+    }
+  }
 }

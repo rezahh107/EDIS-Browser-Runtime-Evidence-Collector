@@ -1,129 +1,186 @@
 import { diagnostic, type Diagnostic } from "../../domain/diagnostics";
+import { classifyElementorMarker } from "../../domain/elementorMarker";
 import { stableDomReference } from "../../domain/identity";
+import { computedStyleFor, type CaptureMeasurementContext } from "../measurements/context";
+import { inspectEffectiveVisibility } from "../measurements/visibility";
+
+export interface SelectionMetrics {
+  readonly elementorElements: number;
+  readonly interactiveCandidates: number;
+  readonly fixedElements: number;
+  readonly stickyElements: number;
+}
 
 export interface SelectionResult {
   readonly elements: readonly Element[];
   readonly scannedNodes: number;
+  readonly visitedElements: number;
   readonly maximumDepth: number;
+  readonly truncatedBranchCount: number;
+  readonly firstTruncatedReference: string | null;
+  readonly skippedHiddenSubtreeCount: number;
+  readonly skippedHiddenDirectChildCount: number;
+  readonly scanBudget: number;
+  readonly elementBudget: number;
+  readonly metrics: SelectionMetrics;
   readonly diagnostics: readonly Diagnostic[];
 }
 
-interface Candidate {
-  readonly element: Element;
-  readonly score: number;
-  readonly reference: string;
-}
+const SKIPPED_SUBTREES = new Set([
+  "base",
+  "head",
+  "link",
+  "meta",
+  "noscript",
+  "script",
+  "style",
+  "template",
+  "title",
+]);
+
+const INTERACTIVE_CANDIDATE_SELECTOR =
+  "a[href], button, input, select, textarea, summary, [role=button], [role=link], [tabindex]";
 
 export function selectElements(
   maxElements: number,
   maxDepth: number,
   includeHidden: boolean,
+  context?: CaptureMeasurementContext,
 ): SelectionResult {
   const root = document.documentElement;
-  const queue: Array<{ element: Element; depth: number }> = [{ element: root, depth: 0 }];
-  const candidates: Candidate[] = [];
+  const stack: Array<{ element: Element; depth: number }> = [{ element: root, depth: 0 }];
+  const selected: Element[] = [];
   const diagnostics: Diagnostic[] = [];
-  const scanBudget = Math.min(20_000, Math.max(maxElements, maxElements * 20));
+  const scanBudget = Math.min(20_000, Math.max(1_000, maxElements * 20));
   let scannedNodes = 0;
+  let visitedElements = 0;
   let maximumDepth = 0;
-  let depthLimited = false;
+  let truncatedBranchCount = 0;
+  let firstTruncatedReference: string | null = null;
+  let skippedHiddenSubtreeCount = 0;
+  let skippedHiddenDirectChildCount = 0;
+  let elementLimited = false;
+  let elementorElements = 0;
+  let interactiveCandidates = 0;
+  let fixedElements = 0;
+  let stickyElements = 0;
 
-  while (queue.length > 0 && scannedNodes < scanBudget) {
-    const current = queue.shift();
+  while (stack.length > 0 && scannedNodes < scanBudget) {
+    const current = stack.pop();
     if (!current) break;
     const { element, depth } = current;
     scannedNodes += 1;
     maximumDepth = Math.max(maximumDepth, depth);
-    if (element.isConnected) {
-      const style = getComputedStyle(element);
-      const visible =
-        style.display !== "none" &&
-        style.visibility !== "hidden" &&
-        Number(style.opacity || "1") > 0;
-      if (includeHidden || visible) {
-        const score = selectionScore(element, style);
-        if (score > 0) candidates.push({ element, score, reference: stableDomReference(element) });
+
+    const tag = element.tagName.toLowerCase();
+    const skipSubtree = SKIPPED_SUBTREES.has(tag);
+    let pruneHiddenSubtree = false;
+    if (!skipSubtree && element.isConnected) {
+      visitedElements += 1;
+      const style = computedStyleFor(element, context);
+      const visibility = inspectEffectiveVisibility(element, context);
+      const visible = visibility.effectiveVisible;
+      if (selected.length < maxElements) {
+        if (includeHidden || visible) selected.push(element);
+      } else {
+        elementLimited = true;
+      }
+      if (classifyElementorMarker(element).matched) elementorElements += 1;
+      if (element.matches(INTERACTIVE_CANDIDATE_SELECTOR)) interactiveCandidates += 1;
+      if (style.position === "fixed") fixedElements += 1;
+      if (style.position === "sticky") stickyElements += 1;
+
+      pruneHiddenSubtree = !includeHidden && !visible && element.children.length > 0;
+      if (pruneHiddenSubtree) {
+        skippedHiddenSubtreeCount += 1;
+        skippedHiddenDirectChildCount += element.children.length;
       }
     }
+
+    if (skipSubtree || pruneHiddenSubtree) continue;
     if (depth >= maxDepth) {
-      if (element.children.length > 0) depthLimited = true;
+      if (element.children.length > 0) {
+        truncatedBranchCount += 1;
+        firstTruncatedReference ??= safeReference(element, context);
+      }
       continue;
     }
-    for (const child of element.children) queue.push({ element: child, depth: depth + 1 });
+    for (let index = element.children.length - 1; index >= 0; index -= 1) {
+      const child = element.children.item(index);
+      if (child) stack.push({ element: child, depth: depth + 1 });
+    }
   }
 
-  if (queue.length > 0) {
+  if (stack.length > 0) {
+    truncatedBranchCount += stack.length;
+    firstTruncatedReference ??= safeReference(stack.at(-1)?.element ?? root, context);
     diagnostics.push(
       diagnostic(
         "EDIS_RUNTIME_SCAN_LIMIT_REACHED",
         "WARNING",
         "DOM scanning stopped at the configured bounded scan budget.",
         true,
-        { limit: scanBudget, scanned: scannedNodes },
+        {
+          limit: scanBudget,
+          scanned: scannedNodes,
+          truncated_branches: truncatedBranchCount,
+          first_truncated_reference: firstTruncatedReference,
+        },
       ),
     );
   }
-  if (depthLimited) {
+  if (truncatedBranchCount > 0 && maximumDepth >= maxDepth) {
     diagnostics.push(
       diagnostic(
         "EDIS_RUNTIME_DEPTH_LIMIT_REACHED",
         "WARNING",
         "DOM traversal reached the configured maximum depth.",
         true,
-        { limit: maxDepth, measured: maximumDepth },
+        {
+          configured_limit: maxDepth,
+          deepest_observed_depth: maximumDepth,
+          truncated_branches: truncatedBranchCount,
+          first_truncated_reference: firstTruncatedReference,
+        },
       ),
     );
   }
-
-  candidates.sort((a, b) => b.score - a.score || a.reference.localeCompare(b.reference, "en"));
-  if (candidates.length > maxElements) {
+  if (elementLimited) {
     diagnostics.push(
       diagnostic(
         "EDIS_RUNTIME_ELEMENT_LIMIT_REACHED",
         "WARNING",
-        "Capture stopped at the configured element limit.",
+        "Element collection stopped at the configured element limit.",
         true,
-        { limit: maxElements, matched: candidates.length },
+        { limit: maxElements, selected: selected.length, scanned: scannedNodes },
       ),
     );
   }
-  const selected = candidates
-    .slice(0, maxElements)
-    .sort((a, b) => a.reference.localeCompare(b.reference, "en"))
-    .map((candidate) => candidate.element);
-  return { elements: selected, scannedNodes, maximumDepth, diagnostics };
+
+  return {
+    elements: selected,
+    scannedNodes,
+    visitedElements,
+    maximumDepth,
+    truncatedBranchCount,
+    firstTruncatedReference,
+    skippedHiddenSubtreeCount,
+    skippedHiddenDirectChildCount,
+    scanBudget,
+    elementBudget: maxElements,
+    metrics: { elementorElements, interactiveCandidates, fixedElements, stickyElements },
+    diagnostics,
+  };
 }
 
-function selectionScore(element: Element, style: CSSStyleDeclaration): number {
-  let score = 0;
-  if (element.hasAttribute("data-elementor-id")) score += 100;
-  if (element.hasAttribute("data-id") && hasElementorClass(element)) score += 90;
-  if (hasElementorClass(element)) score += 60;
-  if (
-    element.matches(
-      "a[href], button, input, select, textarea, summary, [role=button], [role=link], [tabindex]",
-    )
-  )
-    score += 50;
-  if (
-    element.matches(
-      "h1, h2, h3, h4, h5, h6, p, li, img, picture, video, nav, main, section, article, header, footer, form",
-    )
-  )
-    score += 35;
-  if (["grid", "flex", "inline-flex", "inline-grid"].includes(style.display)) score += 30;
-  if (["fixed", "sticky", "absolute"].includes(style.position)) score += 40;
-  if (
-    element.scrollWidth > element.clientWidth + 1 ||
-    element.scrollHeight > element.clientHeight + 1
-  )
-    score += 45;
-  if (element === document.documentElement || element === document.body) score += 80;
-  return score;
+export function isInteractiveCandidate(element: Element): boolean {
+  return element.matches(INTERACTIVE_CANDIDATE_SELECTOR);
 }
 
-function hasElementorClass(element: Element): boolean {
-  return [...element.classList].some(
-    (token) => token.startsWith("elementor-") || token.startsWith("e-"),
-  );
+function safeReference(element: Element, context?: CaptureMeasurementContext): string | null {
+  try {
+    return stableDomReference(element, context?.identity).slice(0, 2_048);
+  } catch {
+    return null;
+  }
 }

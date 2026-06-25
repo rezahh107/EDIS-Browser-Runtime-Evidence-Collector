@@ -1,23 +1,122 @@
 body {
   min-block-size: 100vh;
 }
+.shell {
+  max-width: 68rem;
+  margin-inline: auto;
+}
+.header-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
 .stage-nav {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  border-block: 1px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   background: var(--panel);
 }
-.stage-nav span {
+.stage-nav a {
   white-space: nowrap;
+  color: var(--text);
+  text-decoration: none;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.35rem;
+}
+.stage-nav a:hover {
+  background: var(--panel-muted);
 }
 .metrics-grid {
   display: grid;
   gap: 0.55rem;
 }
+.compact-list {
+  margin: 0.5rem 0 0;
+  padding-inline-start: 1.25rem;
+}
+.badge {
+  display: inline-block;
+  margin-inline-start: 0.5rem;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.badge-complete {
+  color: #15803d;
+}
+.badge-partial {
+  color: #b45309;
+}
+strong[data-kind="complete"] {
+  color: #15803d;
+}
+strong[data-kind="partial"] {
+  color: #b45309;
+}
+strong[data-kind="pending"] {
+  color: var(--muted);
+}
 @media (min-width: 460px) {
   .metrics-grid {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+.page-card {
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel-muted);
+}
+.page-card h3 {
+  margin: 0;
+}
+.page-card strong {
+  overflow-wrap: anywhere;
+}
+
+.product-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.65rem;
+}
+.product-title-row h1 {
+  margin: 0;
+}
+.version-badge {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.feed-steps {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel-muted);
+}
+.feed-steps h3 {
+  margin: 0;
+}
+.feed-steps li[data-kind="complete"] {
+  color: #15803d;
+  font-weight: 700;
+}
+.feed-steps li[data-kind="pending"] {
+  color: var(--muted);
+}
+
+.preflight-blockers {
+  border-inline-start-color: #b91c1c;
+}
+
+.preflight-blockers strong {
+  color: #b91c1c;
 }

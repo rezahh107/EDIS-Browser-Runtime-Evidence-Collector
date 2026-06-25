@@ -1,0 +1,229 @@
+{
+  "$id": "urn:edis:runtime:capture-session:1.1.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EDIS Capture Session",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "artifact_type": {
+          "const": "capture_session"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "session_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "extension_version": {
+              "type": "string",
+              "pattern": "^\\d+\\.\\d+\\.\\d+$"
+            },
+            "browser_family": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "browser_version": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 100
+            },
+            "runtime_environment": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "browser_family": {
+                      "type": "string",
+                      "maxLength": 100
+                    },
+                    "browser_version": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "maxLength": 100
+                    },
+                    "platform_category": {
+                      "enum": [
+                        "DESKTOP",
+                        "MOBILE",
+                        "TABLET",
+                        "UNKNOWN"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "browser_family",
+                    "browser_version",
+                    "platform_category"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "linked_wordpress_bundle_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "user_confirmed_document_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 200
+            },
+            "match_status": {
+              "enum": [
+                "EXACT",
+                "PROBABLE",
+                "USER_CONFIRMED",
+                "UNMATCHED"
+              ]
+            },
+            "captures": {
+              "type": "array",
+              "maxItems": 1000,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "snapshot_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "captured_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "actual_width": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "actual_height": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "element_count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000
+                  },
+                  "overflow_count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000
+                  },
+                  "diagnostic_count": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "screenshot_available": {
+                    "type": "boolean"
+                  },
+                  "completeness_status": {
+                    "enum": [
+                      "COMPLETE",
+                      "PARTIAL"
+                    ]
+                  },
+                  "partial_reasons": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 100
+                    }
+                  },
+                  "truncated_branch_count": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "identity_collision_count": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "status": {
+                    "enum": [
+                      "CREATED",
+                      "CAPTURING",
+                      "COMPLETE",
+                      "PARTIAL",
+                      "FAILED",
+                      "CANCELLED"
+                    ]
+                  }
+                },
+                "required": [
+                  "snapshot_id",
+                  "label",
+                  "captured_at",
+                  "actual_width",
+                  "actual_height",
+                  "element_count",
+                  "overflow_count",
+                  "diagnostic_count",
+                  "screenshot_available",
+                  "completeness_status",
+                  "partial_reasons",
+                  "truncated_branch_count",
+                  "identity_collision_count",
+                  "status"
+                ]
+              }
+            },
+            "status": {
+              "enum": [
+                "CREATED",
+                "CAPTURING",
+                "COMPLETE",
+                "PARTIAL",
+                "FAILED",
+                "CANCELLED"
+              ]
+            }
+          },
+          "required": [
+            "session_id",
+            "name",
+            "created_at",
+            "extension_version",
+            "browser_family",
+            "browser_version",
+            "runtime_environment",
+            "linked_wordpress_bundle_id",
+            "user_confirmed_document_id",
+            "match_status",
+            "captures",
+            "status"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Malicious DOM Fixture</title>
+  </head>
+  <body>
+    <form id="chrome" name="chrome"><input name="runtime" value="not-exported" /></form>
+    <div id="constructor" data-id="__proto__" class="prototype constructor __proto__"></div>
+    <div
+      id="long-attribute"
+      data-token="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5eiJ9.signature"
+      data-long="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    ></div>
+    <script>
+      document.documentElement.dataset.edisReady = "true";
+    </script>
+  </body>
+</html>

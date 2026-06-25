@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Non-finite Geometry Fixture</title>
+  </head>
+  <body>
+    <div id="finite">Finite</div>
+    <div id="non-finite">Non finite</div>
+    <script>
+      const target = document.getElementById("non-finite");
+      target.getBoundingClientRect = () => ({
+        x: Infinity,
+        y: 0,
+        top: 0,
+        right: Infinity,
+        bottom: 10,
+        left: 0,
+        width: Infinity,
+        height: 10,
+        toJSON() {
+          return {};
+        },
+      });
+      document.documentElement.dataset.edisReady = "true";
+    </script>
+  </body>
+</html>

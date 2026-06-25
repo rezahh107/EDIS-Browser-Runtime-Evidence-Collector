@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EDIS Runtime Collector Guide</title>
+    <link rel="stylesheet" href="../ui.css" />
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <main class="shell guide-shell stack">
+      <header class="card stack">
+        <h1 data-i18n="guideTitle">EDIS Runtime Collector guide</h1>
+        <p class="muted" data-i18n="guideIntro">
+          A practical explanation of every screen, option, status, and exported file.
+        </p>
+      </header>
+
+      <article class="guide-fa stack" lang="fa" dir="rtl">
+        <section class="card stack">
+          <h2>۱. این افزونه چه کاری می‌کند؟</h2>
+          <p>
+            EDIS Browser Runtime Evidence Collector فقط پس از اقدام صریح شما، وضعیت رندرشدهٔ همان تب
+            را ثبت می‌کند: Viewport، هندسه، Computed Styleهای مجاز، Visibility، Overflow، روابط DOM،
+            شواهد تعامل، شکل متن و نشانه‌های خام Elementor. افزونه صفحه را تغییر نمی‌دهد، در
+            پس‌زمینه مانیتور دائمی ندارد، چیزی آپلود نمی‌کند و دربارهٔ خوب یا بد بودن طراحی تصمیم
+            نمی‌گیرد.
+          </p>
+          <div class="callout">
+            <strong>مرز مسئولیت:</strong> WordPress دادهٔ ذخیره‌شده را می‌دهد، Browser واقعیت
+            Runtime را می‌دهد، Python آن‌ها را Merge و تحلیل می‌کند و LLM فقط نتیجه را توضیح می‌دهد.
+          </div>
+        </section>
+
+        <section class="card stack">
+          <h2>۲. جریان کار پیشنهادی</h2>
+          <ol>
+            <li>در Options، پروفایل پوشش و گزینه‌های حریم خصوصی را تنظیم کنید.</li>
+            <li>
+              برای اتصال دقیق به دادهٔ وردپرس، فایل <code>bridge/source-context.json</code> را
+              به‌صورت محلی Import کنید. این مرحله اختیاری است.
+            </li>
+            <li>در Side Panel یک Session بسازید.</li>
+            <li>صفحه را در اندازه و وضعیت موردنظر قرار دهید و Capture بگیرید.</li>
+            <li>
+              برای مقایسه Responsive، اندازهٔ مرورگر را عوض کنید و Captureهای بیشتری در همان Session
+              بگیرید.
+            </li>
+            <li>بخش Review را بررسی کنید و سپس پکیج را Validate و Export کنید.</li>
+          </ol>
+        </section>
+
+        <section class="card stack">
+          <h2>۳. Popup، Side Panel و Options</h2>
+          <dl>
+            <dt>Popup</dt>
+            <dd>شروع سریع Capture، انتخاب Session و نمایش وضعیت اجرای همان Capture.</dd>
+            <dt>Side Panel</dt>
+            <dd>رابط اصلی پنج‌مرحله‌ای برای Page Check، Session، Capture، Review و Export.</dd>
+            <dt>Options</dt>
+            <dd>تنظیم پوشش، حریم خصوصی، محدودیت‌ها و Import کردن Bridge Context وردپرس.</dd>
+            <dt>Guide</dt>
+            <dd>همین راهنمای آفلاین؛ هیچ صفحه یا منبع اینترنتی برای نمایش آن لازم نیست.</dd>
+          </dl>
+        </section>
+
+        <section class="card stack">
+          <h2>۴. Session و Observation Set</h2>
+          <p>
+            Session چند مشاهدهٔ مرتبط را گروه‌بندی می‌کند. هر Capture یک Snapshot مستقل با ابعاد
+            واقعی Viewport است. برچسب‌هایی مانند Desktop یا Mobile فقط نام توصیفی شما هستند؛ افزونه
+            آن‌ها را Breakpoint رسمی Elementor فرض نمی‌کند.
+          </p>
+          <p>
+            Observation Set اجازه می‌دهد Python چند Snapshot از یک صفحه را کنار هم قرار دهد. تغییر
+            DOM بین دو Capture ثبت می‌شود، اما افزونه خودش عناصر را بین Viewportها Correlate
+            نمی‌کند.
+          </p>
+        </section>
+
+        <section class="card stack">
+          <h2>۵. WordPress Bridge Context</h2>
+          <p>
+            پلاگین WordPress 3.2.0 فایل محدود و Schema-validated زیر را صادر می‌کند:
+            <code>bridge/source-context.json</code>. آن را از Options انتخاب کنید و در صورت وجود چند
+            سند، Document ID را مشخص کنید.
+          </p>
+          <ul>
+            <li>فایل فقط روی دستگاه شما خوانده می‌شود.</li>
+            <li>افزونه هیچ درخواستی به سایت وردپرس نمی‌فرستد.</li>
+            <li>محتوای Importشده اجرا نمی‌شود.</li>
+            <li>Hash، نسخه Schema و محدودیت اندازه/عمق بررسی می‌شود.</li>
+            <li>
+              Capture بدون Bridge Context همچنان معتبر است، ولی Binding معمولاً ناکافی یا Unmatched
+              است.
+            </li>
+          </ul>
+          <p>
+            تأیید شما فقط Provenance است. تأیید دستی هرگز ID تکراری یا Evidence متعارض را به
+            <code>EXACT</code> ارتقا نمی‌دهد.
+          </p>
+        </section>
+
+        <section class="card stack">
+          <h2>۶. Raw Marker و Source Binding چه تفاوتی دارند؟</h2>
+          <dl>
+            <dt>Raw Elementor markers</dt>
+            <dd>
+              واقعیت قابل مشاهده مانند <code>data-elementor-id</code>، <code>data-id</code> و وجود
+              کلاس‌های Elementor؛ بدون تفسیر منبع.
+            </dd>
+            <dt>Source binding</dt>
+            <dd>
+              تطبیق اولیه با Element Structure Index واردشده. حالت‌ها: EXACT، PROBABLE، AMBIGUOUS و
+              UNMATCHED.
+            </dd>
+            <dt>Final correlation</dt>
+            <dd>
+              متعلق به Python است. Browser هیچ Correlation نهایی، Effective Value یا Resolve متغیر و
+              Global Class تولید نمی‌کند.
+            </dd>
+          </dl>
+        </section>
+
+        <section class="card stack">
+          <h2>۷. هویت صفحه، Widgetها و Section‌بندی</h2>
+          <p>
+            کارت «شواهد صفحه و منبع» در Side Panel صفحهٔ رندرشده را از اسناد منبع وردپرس جدا می‌کند.
+            یک صفحه می‌تواند هم‌زمان شامل Page، Header، Footer، Popup یا Loop Template باشد. هر
+            Runtime Node دارای Evidence Lineage است و در صورت وجود Source Context معتبر، به سند،
+            Element و نزدیک‌ترین Section/Container منبع متصل می‌شود.
+          </p>
+          <p>
+            افزونه نام‌هایی مانند Hero یا Pricing را از ظاهر حدس نمی‌زند. Widget Type دقیق و Editor
+            Label فقط از Source Context معتبر می‌آید. Label ناحیه فقط از Editor Label صریح، HTML ID
+            مجاز، Landmark Tag/Role یا Marker فنی Elementor ثبت می‌شود.
+          </p>
+          <p>
+            هر Snapshot شامل <code>runtime_regions</code> و <code>page_structure_summary</code> است
+            و پکیج فایل <code>structure/page-structure-summary.json</code> را نیز دارد. مدل نهایی
+            Merged Page Graph همچنان متعلق به Python است.
+          </p>
+        </section>
+
+        <section class="card stack">
+          <h2>۸. Capture Intent و ماژول‌ها</h2>
+          <p>Capture Intent فقط هدف مشاهده را ثبت می‌کند و Rule یا امتیاز اجرا نمی‌کند.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>گزینه</th>
+                <th>دادهٔ خروجی</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Text shape</td>
+                <td>تعداد کلمات/گرافیم، Line Box، Wrap و Clipping بدون متن خام</td>
+              </tr>
+              <tr>
+                <td>Interaction facts</td>
+                <td>Tag، Role، Tabindex، Disabled، Pointer Events و وجود Href بدون مقدار Href</td>
+              </tr>
+              <tr>
+                <td>Relationship graph</td>
+                <td>
+                  Parent واقعی DOM، نزدیک‌ترین Parent صادرشده و Ancestorهای Position/Scroll/Clip
+                </td>
+              </tr>
+              <tr>
+                <td>Color styles</td>
+                <td>Computed Styleهای رنگی Allowlist شده</td>
+              </tr>
+              <tr>
+                <td>Screenshot</td>
+                <td>فقط تصویر Viewport قابل مشاهده؛ پیش‌فرض خاموش</td>
+              </tr>
+              <tr>
+                <td>Text preview</td>
+                <td>پیش‌نمایش کوتاه و Redacted؛ پیش‌فرض خاموش</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="card stack">
+          <h2>۹. Capture Readiness</h2>
+          <p>
+            پیش از اندازه‌گیری، افزونه برای مدت محدود وضعیت Ready State، Font API، تصاویر ناقص،
+            Animationهای فعال و تغییر ابعاد Document/Viewport را نمونه‌برداری می‌کند. این فرایند
+            حداکثر زمان سخت دارد، DOM را تغییر نمی‌دهد، Animation را متوقف نمی‌کند و پس از Timeout
+            نیز Capture ادامه پیدا می‌کند.
+          </p>
+          <p>حالت‌های فرایند: STABLE، UNSTABLE، TIMEOUT، INSUFFICIENT و ERROR.</p>
+        </section>
+
+        <section class="card stack">
+          <h2>۱۰. پروفایل‌های پوشش</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>پروفایل</th>
+                <th>حد عناصر</th>
+                <th>حد عمق</th>
+                <th>کاربرد</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Standard</td>
+                <td>750</td>
+                <td>24</td>
+                <td>بیشتر صفحات و Capture سریع‌تر</td>
+              </tr>
+              <tr>
+                <td>Deep DOM</td>
+                <td>1000</td>
+                <td>40</td>
+                <td>صفحات عمیق Elementor</td>
+              </tr>
+              <tr>
+                <td>Custom</td>
+                <td>حداکثر 1000</td>
+                <td>حداکثر 64</td>
+                <td>آزمایش کنترل‌شده با بودجه مشخص</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            اگر Truncated Branches بیشتر از صفر باشد، Capture سالم ولی Partial است. افزایش نامحدود
+            مجاز نیست؛ بودجه‌ها برای جلوگیری از مصرف حافظه و Loopهای طولانی باقی می‌مانند.
+          </p>
+        </section>
+
+        <section class="card stack">
+          <h2>۱۱. Review و معنی وضعیت‌ها</h2>
+          <dl>
+            <dt>Package integrity</dt>
+            <dd>سلامت Schema، Canonical JSON، Hash، Manifest، References و ZIP.</dd>
+            <dt>Capture completeness</dt>
+            <dd>COMPLETE یا PARTIAL بودن پوشش DOM؛ مستقل از سلامت پکیج.</dd>
+            <dt>Runtime availability</dt>
+            <dd>
+              AVAILABLE، PARTIAL، INSUFFICIENT، DISABLED، UNAVAILABLE، NOT_APPLICABLE یا ERROR.
+            </dd>
+            <dt>Binding state</dt>
+            <dd>Evidence اولیهٔ اتصال به Source: EXACT، PROBABLE، AMBIGUOUS یا UNMATCHED.</dd>
+            <dt>Diagnostics</dt>
+            <dd>Semantic یا Operational؛ متن ترجمه‌شده وارد Semantic Hash نمی‌شود.</dd>
+          </dl>
+        </section>
+
+        <section class="card stack">
+          <h2>۱۲. حریم خصوصی</h2>
+          <p>
+            وقتی Include normalized URL path خاموش است، Path خام و locator_facts صادر نمی‌شوند و فقط
+            Hash مستعار Locator باقی می‌ماند. Hash مسیر همچنان می‌تواند دادهٔ حساس مستعار باشد. وقتی
+            Hidden Elements خاموش است، عناصر پنهان‌شده توسط Ancestor نیز حذف می‌شوند.
+          </p>
+          <ul>
+            <li>مقدار Input، Password، Hidden Input، Textarea و Select خوانده یا صادر نمی‌شود.</li>
+            <li>Href، Form Action، Event Handler و مقدار aria-controls صادر نمی‌شود.</li>
+            <li>Query String، Fragment و Credentials در Locator پیش‌فرض حذف می‌شوند.</li>
+            <li>Contenteditable از Text Shape و Preview کنار گذاشته می‌شود.</li>
+            <li>Screenshot و Text Preview پیش‌فرض خاموش‌اند و نیاز به انتخاب صریح دارند.</li>
+            <li>هیچ Telemetry، Analytics، Remote API یا Upload خودکاری وجود ندارد.</li>
+          </ul>
+        </section>
+
+        <section class="card stack">
+          <h2>۱۳. وضعیت سازگاری با WordPress 7</h2>
+          <p>
+            نسخه 1.6.16 یک Fixture مصنوعی کنترل‌شده برای کلاس‌های مستندشدهٔ Visibility در WordPress
+            7 دارد. این Fixture فقط Pruning زیرشاخهٔ واقعاً پنهان در Viewport را آزمایش می‌کند و با
+            برچسب <code>verified_by_synthetic_fixture</code> ثبت شده است. این مورد Export واقعی
+            وردپرس یا اثبات سازگاری کامل WordPress 7+، Multisite، Elementor، Theme یا PHP نیست.
+          </p>
+        </section>
+
+        <section class="card stack">
+          <h2>۱۴. فایل‌های ZIP نسخه 1.6.16</h2>
+          <pre><code>package-manifest.json
+checksums.sha256
+README.txt
+observation-set.json
+context/runtime-context.json
+context/source-context-reference.json        (اختیاری)
+coverage/runtime-coverage.json
+coverage/evidence-coverage.json
+coverage/source-binding-coverage.json
+coverage/source-runtime-cardinality.json
+structure/page-structure-summary.json
+observations/observation-0001/snapshot.json
+observations/observation-0001/screenshot.png (اختیاری)
+diagnostics/diagnostics.json
+validation/package-validation.json
+schemas/...</code></pre>
+          <p>
+            فایل یا پوشهٔ اختیاری خالی ساخته نمی‌شود. همه JSONها با EDIS-CJ-1 و همه Digestها به شکل
+            <code>sha256:...</code> تولید می‌شوند.
+          </p>
+        </section>
+
+        <section class="card stack">
+          <h2>۱۵. برای خروجی بهتر</h2>
+          <ol>
+            <li>در صورت نیاز به تحلیل صفحه عمومی، Logged-out یا Incognito Capture بگیرید.</li>
+            <li>
+              صفحه را به نقطه Scroll موردنظر ببرید و Popupها را آگاهانه باز یا بسته نگه دارید.
+            </li>
+            <li>برای صفحه عمیق، ابتدا Standard و در صورت Depth Limit از Deep DOM استفاده کنید.</li>
+            <li>برای Responsive، چند Capture جدا در یک Session با ابعاد واقعی متفاوت بگیرید.</li>
+            <li>
+              Bridge Context همان نسخهٔ Source را Import کنید که قرار است همراه Runtime به Python
+              داده شود.
+            </li>
+            <li>پس از Export، فایل WordPress و Browser را جداگانه به Python بدهید.</li>
+          </ol>
+        </section>
+
+        <section class="card stack">
+          <h2>۱۶. چه نتیجه‌ای از افزونه نگیرید؟</h2>
+          <p>
+            این افزونه نمی‌گوید Padding خوب است، Touch Target کوچک است، Responsive ضعیف است یا DOM
+            پیچیده است. اعداد و شواهد را ثبت می‌کند؛ Formulaها، Policyها، Final Correlation و UX
+            Finding فقط در Python اجرا می‌شوند.
+          </p>
+        </section>
+      </article>
+
+      <article class="guide-en stack" lang="en" dir="ltr">
+        <section class="card stack">
+          <h2>1. What the extension does</h2>
+          <p>
+            EDIS Browser Runtime Evidence Collector records the rendered state of the active tab
+            only after an explicit user action. It captures viewport facts, geometry, allowlisted
+            computed styles, visibility, overflow, DOM relationships, interaction facts,
+            privacy-safe text shape, readiness observations, and raw Elementor markers. It does not
+            modify the page, monitor it persistently, upload data, score UX, or generate fixes.
+          </p>
+          <div class="callout">
+            <strong>Boundary:</strong> WordPress supplies saved source evidence, Browser supplies
+            runtime observations, Python verifies/merges/analyzes them, and the LLM explains the
+            Python result.
+          </div>
+        </section>
+
+        <section class="card stack">
+          <h2>2. Recommended workflow</h2>
+          <ol>
+            <li>Choose coverage and privacy options.</li>
+            <li>Optionally import <code>bridge/source-context.json</code> from WordPress 3.2.0.</li>
+            <li>Create a session in the side panel.</li>
+            <li>Capture the page at the required viewport and state.</li>
+            <li>Add more observations to the same session for responsive comparison.</li>
+            <li>Review completeness and diagnostics, then validate and export.</li>
+          </ol>
+        </section>
+
+        <section class="card stack">
+          <h2>3. Screens</h2>
+          <dl>
+            <dt>Popup</dt>
+            <dd>Quick capture, current session selection, and live capture state.</dd>
+            <dt>Side panel</dt>
+            <dd>The full page-check, session, capture, review, and export workflow.</dd>
+            <dt>Options</dt>
+            <dd>Coverage, privacy, hard limits, and local Bridge Context import.</dd>
+            <dt>Guide</dt>
+            <dd>This bundled offline documentation.</dd>
+          </dl>
+        </section>
+
+        <section class="card stack">
+          <h2>4. Sessions and observation sets</h2>
+          <p>
+            A session groups independent snapshots of one review task. Labels such as Desktop or
+            Mobile are descriptive only; measured viewport dimensions are authoritative. The
+            extension never infers official Elementor breakpoint names from width.
+          </p>
+        </section>
+
+        <section class="card stack">
+          <h2>5. WordPress Bridge Context</h2>
+          <p>
+            Import the bounded, schema-validated <code>bridge/source-context.json</code> artifact to
+            enable preliminary source binding. Parsing is local, imported content is never executed,
+            no WordPress request is made, and capture without context remains valid.
+          </p>
+          <p>
+            User confirmation is provenance only and cannot upgrade duplicate or conflicting
+            evidence to EXACT.
+          </p>
+        </section>
+
+        <section class="card stack">
+          <h2>6. Raw markers, binding, and final correlation</h2>
+          <dl>
+            <dt>Raw markers</dt>
+            <dd>Observed data-elementor-id, data-id, and Elementor class facts.</dd>
+            <dt>Source binding</dt>
+            <dd>
+              Preliminary EXACT, PROBABLE, AMBIGUOUS, or UNMATCHED evidence against the imported
+              source index.
+            </dd>
+            <dt>Final correlation</dt>
+            <dd>
+              Python-owned. The extension does not resolve source values, variables, classes, or
+              responsive inheritance.
+            </dd>
+          </dl>
+        </section>
+
+        <section class="card stack">
+          <h2>7. Page identity, widgets, and sections</h2>
+          <p>
+            The Page and source evidence card separates the rendered page from imported WordPress
+            source documents. One rendered page may contain the page document, header, footer,
+            popup, or loop templates. Each runtime node has evidence lineage and, when validated
+            source evidence is available, may reference its source document, element, and nearest
+            source section or container.
+          </p>
+          <p>
+            The extension never guesses labels such as Hero or Pricing from visual appearance. Exact
+            widget types and editor labels come only from validated Source Context. Region labels
+            are limited to explicit editor labels, privacy-permitted HTML IDs, landmark tags/roles,
+            or technical Elementor structure markers.
+          </p>
+          <p>
+            Snapshots contain <code>runtime_regions</code> and <code>page_structure_summary</code>;
+            the package also contains <code>structure/page-structure-summary.json</code>. Python
+            owns the merged page graph and final correlation.
+          </p>
+        </section>
+
+        <section class="card stack">
+          <h2>8. Evidence modules</h2>
+          <ul>
+            <li>
+              <strong>Text shape:</strong> counts, wrapping, line boxes, and clipping without raw
+              text.
+            </li>
+            <li>
+              <strong>Interaction facts:</strong> tag, role, tabindex, disabled state, pointer
+              events, and presence flags.
+            </li>
+            <li>
+              <strong>Relationship graph:</strong> real DOM parent plus nearest emitted, positioned,
+              scrolling, and clipping ancestors.
+            </li>
+            <li>
+              <strong>Capture readiness:</strong> bounded observations of document, fonts, images,
+              animations, and layout stability.
+            </li>
+            <li>
+              <strong>Screenshot/text preview:</strong> separate explicit opt-ins, disabled by
+              default.
+            </li>
+          </ul>
+        </section>
+
+        <section class="card stack">
+          <h2>9. Coverage profiles</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Profile</th>
+                <th>Elements</th>
+                <th>Depth</th>
+                <th>Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Standard</td>
+                <td>750</td>
+                <td>24</td>
+                <td>Most pages</td>
+              </tr>
+              <tr>
+                <td>Deep DOM</td>
+                <td>1000</td>
+                <td>40</td>
+                <td>Deeply nested Elementor pages</td>
+              </tr>
+              <tr>
+                <td>Custom</td>
+                <td>Up to 1000</td>
+                <td>Up to 64</td>
+                <td>Controlled bounded testing</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="card stack">
+          <h2>10. Reading Review</h2>
+          <dl>
+            <dt>Package integrity</dt>
+            <dd>Schema, canonical JSON, hashes, references, manifest, and ZIP correctness.</dd>
+            <dt>Capture completeness</dt>
+            <dd>Whether bounded traversal omitted branches; independent from package integrity.</dd>
+            <dt>Runtime availability</dt>
+            <dd>
+              AVAILABLE, PARTIAL, INSUFFICIENT, DISABLED, UNAVAILABLE, NOT_APPLICABLE, or ERROR.
+            </dd>
+            <dt>Binding state</dt>
+            <dd>Preliminary source-binding evidence, not final correlation.</dd>
+            <dt>Diagnostics</dt>
+            <dd>
+              Semantic or operational facts; localized prose is excluded from semantic hashes.
+            </dd>
+          </dl>
+        </section>
+
+        <section class="card stack">
+          <h2>11. Privacy rules</h2>
+          <p>
+            When raw path inclusion is disabled, the raw path and locator facts are withheld and
+            only a pseudonymous locator hash remains. Hashed paths can still be privacy-sensitive.
+            With hidden-element collection disabled, descendants hidden by an ancestor are excluded.
+          </p>
+          <ul>
+            <li>Input, password, hidden-input, textarea, and select values are not exported.</li>
+            <li>
+              Href values, form actions, event handlers, and aria-controls values are not exported.
+            </li>
+            <li>Queries, fragments, and credentials are excluded from default locator evidence.</li>
+            <li>Contenteditable content is excluded from text shape and preview.</li>
+            <li>
+              No telemetry, analytics, remote API, automatic upload, cookie, or history access
+              exists.
+            </li>
+          </ul>
+        </section>
+
+        <section class="card stack">
+          <h2>12. WordPress 7 compatibility status</h2>
+          <p>
+            Version 1.6.16 includes a controlled synthetic fixture for the documented WordPress 7
+            viewport-visibility classes. It verifies hidden-subtree pruning only and is labeled
+            <code>verified_by_synthetic_fixture</code>. It is not a real WordPress export or proof
+            of complete WordPress 7+, Multisite, Elementor, theme, or PHP compatibility.
+          </p>
+        </section>
+
+        <section class="card stack">
+          <h2>13. Runtime package 1.4.1</h2>
+          <pre><code>package-manifest.json
+checksums.sha256
+README.txt
+observation-set.json
+context/runtime-context.json
+context/source-context-reference.json        (optional)
+coverage/runtime-coverage.json
+coverage/evidence-coverage.json
+coverage/source-binding-coverage.json
+coverage/source-runtime-cardinality.json
+structure/page-structure-summary.json
+observations/observation-0001/snapshot.json
+observations/observation-0001/screenshot.png (optional)
+diagnostics/diagnostics.json
+validation/package-validation.json
+schemas/...</code></pre>
+          <p>Optional files are emitted only when real content exists.</p>
+        </section>
+
+        <section class="card stack">
+          <h2>14. What the extension does not conclude</h2>
+          <p>
+            It does not decide whether spacing, responsive behavior, typography, touch targets, DOM
+            depth, or grouping are good or bad. It records evidence; versioned Python rules and
+            formulas produce findings later.
+          </p>
+        </section>
+      </article>
+    </main>
+    <section class="card stack" lang="fa" dir="rtl">
+      <h2>حداقل خوراک پایتون در نسخه 1.6.16</h2>
+      <p>
+        Source Context همان صفحه را وارد و سند را انتخاب کنید؛ سپس Desktop، Tablet و Mobile را با سه
+        عرض واقعی متمایز در یک Session ثبت کنید. برچسب پروفایل فقط Provenance است و Breakpoint واقعی
+        را تعیین نمی‌کند. اگر Feed آماده نباشد، Blockerها حفظ می‌شوند و می‌توانید همان واقعیت‌های
+        ثبت‌شده را به‌صورت Runtime Evidence صادر کنید.
+      </p>
+    </section>
+    <section class="card stack" lang="en">
+      <h2>Minimum Python Feed in 1.6.16</h2>
+      <p>
+        Import and confirm the matching Source Context, then capture Desktop, Tablet, and Mobile at
+        three distinct measured widths in one session. Requested profiles are provenance labels, not
+        resolved breakpoints. If the feed is not ready, blockers remain in force and the same
+        recorded facts may be exported as ordinary Runtime Evidence.
+      </p>
+    </section>
+    <script src="index.js"></script>
+  </body>
+</html>

@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:edis:schema:browser:python-feed-readiness",
+  "allOf": [
+    {
+      "$ref": "artifact-envelope.schema.json"
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "schema_id": {
+      "const": "urn:edis:schema:browser:python-feed-readiness"
+    },
+    "schema_version": {
+      "const": "1.1.0"
+    },
+    "artifact_type": {
+      "const": "python_feed_readiness"
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "export_allowed",
+        "source_context_present",
+        "source_context_confirmed",
+        "source_context_hash_matches",
+        "observation_count",
+        "distinct_viewport_width_count",
+        "requested_profiles_present",
+        "missing_required_profiles",
+        "page_fingerprint_consistent",
+        "source_context_reference_consistent",
+        "canonical_scroll_state",
+        "noncanonical_scroll_observations",
+        "page_visibility_valid",
+        "invalid_visibility_observations",
+        "prerendering_absent",
+        "prerendering_observations",
+        "admin_bar_absent",
+        "admin_bar_observations",
+        "viewport_images_ready",
+        "unresolved_viewport_image_observations",
+        "canonical_environment_valid",
+        "blocking_codes"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "READY",
+            "INSUFFICIENT_EVIDENCE",
+            "INVALID"
+          ]
+        },
+        "export_allowed": {
+          "type": "boolean"
+        },
+        "source_context_present": {
+          "type": "boolean"
+        },
+        "source_context_confirmed": {
+          "type": "boolean"
+        },
+        "source_context_hash_matches": {
+          "type": "boolean"
+        },
+        "observation_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "distinct_viewport_width_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requested_profiles_present": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "DESKTOP",
+              "TABLET",
+              "MOBILE",
+              "CUSTOM"
+            ]
+          }
+        },
+        "missing_required_profiles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "DESKTOP",
+              "TABLET",
+              "MOBILE"
+            ]
+          }
+        },
+        "page_fingerprint_consistent": {
+          "type": "boolean"
+        },
+        "source_context_reference_consistent": {
+          "type": "boolean"
+        },
+        "blocking_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "canonical_scroll_state": {
+          "type": "boolean"
+        },
+        "noncanonical_scroll_observations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "page_visibility_valid": {
+          "type": "boolean"
+        },
+        "invalid_visibility_observations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "prerendering_absent": {
+          "type": "boolean"
+        },
+        "prerendering_observations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "admin_bar_absent": {
+          "type": "boolean"
+        },
+        "admin_bar_observations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "viewport_images_ready": {
+          "type": "boolean"
+        },
+        "unresolved_viewport_image_observations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "canonical_environment_valid": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
