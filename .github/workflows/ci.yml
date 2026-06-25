@@ -20,7 +20,22 @@ jobs:
         with:
           node-version: "20"
           cache: npm
-      - run: npm ci
+      - name: Normalize npm lockfile registry URLs
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const lockPath = 'package-lock.json';
+          let lock = fs.readFileSync(lockPath, 'utf8');
+          lock = lock.replaceAll(
+            'https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/',
+            'https://registry.npmjs.org/'
+          );
+          if (lock.includes('packages.applied-caas-gateway1.internal.api.openai.org')) {
+            throw new Error('package-lock.json still contains an internal registry URL.');
+          }
+          fs.writeFileSync(lockPath, lock);
+          NODE
+      - run: npm ci --registry=https://registry.npmjs.org/
       - run: npm run release:gate:no-browser
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
@@ -45,7 +60,22 @@ jobs:
         with:
           node-version: "20"
           cache: npm
-      - run: npm ci
+      - name: Normalize npm lockfile registry URLs
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const lockPath = 'package-lock.json';
+          let lock = fs.readFileSync(lockPath, 'utf8');
+          lock = lock.replaceAll(
+            'https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/',
+            'https://registry.npmjs.org/'
+          );
+          if (lock.includes('packages.applied-caas-gateway1.internal.api.openai.org')) {
+            throw new Error('package-lock.json still contains an internal registry URL.');
+          }
+          fs.writeFileSync(lockPath, lock);
+          NODE
+      - run: npm ci --registry=https://registry.npmjs.org/
       - run: npx playwright install --with-deps chromium
       - run: npm run build:chrome
       - run: xvfb-run --auto-servernum npm run test:e2e:smoke
@@ -71,7 +101,22 @@ jobs:
         with:
           node-version: "20"
           cache: npm
-      - run: npm ci
+      - name: Normalize npm lockfile registry URLs
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const lockPath = 'package-lock.json';
+          let lock = fs.readFileSync(lockPath, 'utf8');
+          lock = lock.replaceAll(
+            'https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/',
+            'https://registry.npmjs.org/'
+          );
+          if (lock.includes('packages.applied-caas-gateway1.internal.api.openai.org')) {
+            throw new Error('package-lock.json still contains an internal registry URL.');
+          }
+          fs.writeFileSync(lockPath, lock);
+          NODE
+      - run: npm ci --registry=https://registry.npmjs.org/
       - run: npx playwright install --with-deps chromium
       - run: xvfb-run --auto-servernum npm run release:gate:chrome
         env:
