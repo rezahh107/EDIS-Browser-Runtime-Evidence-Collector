@@ -5,6 +5,10 @@ import { mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
+import {
+  evaluateFullReleaseQualification,
+  writeFullReleaseQualification,
+} from "./full-release-qualification.mjs";
 
 const args = process.argv.slice(2);
 const noBrowser = args.includes("--no-browser");
@@ -47,7 +51,7 @@ const commands = [
   step("reproducible-build", "npm", ["run", "build:reproducible"], {
     timeoutMs: 300_000,
   }),
-  step("source-manifest", "npm", ["run", "manifest:source"]),
+  step("source-manifest-check", "npm", ["run", "manifest:source:check"]),
   step("source-package", "npm", ["run", "package:source"]),
   step("release-artifact-provenance", "npm", ["run", "validate:release-provenance"], {
     timeoutMs: 300_000,
@@ -91,21 +95,23 @@ for (const command of commands) {
 
 const unavailable = results.some((item) => item.exitCode === 2);
 const failed = results.some((item) => item.exitCode !== 0 && item.exitCode !== 2);
-const releaseGateExitCode = unavailable ? 2 : failed ? 1 : 0;
+const initialExitCode = unavailable ? 2 : failed ? 1 : 0;
+const mode = noBrowser ? "NO_BROWSER" : browser === "all" ? "FULL_TWO_TARGET" : "PARTIAL_TARGET";
+const qualificationScope =
+  browser === "all" ? "FULL_TWO_TARGET_RELEASE_GATE" : "PARTIAL_TARGET_QUALIFICATION";
 const selectedBrowserStatus = noBrowser
   ? {
       status: "NOT_RUN",
       reason: "No-browser mode explicitly selected; full store readiness is impossible.",
     }
   : {
-      status: releaseGateExitCode === 0 ? "PASSED" : unavailable ? "UNAVAILABLE" : "FAILED",
+      status: initialExitCode === 0 ? "PASSED" : unavailable ? "UNAVAILABLE" : "FAILED",
       browser,
       targets: browserTargets,
-      qualificationScope:
-        browser === "all" ? "FULL_TWO_TARGET_RELEASE_GATE" : "PARTIAL_TARGET_QUALIFICATION",
+      qualificationScope,
       fullTwoTargetRequired: true,
     };
-const report = {
+const reportBase = {
   schemaVersion: 1,
   projectVersion: JSON.parse(await readFile("package.json", "utf8")).version,
   generatedAt: new Date().toISOString(),
@@ -113,11 +119,47 @@ const report = {
   architecture: process.arch,
   nodeVersion: process.version,
   packageManagerVersion: await commandOutput("npm", ["--version"]),
-  mode: noBrowser ? "NO_BROWSER" : browser === "all" ? "FULL_TWO_TARGET" : "PARTIAL_TARGET",
+  mode,
   browser: selectedBrowserStatus,
   commands: results,
-  exitCode: releaseGateExitCode,
+  exitCode: initialExitCode,
   fullStoreReadinessDeclared: false,
+};
+
+let fullQualification = null;
+if (!noBrowser && browser === "all") {
+  let browserQualification = null;
+  try {
+    browserQualification = JSON.parse(
+      await readFile("artifacts/browser-e2e/browser-qualification.json", "utf8"),
+    );
+  } catch {
+    browserQualification = null;
+  }
+  fullQualification = evaluateFullReleaseQualification(reportBase, browserQualification);
+  await writeFullReleaseQualification(
+    fullQualification,
+    path.join(root, "full-release-qualification.json"),
+  );
+}
+
+const releaseGateExitCode =
+  initialExitCode !== 0
+    ? initialExitCode
+    : fullQualification && fullQualification.full_release_gate_passed !== true
+      ? 1
+      : initialExitCode;
+const report = {
+  ...reportBase,
+  browser: noBrowser
+    ? selectedBrowserStatus
+    : {
+        ...selectedBrowserStatus,
+        status:
+          releaseGateExitCode === 0 ? "PASSED" : releaseGateExitCode === 2 ? "UNAVAILABLE" : "FAILED",
+      },
+  exitCode: releaseGateExitCode,
+  full_release_gate_passed: fullQualification?.full_release_gate_passed === true,
 };
 await writeFile(path.join(root, "command-results.json"), `${JSON.stringify(report, null, 2)}\n`);
 await writeFile(path.join(root, "command-results.md"), renderMarkdown(report));
@@ -305,5 +347,5 @@ function renderMarkdown(report) {
   const rows = report.commands
     .map((item) => `| ${item.id} | \`${item.command} ${item.args.join(" ")}\` | ${item.exitCode} |`)
     .join("\n");
-  return `# Release Gate Results\n\n- Version: ${report.projectVersion}\n- Mode: ${report.mode}\n- Exit code: ${report.exitCode}\n- Browser status: ${report.browser.status}\n- Full store readiness declared: no\n\n| Gate | Command | Exit code |\n|---|---|---:|\n${rows}\n`;
+  return `# Release Gate Results\n\n- Version: ${report.projectVersion}\n- Mode: ${report.mode}\n- Exit code: ${report.exitCode}\n- Browser status: ${report.browser.status}\n- Full two-target release gate passed: ${report.full_release_gate_passed ? "yes" : "no"}\n- Full store readiness declared: no\n\n| Gate | Command | Exit code |\n|---|---|---:|\n${rows}\n`;
 }
