@@ -139,8 +139,7 @@ async function writePinnedExtensionPreference(
   }
   await writeFile(
     path.join(profile, "Default", "Preferences"),
-    `${JSON.stringify({ extensions: { pinned_extensions: [extensionId] } })}
-`,
+    `${JSON.stringify({ extensions: { pinned_extensions: [extensionId] } })}\n`,
     "utf8",
   );
 }
@@ -220,6 +219,7 @@ export async function startCapture(
     readonly includeTitle?: boolean;
     readonly includeHidden?: boolean;
     readonly includeTextPreview?: boolean;
+    readonly readinessHardTimeoutMs?: number;
     readonly maxTextPreviewChars?: number;
     readonly maxElements?: number;
     readonly maxDepth?: number;
@@ -240,6 +240,9 @@ export async function startCapture(
       ...(options?.includeTextPreview === undefined
         ? {}
         : { includeTextPreview: options.includeTextPreview }),
+      ...(options?.readinessHardTimeoutMs === undefined
+        ? {}
+        : { readinessHardTimeoutMs: options.readinessHardTimeoutMs }),
       ...(options?.maxTextPreviewChars === undefined
         ? {}
         : { maxTextPreviewChars: options.maxTextPreviewChars }),
