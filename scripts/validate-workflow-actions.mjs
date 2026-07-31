@@ -1,23 +1,6 @@
-import { execFileSync } from "node:child_process";
-import { mkdirSync } from "node:fs";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-
-if (process.env.GITHUB_ACTIONS === "true") {
-  mkdirSync("artifacts/packages", { recursive: true });
-  execFileSync("tar", [
-    "--exclude=.git",
-    "--exclude=dist",
-    "--exclude=artifacts",
-    "--exclude=coverage",
-    "--exclude=test-results",
-    "--exclude=playwright-report",
-    "-czf",
-    "artifacts/packages/rcg002-workspace-bootstrap.tgz",
-    ".",
-  ]);
-}
 
 const index = process.argv.indexOf("--root");
 const workflowRoot = path.resolve(index >= 0 ? process.argv[index + 1] : ".github/workflows");
