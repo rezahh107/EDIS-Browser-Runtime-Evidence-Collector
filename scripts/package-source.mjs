@@ -2,9 +2,14 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { buildCanonicalSourceManifest, canonicalManifestText } from "./source-inventory.mjs";
 
 const metadata = JSON.parse(await readFile("package.json", "utf8"));
-const manifest = JSON.parse(await readFile("GENERATION_MANIFEST.json", "utf8"));
+const committedManifestText = await readFile("GENERATION_MANIFEST.json", "utf8");
+const expectedManifestText = canonicalManifestText(await buildCanonicalSourceManifest());
+if (committedManifestText !== expectedManifestText)
+  throw new Error("Committed source manifest is stale; source packaging is blocked.");
+const manifest = JSON.parse(committedManifestText);
 if (manifest.extension_version !== metadata.version)
   throw new Error("Source manifest version diverged from package version.");
 const output = path.resolve(process.env.EDIS_PACKAGE_DIR ?? "artifacts/packages");
