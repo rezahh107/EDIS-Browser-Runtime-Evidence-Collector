@@ -1,6 +1,7 @@
 import { stableDomReference } from "../../domain/identity";
 import {
   ancestorMeasurementsFor,
+  boundingRectFor,
   computedStyleFor,
   styleHidesElement,
   type CaptureMeasurementContext,
@@ -47,4 +48,20 @@ export function inspectEffectiveVisibility(
   if (context && context.document === element.ownerDocument)
     context.visibility.set(element, observation);
   return observation;
+}
+
+export function isEffectivelyVisibleInViewport(
+  element: Element,
+  context?: CaptureMeasurementContext,
+): boolean {
+  if (!inspectEffectiveVisibility(element, context).effectiveVisible) return false;
+  const rect = boundingRectFor(element, context);
+  return (
+    rect.width > 0 &&
+    rect.height > 0 &&
+    rect.bottom > 0 &&
+    rect.right > 0 &&
+    rect.top < window.innerHeight &&
+    rect.left < window.innerWidth
+  );
 }
