@@ -51,6 +51,7 @@
     "performance:report": "node scripts/personal-performance-report.mjs",
     "release:gate:personal": "node scripts/personal-release-gate.mjs",
     "manifest:source": "node scripts/generate-source-manifest.mjs",
+    "manifest:source:check": "node scripts/check-source-manifest.mjs",
     "browser:qualification:audit": "node scripts/aggregate-browser-qualification.mjs",
     "release:audit:personal": "node scripts/audit-personal-release-evidence.mjs",
     "package:personal": "node scripts/package-personal-release.mjs",
@@ -60,11 +61,11 @@
     "validate:workflow-actions": "node scripts/validate-workflow-actions.mjs",
     "package:source": "node scripts/package-source.mjs",
     "validate:release-provenance": "node scripts/verify-release-provenance.mjs",
-    "package:release:verified": "npm run build && node scripts/package-release.mjs && npm run manifest:source && npm run package:source && npm run validate:release-provenance",
+    "package:release:verified": "npm run build && node scripts/package-release.mjs && npm run manifest:source:check && npm run package:source && npm run validate:release-provenance",
     "release:gate:all": "node scripts/release-gate.mjs --browser all",
     "test:e2e:all": "node scripts/run-e2e.mjs --browser chrome && node scripts/run-e2e.mjs --browser edge",
     "validate:runtime:personal": "node scripts/validate-personal-runtime-packages.mjs"
   },
   "type": "module",
-  "version": "1.6.19"
+  "version": "1.6.20"
 }
