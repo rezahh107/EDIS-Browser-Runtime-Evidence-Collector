@@ -28,7 +28,7 @@ export async function clearPreferences(): Promise<void> {
   await chrome.storage.local.remove(KEY);
 }
 
-function migratePreferences(value: unknown): CollectorPreferences | null {
+export function migratePreferences(value: unknown): CollectorPreferences | null {
   if (!isRecord(value) || ![1, 2, 3, 4].includes(Number(value.schemaVersion))) return null;
   const maxElements = validInteger(value.maxElements, 1_000) ?? STANDARD_CAPTURE_LIMITS.maxElements;
   const maxDepth = validInteger(value.maxDepth, 64) ?? STANDARD_CAPTURE_LIMITS.maxDepth;
