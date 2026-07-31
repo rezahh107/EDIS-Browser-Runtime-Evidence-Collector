@@ -1,0 +1,1 @@
+export const MAX_COMPUTED_STYLE_VALUE_LENGTH = 2_048;
