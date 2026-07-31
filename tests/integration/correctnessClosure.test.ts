@@ -131,7 +131,7 @@ describe("correctness closure contracts", () => {
     offscreen.setAttribute("aria-modal", "true");
     offscreen.dataset.rect = "offscreen";
     document.body.append(visible, hidden, offscreen);
-    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function () {
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
       return this instanceof HTMLElement && this.dataset.rect === "offscreen"
         ? rect(0, 5000, 20, 20)
         : rect(0, 0, 20, 20);
