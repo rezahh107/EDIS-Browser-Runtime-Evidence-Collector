@@ -1,3 +1,4 @@
+import { classifyWordPressAdminBar } from "../../domain/adminBar";
 import { canonicalJsonWithoutFinalNewline } from "../../domain/canonical";
 import { computeSkippedElementorElements } from "../../domain/elementorMetrics";
 import { normalizeFiniteNumber } from "../../domain/geometry";
@@ -18,6 +19,8 @@ import { normalizeUrl, sanitizeClassTokens } from "../../domain/redaction";
 import { stableDomReference } from "../../domain/identity";
 import { sha256Digest } from "../../infrastructure/checksum";
 import { computePageFingerprintEvidence } from "../../domain/pageFingerprint";
+import { createCaptureMeasurementContext } from "../measurements/context";
+import { isEffectivelyVisibleInViewport } from "../measurements/visibility";
 
 export function collectRuntimeEnvironment(): RuntimeEnvironment {
   const browser = parseBrowser();
@@ -301,17 +304,20 @@ export function collectCaptureEnvironment(readiness: CaptureReadiness): CaptureE
   const iframeCapture = window.top !== window.self;
   const documentNotFocused = !document.hasFocus();
   const pageNotAtTop = Math.abs(window.scrollY) > 1 || Math.abs(window.scrollX) > 1;
+  const measurementContext = createCaptureMeasurementContext(document);
+  const visibleInEnvironment = (element: Element): boolean =>
+    isEffectivelyVisibleInViewport(element, measurementContext);
   const openHtmlDialogCount = [...document.querySelectorAll("dialog[open]")].filter(
-    isEffectivelyVisibleForEnvironment,
+    visibleInEnvironment,
   ).length;
   const ariaModalTrueCount = [...document.querySelectorAll('[aria-modal="true"]')].filter(
-    isEffectivelyVisibleForEnvironment,
+    visibleInEnvironment,
   ).length;
-  const visibleModalCount = new Set([
+  const visibleModalCount = [...new Set([
     ...document.querySelectorAll("dialog[open]"),
     ...document.querySelectorAll('[aria-modal="true"]'),
     ...document.querySelectorAll('[role="dialog"]'),
-  ]).size;
+  ])].filter(visibleInEnvironment).length;
   const warningCodes = [
     wordpressAdminBarPresent ? "WORDPRESS_ADMIN_BAR_PRESENT" : null,
     elementorEditorPreviewPresent ? "ELEMENTOR_EDITOR_PREVIEW_PRESENT" : null,
@@ -360,8 +366,12 @@ function collectAdminBarEvidence(): AdminBarEvidence {
   const geometryAffected =
     Math.abs(parseCssNumber(htmlStyle.marginTop)) > 0.5 ||
     Math.abs(parseCssNumber(bodyStyle?.marginTop ?? "0")) > 0.5;
-  const detectionState: AdminBarEvidence["detection_state"] =
-    visible || geometryAffected ? "PRESENT" : bodyClass || element ? "AMBIGUOUS" : "ABSENT";
+  const detectionState: AdminBarEvidence["detection_state"] = classifyWordPressAdminBar({
+    bodyAdminBarClass: bodyClass,
+    wpadminbarElementPresent: element !== null,
+    wpadminbarVisible: visible,
+    geometryAffected,
+  });
   return {
     body_admin_bar_class: bodyClass,
     wpadminbar_element_present: element !== null,
@@ -385,24 +395,6 @@ function safeMediaMatch(query: string): boolean {
   } catch {
     return false;
   }
-}
-
-function isEffectivelyVisibleForEnvironment(element: Element): boolean {
-  const rect = element.getBoundingClientRect();
-  const style = getComputedStyle(element);
-  const opacity = Number.parseFloat(style.opacity || "1");
-  return (
-    style.display !== "none" &&
-    style.visibility !== "hidden" &&
-    style.visibility !== "collapse" &&
-    (Number.isNaN(opacity) || opacity > 0) &&
-    rect.width > 0 &&
-    rect.height > 0 &&
-    rect.bottom > 0 &&
-    rect.right > 0 &&
-    rect.top < window.innerHeight &&
-    rect.left < window.innerWidth
-  );
 }
 
 function finite(value: number): number {
