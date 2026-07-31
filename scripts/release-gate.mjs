@@ -156,7 +156,11 @@ const report = {
     : {
         ...selectedBrowserStatus,
         status:
-          releaseGateExitCode === 0 ? "PASSED" : releaseGateExitCode === 2 ? "UNAVAILABLE" : "FAILED",
+          releaseGateExitCode === 0
+            ? "PASSED"
+            : releaseGateExitCode === 2
+              ? "UNAVAILABLE"
+              : "FAILED",
       },
   exitCode: releaseGateExitCode,
   full_release_gate_passed: fullQualification?.full_release_gate_passed === true,
