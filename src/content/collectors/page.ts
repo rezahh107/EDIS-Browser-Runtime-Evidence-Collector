@@ -313,11 +313,13 @@ export function collectCaptureEnvironment(readiness: CaptureReadiness): CaptureE
   const ariaModalTrueCount = [...document.querySelectorAll('[aria-modal="true"]')].filter(
     visibleInEnvironment,
   ).length;
-  const visibleModalCount = [...new Set([
-    ...document.querySelectorAll("dialog[open]"),
-    ...document.querySelectorAll('[aria-modal="true"]'),
-    ...document.querySelectorAll('[role="dialog"]'),
-  ])].filter(visibleInEnvironment).length;
+  const visibleModalCount = [
+    ...new Set([
+      ...document.querySelectorAll("dialog[open]"),
+      ...document.querySelectorAll('[aria-modal="true"]'),
+      ...document.querySelectorAll('[role="dialog"]'),
+    ]),
+  ].filter(visibleInEnvironment).length;
   const warningCodes = [
     wordpressAdminBarPresent ? "WORDPRESS_ADMIN_BAR_PRESENT" : null,
     elementorEditorPreviewPresent ? "ELEMENTOR_EDITOR_PREVIEW_PRESENT" : null,
