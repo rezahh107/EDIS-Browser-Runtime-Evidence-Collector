@@ -13,6 +13,7 @@ import {
   type ScreenshotRecord,
 } from "./model";
 import { isAllowedStyleProperty } from "./styleAllowlist";
+import { MAX_COMPUTED_STYLE_VALUE_LENGTH } from "./styleValue";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const SHA256_HEX = /^[0-9a-f]{64}$/;
@@ -52,7 +53,7 @@ export function isPositiveInteger(value: unknown, maximum: number): value is num
 export function isPreferences(value: unknown): value is CollectorPreferences {
   if (!isRecord(value) || !hasOnlyKeys(value, Object.keys(DEFAULT_PREFERENCES))) return false;
   return (
-    value.schemaVersion === 4 &&
+    value.schemaVersion === 5 &&
     ["STANDARD", "DEEP_DOM", "CUSTOM"].includes(String(value.captureProfile)) &&
     [
       "GENERAL_AUDIT",
@@ -73,7 +74,6 @@ export function isPreferences(value: unknown): value is CollectorPreferences {
       "includeInteractionFacts",
       "includeRelationshipGraph",
       "prepareFullDocumentImages",
-      "retainAfterExport",
     ].every((key) => typeof value[key] === "boolean") &&
     isPositiveInteger(value.readinessHardTimeoutMs, 5_000) &&
     isPositiveInteger(value.maxTextPreviewChars, 500) &&
@@ -476,7 +476,7 @@ function isElementMeasurement(value: unknown, includeColors: boolean): value is 
       ([key, item]) =>
         isAllowedStyleProperty(key, includeColors) &&
         typeof item === "string" &&
-        item.length <= 500,
+        item.length <= MAX_COMPUTED_STYLE_VALUE_LENGTH,
     ) ||
     !isRecord(value.visibility) ||
     !isRecord(value.overflow) ||
