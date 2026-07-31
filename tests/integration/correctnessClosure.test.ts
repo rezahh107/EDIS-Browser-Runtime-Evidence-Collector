@@ -4,11 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { classifyWordPressAdminBar } from "../../src/domain/adminBar";
 import { deriveSemanticCompleteness } from "../../src/domain/captureCompleteness";
 import { diagnostic } from "../../src/domain/diagnostics";
-import {
-  COLLECTOR_VERSION,
-  DEFAULT_PREFERENCES,
-  SCHEMA_VERSION,
-} from "../../src/domain/model";
+import { COLLECTOR_VERSION, DEFAULT_PREFERENCES, SCHEMA_VERSION } from "../../src/domain/model";
 import { assertExactPathSet, exactPackageInventory } from "../../src/domain/packageInventory";
 import { MAX_COMPUTED_STYLE_VALUE_LENGTH } from "../../src/domain/styleValue";
 import { isRuntimeSnapshot } from "../../src/domain/validation";
@@ -67,13 +63,10 @@ describe("correctness closure contracts", () => {
     expect(collected["font-family"]).toBeUndefined();
     expect(context.styleValueOmissions).toEqual([{ property: "font-family" }]);
     const completeness = deriveSemanticCompleteness([
-      diagnostic(
-        "EDIS_RUNTIME_STYLE_VALUE_LIMIT_REACHED",
-        "WARNING",
-        "bounded omission",
-        true,
-        { property_name: "font-family", limit: 2048 },
-      ),
+      diagnostic("EDIS_RUNTIME_STYLE_VALUE_LIMIT_REACHED", "WARNING", "bounded omission", true, {
+        property_name: "font-family",
+        limit: 2048,
+      }),
     ]);
     expect(completeness).toEqual({
       status: "PARTIAL",
@@ -131,7 +124,9 @@ describe("correctness closure contracts", () => {
     offscreen.setAttribute("aria-modal", "true");
     offscreen.dataset.rect = "offscreen";
     document.body.append(visible, hidden, offscreen);
-    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (
+      this: Element,
+    ) {
       return this instanceof HTMLElement && this.dataset.rect === "offscreen"
         ? rect(0, 5000, 20, 20)
         : rect(0, 0, 20, 20);
@@ -159,11 +154,7 @@ describe("correctness closure contracts", () => {
       ),
     ).toThrow(/inventory mismatch/);
     expect(() =>
-      assertExactPathSet(
-        ["a.json", "package-manifest.json"],
-        inventory.checksumPaths,
-        "Checksum",
-      ),
+      assertExactPathSet(["a.json", "package-manifest.json"], inventory.checksumPaths, "Checksum"),
     ).toThrow(/missing/);
     expect(() =>
       assertExactPathSet(
@@ -176,7 +167,11 @@ describe("correctness closure contracts", () => {
 
   it("T15_PARTIAL_RELEASE_GATE_REJECTION: partial target PASS cannot authorize release", () => {
     const result = evaluateFullReleaseQualification(
-      { exitCode: 0, mode: "PARTIAL_TARGET", browser: { qualificationScope: "PARTIAL_TARGET_QUALIFICATION" } },
+      {
+        exitCode: 0,
+        mode: "PARTIAL_TARGET",
+        browser: { qualificationScope: "PARTIAL_TARGET_QUALIFICATION" },
+      },
       fullQualificationFixture(),
     );
     expect(result.full_release_gate_passed).toBe(false);
