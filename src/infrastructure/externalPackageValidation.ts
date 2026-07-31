@@ -191,11 +191,14 @@ async function validateChecksums(
   const checksumBytes = entries.get("checksums.sha256");
   if (!checksumBytes) throw new Error("checksums.sha256 is missing.");
   const text = decoder.decode(checksumBytes);
-  const parsedLines = text.trimEnd().split("\n").map((line) => {
-    const match = /^(sha256:[0-9a-f]{64}) {2}(.+)$/.exec(line);
-    if (!match) throw new Error("Checksum inventory is malformed.");
-    return { digest: match[1] ?? "", path: match[2] ?? "" };
-  });
+  const parsedLines = text
+    .trimEnd()
+    .split("\n")
+    .map((line) => {
+      const match = /^(sha256:[0-9a-f]{64}) {2}(.+)$/.exec(line);
+      if (!match) throw new Error("Checksum inventory is malformed.");
+      return { digest: match[1] ?? "", path: match[2] ?? "" };
+    });
   assertExactPathSet(
     parsedLines.map((line) => line.path),
     expectedPaths,
