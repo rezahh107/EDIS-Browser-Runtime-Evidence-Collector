@@ -5,11 +5,10 @@ import {
 import { normalizeFiniteNumber } from "../../domain/geometry";
 import type { ViewportImageReadinessEvidence } from "../../domain/model";
 import {
-  boundingRectFor,
   createCaptureMeasurementContext,
   type CaptureMeasurementContext,
 } from "../measurements/context";
-import { inspectEffectiveVisibility } from "../measurements/visibility";
+import { isEffectivelyVisibleInViewport } from "../measurements/visibility";
 
 export interface ViewportImageReadinessSession {
   observe(timeoutMs: number): Promise<ViewportImageReadinessEvidence>;
@@ -37,28 +36,11 @@ class ViewportImageReadinessSessionImpl implements ViewportImageReadinessSession
   #failed = new Set<HTMLImageElement>();
   #decodeTasks = new WeakMap<HTMLImageElement, Promise<void>>();
   #measurementContext: CaptureMeasurementContext = createCaptureMeasurementContext(document);
-  #fullScanRequired = true;
-  #pendingImages = new Set<HTMLImageElement>();
-  #pendingVisibilityRoots = new Set<Element>();
-  #removedRoots = new Set<Element>();
-  #observer: MutationObserver | null = null;
-
-  constructor() {
-    if (typeof MutationObserver === "function" && document.documentElement) {
-      this.#observer = new MutationObserver((records) => this.#recordMutations(records));
-      this.#observer.observe(document.documentElement, {
-        subtree: true,
-        childList: true,
-        attributes: true,
-        attributeFilter: ["class", "style", "hidden", "src", "srcset"],
-      });
-    }
-  }
 
   async observe(timeoutMs: number): Promise<ViewportImageReadinessEvidence> {
     const boundedTimeout = Math.max(0, Math.min(Math.trunc(timeoutMs), 5_000));
     const started = performance.now();
-    this.#refreshCandidatesIfNeeded();
+    this.#refreshCandidatesFull();
     const pending = [...this.#candidates].filter(
       (image) => !(image.complete && image.naturalWidth > 0),
     );
@@ -76,6 +58,10 @@ class ViewportImageReadinessSessionImpl implements ViewportImageReadinessSession
         ),
       ]);
     }
+
+    // Geometry and effective visibility can change without a DOM mutation. The final sample is
+    // therefore always authoritative for candidate membership.
+    this.#refreshCandidatesFull();
 
     let loadedCount = 0;
     let brokenCount = 0;
@@ -112,66 +98,16 @@ class ViewportImageReadinessSessionImpl implements ViewportImageReadinessSession
   }
 
   dispose(): void {
-    this.#observer?.disconnect();
-    this.#observer = null;
     this.#candidates.clear();
     this.#failed.clear();
-    this.#pendingImages.clear();
-    this.#pendingVisibilityRoots.clear();
-    this.#removedRoots.clear();
   }
 
-  #refreshCandidatesIfNeeded(): void {
-    if (
-      !this.#fullScanRequired &&
-      this.#pendingImages.size === 0 &&
-      this.#pendingVisibilityRoots.size === 0 &&
-      this.#removedRoots.size === 0
-    )
-      return;
+  #refreshCandidatesFull(): void {
     this.#measurementContext = createCaptureMeasurementContext(document);
-    if (this.#fullScanRequired) {
-      this.#candidates.clear();
-      for (const image of document.images) this.#refreshImage(image);
-      this.#fullScanRequired = false;
-    } else {
-      for (const root of this.#removedRoots)
-        for (const image of [...this.#candidates])
-          if (image === root || root.contains(image) || !image.isConnected)
-            this.#candidates.delete(image);
-      for (const root of minimalRoots(this.#pendingVisibilityRoots)) {
-        if (root instanceof HTMLImageElement) this.#refreshImage(root);
-        for (const image of root.querySelectorAll("img")) this.#refreshImage(image);
-      }
-      for (const image of this.#pendingImages) this.#refreshImage(image);
-    }
-    this.#pendingImages.clear();
-    this.#pendingVisibilityRoots.clear();
-    this.#removedRoots.clear();
-  }
-
-  #refreshImage(image: HTMLImageElement): void {
-    if (image.isConnected && isEffectivelyVisibleInViewport(image, this.#measurementContext))
-      this.#candidates.add(image);
-    else this.#candidates.delete(image);
-  }
-
-  #recordMutations(records: readonly MutationRecord[]): void {
-    for (const record of records) {
-      if (record.type === "attributes") {
-        if (!(record.target instanceof Element)) continue;
-        if (record.target instanceof HTMLImageElement) this.#pendingImages.add(record.target);
-        if (["class", "style", "hidden"].includes(record.attributeName ?? ""))
-          this.#pendingVisibilityRoots.add(record.target);
-        continue;
-      }
-      for (const node of record.removedNodes)
-        if (node instanceof Element) this.#removedRoots.add(node);
-      for (const node of record.addedNodes) {
-        if (!(node instanceof Element)) continue;
-        if (node instanceof HTMLImageElement) this.#pendingImages.add(node);
-        for (const image of node.querySelectorAll("img")) this.#pendingImages.add(image);
-      }
+    this.#candidates.clear();
+    for (const image of document.images) {
+      if (image.isConnected && isEffectivelyVisibleInViewport(image, this.#measurementContext))
+        this.#candidates.add(image);
     }
   }
 
@@ -187,28 +123,4 @@ class ViewportImageReadinessSessionImpl implements ViewportImageReadinessSession
     this.#decodeTasks.set(image, task);
     return task;
   }
-}
-
-function minimalRoots(roots: ReadonlySet<Element>): readonly Element[] {
-  const values = [...roots];
-  return values.filter(
-    (candidate, index) =>
-      !values.some((other, otherIndex) => otherIndex !== index && other.contains(candidate)),
-  );
-}
-
-function isEffectivelyVisibleInViewport(
-  element: Element,
-  context: CaptureMeasurementContext,
-): boolean {
-  if (!inspectEffectiveVisibility(element, context).effectiveVisible) return false;
-  const rect = boundingRectFor(element, context);
-  return (
-    rect.width > 0 &&
-    rect.height > 0 &&
-    rect.bottom > 0 &&
-    rect.right > 0 &&
-    rect.top < window.innerHeight &&
-    rect.left < window.innerWidth
-  );
 }
