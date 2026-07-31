@@ -24,6 +24,7 @@ import { assertElementorMetricInvariant } from "../domain/elementorMetrics";
 import { makeEnvelope } from "../domain/envelope";
 import { deterministicUuid } from "../domain/identifiers";
 import { COLLECTOR_VERSION, RUNTIME_PACKAGE_SCHEMA_VERSION, SCHEMA_VERSION } from "../domain/model";
+import { assertExactPathSet, exactPackageInventory } from "../domain/packageInventory";
 import { isExportPurposeAllowed } from "../domain/exportPolicy";
 import { evaluatePythonFeedReadiness, type ExportPurpose } from "../domain/pythonFeed";
 import type {
@@ -971,6 +972,8 @@ async function validateFinalEntries(
   artifactSchemaByPath: ReadonlyMap<string, string>,
 ): Promise<void> {
   const expectedRecords = packageManifest.data.files;
+  const inventory = exactPackageInventory(expectedRecords.map((record) => record.path));
+  assertExactPathSet([...entries.keys()], inventory.zipPaths, "Final package");
   const validatedDigests = new Map<string, string>();
   for (const record of expectedRecords) {
     const bytes = entries.get(record.path);
@@ -979,8 +982,6 @@ async function validateFinalEntries(
       throw new Error(`Final package file validation failed: ${record.path}`);
     validatedDigests.set(record.path, digest);
   }
-  if (new Set(expectedRecords.map((record) => record.path)).size !== expectedRecords.length)
-    throw new Error("Final package manifest contains duplicate paths.");
 
   for (const [path, bytes] of entries) {
     if (!path.endsWith(".json")) continue;
@@ -1001,15 +1002,22 @@ async function validateFinalEntries(
   }
 
   const checksumText = decoder.decode(entries.get("checksums.sha256") ?? new Uint8Array());
-  for (const line of checksumText.trimEnd().split("\n")) {
+  const checksumLines = checksumText.trimEnd().split("\n").map((line) => {
     const match = /^(sha256:[0-9a-f]{64}) {2}(.+)$/.exec(line);
     if (!match) throw new Error("Final checksum inventory is malformed.");
-    const path = match[2] ?? "";
-    const bytes = entries.get(path);
-    const digest = validatedDigests.get(path) ?? (bytes ? await sha256Digest(bytes) : null);
-    if (!bytes || digest !== match[1])
-      throw new Error(`Final checksum validation failed: ${path || "unknown"}`);
-    validatedDigests.set(path, digest);
+    return { digest: match[1] ?? "", path: match[2] ?? "" };
+  });
+  assertExactPathSet(
+    checksumLines.map((line) => line.path),
+    inventory.checksumPaths,
+    "Final checksum",
+  );
+  for (const line of checksumLines) {
+    const bytes = entries.get(line.path);
+    const digest = validatedDigests.get(line.path) ?? (bytes ? await sha256Digest(bytes) : null);
+    if (!bytes || digest !== line.digest)
+      throw new Error(`Final checksum validation failed: ${line.path || "unknown"}`);
+    validatedDigests.set(line.path, digest);
   }
 }
 
