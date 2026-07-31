@@ -20,14 +20,28 @@ jobs:
           node-version: "20"
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: xvfb-run --auto-servernum npm run release:gate:chrome
+      - run: npx playwright install --with-deps chrome msedge
+      - run: xvfb-run --auto-servernum npm run release:gate:all
         env:
           EDIS_E2E_HEADLESS: "false"
       - run: npm run release:evidence
         if: always()
       - name: Verify full browser gate before packaging
-        run: node -e "const r=require('./artifacts/release-gate/command-results.json'); if(r.exitCode!==0) process.exit(1)"
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile } from "node:fs/promises";
+          const gate = JSON.parse(await readFile("artifacts/release-gate/command-results.json", "utf8"));
+          const full = JSON.parse(await readFile("artifacts/release-gate/full-release-qualification.json", "utf8"));
+          if (
+            gate.exitCode !== 0 ||
+            gate.mode !== "FULL_TWO_TARGET" ||
+            gate.browser?.qualificationScope !== "FULL_TWO_TARGET_RELEASE_GATE" ||
+            gate.full_release_gate_passed !== true ||
+            full.full_release_gate_passed !== true ||
+            full.exact_chrome_qualified !== true ||
+            full.exact_edge_qualified !== true
+          ) process.exit(1);
+          NODE
       - run: npm run package:release:verified
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -36,6 +50,7 @@ jobs:
             artifacts/packages/*.zip
             artifacts/release-evidence/*
             artifacts/browser-e2e/*
+            artifacts/release-gate/*
             artifacts/reproducibility/*
             artifacts/release-provenance/*
           if-no-files-found: error
