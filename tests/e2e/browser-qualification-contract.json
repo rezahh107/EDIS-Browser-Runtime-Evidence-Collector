@@ -1,12 +1,12 @@
 {
   "schema_version": "1.0.0",
   "suite": "edis-runtime-collector-browser-qualification",
-  "expected_total": 32,
+  "expected_total": 34,
   "expected_files": {
     "accessibility.spec.ts": 5,
     "extension.spec.ts": 4,
     "privacy-network-package.spec.ts": 5,
-    "resilience.spec.ts": 8,
+    "resilience.spec.ts": 10,
     "runtime.spec.ts": 6,
     "wordpress7.spec.ts": 4
   },
@@ -94,6 +94,14 @@
     {
       "file": "resilience.spec.ts",
       "title": "main-world geometry monkeypatches cannot inject non-finite evidence into the isolated collector"
+    },
+    {
+      "file": "resilience.spec.ts",
+      "title": "visible descendant overrides ancestor visibility hidden without hidden-subtree pruning"
+    },
+    {
+      "file": "resilience.spec.ts",
+      "title": "viewport image membership refreshes after viewport geometry changes without a DOM mutation"
     },
     {
       "file": "resilience.spec.ts",
