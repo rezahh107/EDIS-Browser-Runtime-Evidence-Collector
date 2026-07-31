@@ -1,3 +1,4 @@
+import { classifyWordPressAdminBar } from "../../domain/adminBar";
 import { diagnostic } from "../../domain/diagnostics";
 import {
   VIEWPORT_IMAGE_READINESS_POLICY_ID,
@@ -63,11 +64,27 @@ export class ChromeBrowserAdapter implements BrowserAdapter {
             const rect = element.getBoundingClientRect();
             const style = getComputedStyle(element);
             const opacity = Number.parseFloat(style.opacity || "1");
+            if (
+              style.display === "none" ||
+              style.visibility === "hidden" ||
+              style.visibility === "collapse" ||
+              style.contentVisibility === "hidden" ||
+              (Number.isFinite(opacity) && opacity <= 0)
+            )
+              return false;
+            let ancestor = element.parentElement;
+            while (ancestor) {
+              const ancestorStyle = getComputedStyle(ancestor);
+              const ancestorOpacity = Number.parseFloat(ancestorStyle.opacity || "1");
+              if (
+                ancestorStyle.display === "none" ||
+                ancestorStyle.contentVisibility === "hidden" ||
+                (Number.isFinite(ancestorOpacity) && ancestorOpacity <= 0)
+              )
+                return false;
+              ancestor = ancestor.parentElement;
+            }
             return (
-              style.display !== "none" &&
-              style.visibility !== "hidden" &&
-              style.visibility !== "collapse" &&
-              (Number.isNaN(opacity) || opacity > 0) &&
               rect.width > 0 &&
               rect.height > 0 &&
               rect.bottom > 0 &&
@@ -76,9 +93,13 @@ export class ChromeBrowserAdapter implements BrowserAdapter {
               rect.left < window.innerWidth
             );
           };
-          const images = [...document.images].filter((image) => intersectsViewport(image));
+          const currentImages = (): HTMLImageElement[] =>
+            [...document.images].filter((image) => intersectsViewport(image));
+          const initialImages = currentImages();
           const decodeFailed = new Set<HTMLImageElement>();
-          const pending = images.filter((image) => !(image.complete && image.naturalWidth > 0));
+          const pending = initialImages.filter(
+            (image) => !(image.complete && image.naturalWidth > 0),
+          );
           let timedOut = false;
           if (pending.length > 0 && timeoutMs > 0) {
             const decodeTasks = pending.map(async (image) => {
@@ -98,6 +119,10 @@ export class ChromeBrowserAdapter implements BrowserAdapter {
               ),
             ]);
           }
+
+          // Membership is sampled again after the bounded wait so geometry-only layout shifts cannot
+          // make the final readiness evidence stale.
+          const images = currentImages();
           let loadedCount = 0;
           let brokenCount = 0;
           let pendingCount = 0;
@@ -119,15 +144,7 @@ export class ChromeBrowserAdapter implements BrowserAdapter {
           const bodyStyle = body ? getComputedStyle(body) : null;
           const bodyAdminBarClass = body?.classList.contains("admin-bar") ?? false;
           const wpadminbarElementPresent = adminBar !== null;
-          const visibleAdminBar = Boolean(
-            adminBar &&
-            adminStyle &&
-            adminStyle.display !== "none" &&
-            adminStyle.visibility !== "hidden" &&
-            adminStyle.visibility !== "collapse" &&
-            adminRect &&
-            adminRect.height > 0,
-          );
+          const wpadminbarVisible = Boolean(adminBar && intersectsViewport(adminBar));
           const parseMargin = (value: string | null): number => {
             if (value === null) return 0;
             const parsed = Number.parseFloat(value);
@@ -136,12 +153,6 @@ export class ChromeBrowserAdapter implements BrowserAdapter {
           const geometryAffected =
             Math.abs(parseMargin(htmlStyle.marginTop)) > 0.5 ||
             Math.abs(parseMargin(bodyStyle?.marginTop ?? null)) > 0.5;
-          const adminDetectionState =
-            visibleAdminBar || geometryAffected
-              ? "PRESENT"
-              : bodyAdminBarClass || wpadminbarElementPresent
-                ? "AMBIGUOUS"
-                : "ABSENT";
 
           const documentWithPrerender = document as Document & { readonly prerendering?: boolean };
           return {
@@ -167,7 +178,8 @@ export class ChromeBrowserAdapter implements BrowserAdapter {
               wpadminbarRectHeight: adminRect?.height ?? null,
               htmlComputedMarginTop: htmlStyle.marginTop,
               bodyComputedMarginTop: bodyStyle?.marginTop ?? null,
-              detectionState: adminDetectionState,
+              wpadminbarVisible,
+              geometryAffected,
             },
             elementorEditorPreviewPresent:
               document.documentElement.classList.contains("elementor-html") &&
@@ -203,13 +215,32 @@ export class ChromeBrowserAdapter implements BrowserAdapter {
         !["hidden", "visible"].includes(value.documentVisibilityState) ||
         typeof value.documentPrerendering !== "boolean" ||
         !value.adminBar ||
-        !["ABSENT", "PRESENT", "AMBIGUOUS"].includes(value.adminBar.detectionState) ||
+        typeof value.adminBar.wpadminbarVisible !== "boolean" ||
+        typeof value.adminBar.geometryAffected !== "boolean" ||
         typeof value.elementorEditorPreviewPresent !== "boolean" ||
         typeof value.iframeCapture !== "boolean" ||
         !value.viewportImageReadiness
       )
         throw new Error("The active page probe returned invalid evidence.");
-      return ok(value as RawPageProbe);
+      const normalized: RawPageProbe = {
+        ...value,
+        adminBar: {
+          bodyAdminBarClass: value.adminBar.bodyAdminBarClass,
+          wpadminbarElementPresent: value.adminBar.wpadminbarElementPresent,
+          wpadminbarComputedDisplay: value.adminBar.wpadminbarComputedDisplay,
+          wpadminbarComputedVisibility: value.adminBar.wpadminbarComputedVisibility,
+          wpadminbarRectHeight: value.adminBar.wpadminbarRectHeight,
+          htmlComputedMarginTop: value.adminBar.htmlComputedMarginTop,
+          bodyComputedMarginTop: value.adminBar.bodyComputedMarginTop,
+          detectionState: classifyWordPressAdminBar({
+            bodyAdminBarClass: value.adminBar.bodyAdminBarClass,
+            wpadminbarElementPresent: value.adminBar.wpadminbarElementPresent,
+            wpadminbarVisible: value.adminBar.wpadminbarVisible,
+            geometryAffected: value.adminBar.geometryAffected,
+          }),
+        },
+      };
+      return ok(normalized);
     } catch {
       return err(
         diagnostic(
