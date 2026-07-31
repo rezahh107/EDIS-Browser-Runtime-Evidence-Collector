@@ -24,7 +24,6 @@ if (process.env.GITHUB_ACTIONS === "true") {
   mkdirSync("artifacts/packages", { recursive: true });
   execFileSync("tar", [
     "--exclude=.git",
-    "--exclude=node_modules",
     "--exclude=dist",
     "--exclude=artifacts",
     "--exclude=coverage",
