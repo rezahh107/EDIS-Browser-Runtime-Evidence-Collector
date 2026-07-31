@@ -1,7 +1,11 @@
 import { diagnostic, type Diagnostic } from "../../domain/diagnostics";
 import { classifyElementorMarker } from "../../domain/elementorMarker";
 import { stableDomReference } from "../../domain/identity";
-import { computedStyleFor, type CaptureMeasurementContext } from "../measurements/context";
+import {
+  computedStyleFor,
+  isIrreversiblyHiddenSubtree,
+  type CaptureMeasurementContext,
+} from "../measurements/context";
 import { inspectEffectiveVisibility } from "../measurements/visibility";
 
 export interface SelectionMetrics {
@@ -90,7 +94,8 @@ export function selectElements(
       if (style.position === "fixed") fixedElements += 1;
       if (style.position === "sticky") stickyElements += 1;
 
-      pruneHiddenSubtree = !includeHidden && !visible && element.children.length > 0;
+      pruneHiddenSubtree =
+        !includeHidden && isIrreversiblyHiddenSubtree(element, context) && element.children.length > 0;
       if (pruneHiddenSubtree) {
         skippedHiddenSubtreeCount += 1;
         skippedHiddenDirectChildCount += element.children.length;
