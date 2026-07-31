@@ -46,11 +46,28 @@ describe("viewport-aware capture readiness", () => {
     expect(result.timeout_reached).toBe(true);
     expect(result.settle_duration_ms).toBeGreaterThanOrEqual(300);
   });
+
+  it("T05_READINESS_ERROR_PARTIAL: reports ERROR instead of false stable readiness", async () => {
+    prepareDocument();
+    Object.defineProperty(document, "getAnimations", {
+      configurable: true,
+      value: () => {
+        throw new Error("readiness probe failure");
+      },
+    });
+
+    const result = await observeCaptureReadiness(1_500);
+    expect(result.process_state).toBe("ERROR");
+    expect(result.availability).toBe("ERROR");
+    expect(result.timeout_reached).toBe(false);
+    expect(result.viewport_image_readiness.candidate_count).toBe(0);
+  });
 });
 
 function prepareDocument(): void {
   Object.defineProperty(document, "readyState", { configurable: true, value: "complete" });
   Object.defineProperty(document, "fonts", { configurable: true, value: undefined });
+  Object.defineProperty(document, "getAnimations", { configurable: true, value: () => [] });
   Object.defineProperty(window, "innerWidth", { configurable: true, value: 1_024 });
   Object.defineProperty(window, "innerHeight", { configurable: true, value: 768 });
   Object.defineProperty(document.documentElement, "scrollWidth", {
