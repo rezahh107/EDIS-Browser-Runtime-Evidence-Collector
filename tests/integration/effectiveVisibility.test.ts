@@ -4,6 +4,40 @@ import { selectElements } from "../../src/content/selectors/selectElements";
 import { inspectEffectiveVisibility } from "../../src/content/measurements/visibility";
 
 describe("effective hidden-element filtering", () => {
+  it("T03_VISIBILITY_OVERRIDE: allows a visible descendant to override ancestor visibility hidden", () => {
+    document.body.textContent = "";
+    const parent = document.createElement("section");
+    parent.style.visibility = "hidden";
+    const child = document.createElement("button");
+    child.id = "visibility-override-child";
+    child.style.visibility = "visible";
+    parent.append(child);
+    document.body.append(parent);
+
+    const observation = inspectEffectiveVisibility(child);
+    expect(observation.directHidden).toBe(false);
+    expect(observation.hiddenByAncestor).toBe(false);
+    expect(observation.effectiveVisible).toBe(true);
+
+    const result = selectElements(100, 20, false);
+    expect(result.elements).toContain(child);
+    expect(result.skippedHiddenSubtreeCount).toBe(0);
+  });
+
+  it("keeps a descendant hidden when visibility remains inherited", () => {
+    document.body.textContent = "";
+    const parent = document.createElement("section");
+    parent.style.visibility = "hidden";
+    const child = document.createElement("button");
+    parent.append(child);
+    document.body.append(parent);
+
+    const observation = inspectEffectiveVisibility(child);
+    expect(observation.directHidden).toBe(true);
+    expect(observation.effectiveVisible).toBe(false);
+    expect(selectElements(100, 20, false).elements).not.toContain(child);
+  });
+
   it("excludes descendants hidden by an ancestor when hidden elements are disabled", () => {
     document.body.textContent = "";
     const hiddenParent = document.createElement("section");
@@ -29,6 +63,31 @@ describe("effective hidden-element filtering", () => {
     expect(inclusive.elements).toContain(hiddenParent);
     expect(inclusive.elements).toContain(hiddenChild);
   });
+
+  it.each([
+    ["display", "none"],
+    ["contentVisibility", "hidden"],
+    ["opacity", "0"],
+  ] as const)(
+    "T04_IRREVERSIBLE_HIDDEN_PRUNING: prunes %s=%s while preserving include-hidden behavior",
+    (property, value) => {
+      document.body.textContent = "";
+      const hiddenParent = document.createElement("section");
+      Object.assign(hiddenParent.style, { [property]: value });
+      const hiddenChild = document.createElement("button");
+      hiddenParent.append(hiddenChild);
+      document.body.append(hiddenParent);
+
+      const filtered = selectElements(100, 20, false);
+      expect(filtered.elements).not.toContain(hiddenParent);
+      expect(filtered.elements).not.toContain(hiddenChild);
+      expect(filtered.skippedHiddenSubtreeCount).toBe(1);
+
+      const inclusive = selectElements(100, 20, true);
+      expect(inclusive.elements).toContain(hiddenParent);
+      expect(inclusive.elements).toContain(hiddenChild);
+    },
+  );
 
   it("prunes a hidden subtree before it can consume depth budget", () => {
     document.body.textContent = "";
