@@ -236,7 +236,9 @@ test("viewport image membership refreshes after viewport geometry changes withou
     }
   });
   const session = await createSession(control, "Viewport image membership rescan");
-  const job = await startCapture(control, page, session.data.session_id, { readinessHardTimeoutMs: 1500 });
+  const job = await startCapture(control, page, session.data.session_id, {
+    readinessHardTimeoutMs: 1500,
+  });
   await page.setViewportSize({ width: 900, height: 1000 });
   const terminal = await waitForJob(control, job.id);
   expect(terminal.status).toBe("COMPLETE");
