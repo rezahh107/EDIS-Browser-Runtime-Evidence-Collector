@@ -5,6 +5,7 @@ import type {
   RequestedViewportProfile,
   RuntimeSnapshot,
 } from "./model";
+import { hasReadinessError } from "./readinessState";
 import { sha256Digest } from "../infrastructure/checksum";
 
 export type ExportPurpose = "RUNTIME_EVIDENCE" | "MINIMUM_PYTHON_FEED";
@@ -141,6 +142,9 @@ export async function evaluatePythonFeedReadiness(input: {
     .sort((left, right) => left - right);
   const adminBarAbsent = adminBarObservations.length === 0;
   if (!adminBarAbsent) blockingCodes.push("EDIS_RUNTIME_WORDPRESS_ADMIN_BAR_PRESENT_OR_AMBIGUOUS");
+
+  if (input.snapshots.some((snapshot) => hasReadinessError(snapshot.capture_readiness)))
+    blockingCodes.push("EDIS_RUNTIME_READINESS_ERROR");
 
   const unresolvedViewportImageObservations = input.snapshots
     .filter((snapshot) => {
