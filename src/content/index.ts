@@ -18,6 +18,8 @@ import {
   type PayloadMessageType,
   type ResponseMessage,
 } from "../domain/messages";
+import { hasReadinessError } from "../domain/readinessState";
+import { MAX_COMPUTED_STYLE_VALUE_LENGTH } from "../domain/styleValue";
 import { validatePayload } from "../domain/validation";
 import { isCapturableUrl } from "../infrastructure/browser/browserAdapter";
 import { sha256Digest, sha256Hex } from "../infrastructure/checksum";
@@ -158,6 +160,21 @@ async function collectSnapshot(config: CaptureConfiguration): Promise<RuntimeSna
     ...selection.diagnostics,
     ...elementResult.diagnostics,
   ];
+  if (measurementContext.styleValueOmissions.length > 0) {
+    diagnostics.push(
+      diagnostic(
+        "EDIS_RUNTIME_STYLE_VALUE_LIMIT_REACHED",
+        "WARNING",
+        "One or more computed-style values exceeded the bounded collection limit and were omitted.",
+        true,
+        {
+          property_name: measurementContext.styleValueOmissions[0]?.property ?? "unknown",
+          limit: MAX_COMPUTED_STYLE_VALUE_LENGTH,
+          omitted_value_count: measurementContext.styleValueOmissions.length,
+        },
+      ),
+    );
+  }
   if (
     elementResult.measurements.some(
       (item) =>
@@ -174,7 +191,16 @@ async function collectSnapshot(config: CaptureConfiguration): Promise<RuntimeSna
       ),
     );
   }
-  if (readiness.process_state === "TIMEOUT") {
+  if (hasReadinessError(readiness)) {
+    diagnostics.push(
+      diagnostic(
+        "EDIS_RUNTIME_READINESS_ERROR",
+        "ERROR",
+        "Capture readiness failed and the collected evidence is incomplete.",
+        true,
+      ),
+    );
+  } else if (readiness.process_state === "TIMEOUT") {
     diagnostics.push(
       diagnostic(
         "EDIS_RUNTIME_READINESS_TIMEOUT",
