@@ -1,6 +1,4 @@
 // @vitest-environment jsdom
-import { execFileSync } from "node:child_process";
-import { mkdirSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { classifyWordPressAdminBar } from "../../src/domain/adminBar";
@@ -19,21 +17,6 @@ import { createCaptureMeasurementContext } from "../../src/content/measurements/
 import { collectComputedStyles } from "../../src/content/measurements/styles";
 import { evaluateFullReleaseQualification } from "../../scripts/full-release-qualification.mjs";
 import { makeElementMeasurement, makeSnapshot } from "../helpers/fixtures";
-
-if (process.env.GITHUB_ACTIONS === "true") {
-  mkdirSync("artifacts/packages", { recursive: true });
-  execFileSync("tar", [
-    "--exclude=.git",
-    "--exclude=dist",
-    "--exclude=artifacts",
-    "--exclude=coverage",
-    "--exclude=test-results",
-    "--exclude=playwright-report",
-    "-czf",
-    "artifacts/packages/rcg002-workspace-bootstrap.tgz",
-    ".",
-  ]);
-}
 
 afterEach(() => {
   vi.restoreAllMocks();
