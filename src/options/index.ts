@@ -39,7 +39,6 @@ const includeRelationshipGraph = requiredElement<HTMLInputElement>("#include-rel
 const prepareFullDocumentImages = requiredElement<HTMLInputElement>(
   "#prepare-full-document-images",
 );
-const retainAfterExport = requiredElement<HTMLInputElement>("#retain-after-export");
 const maxElements = requiredElement<HTMLInputElement>("#max-elements");
 const maxDepth = requiredElement<HTMLInputElement>("#max-depth");
 const maxSnapshot = requiredElement<HTMLInputElement>("#max-snapshot");
@@ -88,7 +87,6 @@ function applyPreferences(value: CollectorPreferences): void {
   includeInteractionFacts.checked = value.includeInteractionFacts;
   includeRelationshipGraph.checked = value.includeRelationshipGraph;
   prepareFullDocumentImages.checked = value.prepareFullDocumentImages;
-  retainAfterExport.checked = value.retainAfterExport;
   maxElements.valueAsNumber = value.maxElements;
   maxDepth.valueAsNumber = value.maxDepth;
   maxSnapshot.valueAsNumber = value.maxSnapshotBytes;
@@ -120,7 +118,7 @@ clearSourceContextButton.addEventListener("click", () => void clearSourceContext
 
 async function save(): Promise<void> {
   const preferences: CollectorPreferences = {
-    schemaVersion: 4,
+    schemaVersion: 5,
     captureProfile: normalizeCaptureProfile(captureProfile.value),
     captureIntent: normalizeCaptureIntent(captureIntent.value),
     redactionMode: normalizeMode(redactionMode.value),
@@ -136,7 +134,6 @@ async function save(): Promise<void> {
     prepareFullDocumentImages: prepareFullDocumentImages.checked,
     readinessHardTimeoutMs: readinessTimeout.valueAsNumber,
     maxTextPreviewChars: maxTextPreview.valueAsNumber,
-    retainAfterExport: retainAfterExport.checked,
     maxElements: maxElements.valueAsNumber,
     maxDepth: maxDepth.valueAsNumber,
     maxSnapshotBytes: maxSnapshot.valueAsNumber,
