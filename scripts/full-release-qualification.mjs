@@ -29,7 +29,8 @@ export function evaluateFullReleaseQualification(gate, qualification) {
       reasons.push(`${target.toUpperCase()}_TARGET_NOT_EXACT_PASS`);
     if (result?.tests !== expectedPerTarget || result?.passed !== expectedPerTarget)
       reasons.push(`${target.toUpperCase()}_TEST_COUNT_INCOMPLETE`);
-    if ((result?.missing_tests?.length ?? 0) !== 0) reasons.push(`${target.toUpperCase()}_MISSING_TESTS`);
+    if ((result?.missing_tests?.length ?? 0) !== 0)
+      reasons.push(`${target.toUpperCase()}_MISSING_TESTS`);
     if ((result?.duplicate_tests?.length ?? 0) !== 0)
       reasons.push(`${target.toUpperCase()}_DUPLICATE_TESTS`);
     if ((result?.unexpected_tests?.length ?? 0) !== 0)
