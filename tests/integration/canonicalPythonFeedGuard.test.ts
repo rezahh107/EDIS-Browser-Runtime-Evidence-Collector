@@ -202,4 +202,37 @@ describe("canonical Minimum Python Feed guard", () => {
     expect(result.noncanonical_scroll_observations).toEqual([1]);
     expect(result.blocking_codes).toContain("EDIS_RUNTIME_PAGE_NOT_AT_CANONICAL_SCROLL");
   });
+
+  it("T06_PYTHON_FEED_ERROR_BLOCK: readiness ERROR blocks an otherwise canonical feed", async () => {
+    const desktop = makeSnapshot();
+    const snapshots: RuntimeSnapshot[] = [
+      {
+        ...desktop,
+        source_context_reference: reference,
+        capture_readiness: { ...desktop.capture_readiness, process_state: "ERROR", availability: "ERROR" },
+      },
+      {
+        ...desktop,
+        snapshot_id: "523e4567-e89b-42d3-a456-426614174000",
+        observation_index: 1,
+        source_context_reference: reference,
+        viewport: { ...desktop.viewport, requested_profile_id: "TABLET", inner_width: 768 },
+      },
+      {
+        ...desktop,
+        snapshot_id: "623e4567-e89b-42d3-a456-426614174000",
+        observation_index: 2,
+        source_context_reference: reference,
+        viewport: { ...desktop.viewport, requested_profile_id: "MOBILE", inner_width: 390 },
+      },
+    ];
+    const result = await evaluatePythonFeedReadiness({
+      session: session(),
+      snapshots,
+      sourceContext: null,
+    });
+    expect(result.state).not.toBe("READY");
+    expect(result.export_allowed).toBe(false);
+    expect(result.blocking_codes).toContain("EDIS_RUNTIME_READINESS_ERROR");
+  });
 });
