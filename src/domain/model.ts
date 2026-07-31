@@ -4,7 +4,7 @@ export const SCHEMA_VERSION = "1.6.0";
 export const RUNTIME_PACKAGE_SCHEMA_VERSION = "1.4.1";
 export const SHARED_ENVELOPE_SCHEMA_VERSION = "1.0.0";
 export const COLLECTOR_ID = "browser.runtime";
-export const COLLECTOR_VERSION = "1.6.19";
+export const COLLECTOR_VERSION = "1.6.20";
 export const HASH_ALGORITHM = "sha256";
 export const CANONICALIZATION_PROFILE = "EDIS-CJ-1";
 export const URL_NORMALIZATION_PROFILE = "EDIS-URL-1";
@@ -796,7 +796,7 @@ export interface CaptureSessionSummary {
 }
 
 export interface CollectorPreferences {
-  readonly schemaVersion: 4;
+  readonly schemaVersion: 5;
   readonly captureProfile: CaptureProfile;
   readonly captureIntent: CaptureIntent;
   readonly redactionMode: RedactionMode;
@@ -812,7 +812,6 @@ export interface CollectorPreferences {
   readonly prepareFullDocumentImages: boolean;
   readonly readinessHardTimeoutMs: number;
   readonly maxTextPreviewChars: number;
-  readonly retainAfterExport: boolean;
   readonly maxElements: number;
   readonly maxDepth: number;
   readonly maxSnapshotBytes: number;
@@ -822,7 +821,7 @@ export const STANDARD_CAPTURE_LIMITS = Object.freeze({ maxElements: 750, maxDept
 export const DEEP_DOM_CAPTURE_LIMITS = Object.freeze({ maxElements: 1_000, maxDepth: 40 });
 
 export const DEFAULT_PREFERENCES: CollectorPreferences = {
-  schemaVersion: 4,
+  schemaVersion: 5,
   captureProfile: "STANDARD",
   captureIntent: "GENERAL_AUDIT",
   redactionMode: "STRICT",
@@ -838,7 +837,6 @@ export const DEFAULT_PREFERENCES: CollectorPreferences = {
   prepareFullDocumentImages: false,
   readinessHardTimeoutMs: 1_500,
   maxTextPreviewChars: 160,
-  retainAfterExport: false,
   maxElements: STANDARD_CAPTURE_LIMITS.maxElements,
   maxDepth: STANDARD_CAPTURE_LIMITS.maxDepth,
   maxSnapshotBytes: 12_000_000,
