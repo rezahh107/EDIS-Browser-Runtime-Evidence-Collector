@@ -95,7 +95,9 @@ export function selectElements(
       if (style.position === "sticky") stickyElements += 1;
 
       pruneHiddenSubtree =
-        !includeHidden && isIrreversiblyHiddenSubtree(element, context) && element.children.length > 0;
+        !includeHidden &&
+        isIrreversiblyHiddenSubtree(element, context) &&
+        element.children.length > 0;
       if (pruneHiddenSubtree) {
         skippedHiddenSubtreeCount += 1;
         skippedHiddenDirectChildCount += element.children.length;
