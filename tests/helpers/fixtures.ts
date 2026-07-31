@@ -84,7 +84,7 @@ export function makeSession(): CaptureSession {
 
 export function makeCaptureConfiguration(): CaptureConfiguration {
   return {
-    schemaVersion: 4,
+    schemaVersion: 5,
     captureProfile: "STANDARD",
     captureIntent: "GENERAL_AUDIT",
     redactionMode: "STRICT",
@@ -100,7 +100,6 @@ export function makeCaptureConfiguration(): CaptureConfiguration {
     prepareFullDocumentImages: false,
     readinessHardTimeoutMs: 500,
     maxTextPreviewChars: 160,
-    retainAfterExport: false,
     maxElements: 750,
     maxDepth: 24,
     maxSnapshotBytes: 12_000_000,
