@@ -18,6 +18,7 @@ import type {
   ContentChunkPayload,
   ContentCompletePayload,
 } from "../domain/messages";
+import { hasReadinessError } from "../domain/readinessState";
 import { isRuntimeSnapshot } from "../domain/validation";
 import { ChromeBrowserAdapter } from "../infrastructure/browser/chromeAdapter";
 import { dataUrlToBytes, sha256Hex } from "../infrastructure/checksum";
@@ -783,6 +784,16 @@ export class CaptureCoordinator {
           job,
           "The page or measured viewport changed after Python Feed capture approval.",
           "python_feed_capture_changed",
+        );
+
+      if (
+        job.config.workflowMode === "MINIMUM_PYTHON_FEED" &&
+        hasReadinessError(snapshot.capture_readiness)
+      )
+        throw await this.#failFinalization(
+          job,
+          "The canonical Python Feed capture readiness entered ERROR.",
+          "python_feed_readiness_error",
         );
 
       if (
