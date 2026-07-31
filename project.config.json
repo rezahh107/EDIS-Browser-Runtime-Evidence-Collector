@@ -1,10 +1,10 @@
 {
-  "extensionVersion": "1.6.19",
+  "extensionVersion": "1.6.20",
   "productionTargets": [
     "chrome",
     "edge"
   ],
   "schemaVersion": "1.6.0",
   "selectedTarget": "chrome",
-  "releaseTimestamp": "2026-06-25T00:00:00Z"
+  "releaseTimestamp": "2026-07-31T00:00:00Z"
 }
