@@ -14,6 +14,10 @@ export interface AncestorMeasurementSummary {
   readonly clippingAncestors: readonly Element[];
 }
 
+export interface StyleValueOmission {
+  readonly property: string;
+}
+
 /** Runtime-only cache whose lifetime is bounded to one capture. */
 export interface CaptureMeasurementContext {
   readonly document: Document;
@@ -23,6 +27,7 @@ export interface CaptureMeasurementContext {
   readonly visibility: WeakMap<Element, EffectiveVisibilityObservation>;
   readonly geometry: WeakMap<Element, Result<GeometryEvidence, "DETACHED" | "NON_FINITE">>;
   readonly ancestors: WeakMap<Element, AncestorMeasurementSummary>;
+  readonly styleValueOmissions: StyleValueOmission[];
 }
 
 export function createCaptureMeasurementContext(document: Document): CaptureMeasurementContext {
@@ -34,6 +39,7 @@ export function createCaptureMeasurementContext(document: Document): CaptureMeas
     visibility: new WeakMap<Element, EffectiveVisibilityObservation>(),
     geometry: new WeakMap<Element, Result<GeometryEvidence, "DETACHED" | "NON_FINITE">>(),
     ancestors: new WeakMap<Element, AncestorMeasurementSummary>(),
+    styleValueOmissions: [],
   };
 }
 
@@ -78,7 +84,7 @@ export function ancestorMeasurementsFor(
 
   while (current && searched < ANCESTOR_MEASUREMENT_LIMIT) {
     const style = computedStyleFor(current, context);
-    if (nearestHidden === null && styleHidesElement(style)) nearestHidden = current;
+    if (nearestHidden === null && styleIrreversiblyHidesSubtree(style)) nearestHidden = current;
     if (nearestPositioned === null && style.position !== "static") nearestPositioned = current;
     if (nearestScroll === null && isScrollContainer(style)) nearestScroll = current;
     if (isClippingContainer(style)) {
@@ -102,13 +108,29 @@ export function ancestorMeasurementsFor(
 }
 
 export function styleHidesElement(style: CSSStyleDeclaration): boolean {
+  return (
+    style.visibility === "hidden" ||
+    style.visibility === "collapse" ||
+    styleIrreversiblyHidesSubtree(style)
+  );
+}
+
+export function styleIrreversiblyHidesSubtree(style: CSSStyleDeclaration): boolean {
   const opacity = Number.parseFloat(style.opacity);
   return (
     style.display === "none" ||
-    style.visibility === "hidden" ||
-    style.visibility === "collapse" ||
     style.contentVisibility === "hidden" ||
     (Number.isFinite(opacity) && opacity <= 0)
+  );
+}
+
+export function isIrreversiblyHiddenSubtree(
+  element: Element,
+  context?: CaptureMeasurementContext,
+): boolean {
+  return (
+    styleIrreversiblyHidesSubtree(computedStyleFor(element, context)) ||
+    ancestorMeasurementsFor(element, context).nearestHidden !== null
   );
 }
 
