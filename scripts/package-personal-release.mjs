@@ -1,14 +1,30 @@
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { buildCanonicalSourceManifest, canonicalManifestText } from "./source-inventory.mjs";
 
 const version = JSON.parse(await readFile("package.json", "utf8")).version;
+const exactHead = gitHead();
 const output = path.resolve(process.env.EDIS_PERSONAL_PACKAGE_DIR ?? "artifacts/personal-release");
 await mkdir(output, { recursive: true });
 
-const sourceManifest = JSON.parse(await readFile("GENERATION_MANIFEST.json", "utf8"));
+const committedManifestText = await readFile("GENERATION_MANIFEST.json", "utf8");
+if (committedManifestText !== canonicalManifestText(await buildCanonicalSourceManifest()))
+  throw new Error("Committed source manifest is stale; personal packaging is blocked.");
+const sourceManifest = JSON.parse(committedManifestText);
 if (sourceManifest.extension_version !== version)
   throw new Error("Source manifest version mismatch.");
+
+const releaseEvidence = JSON.parse(
+  await readFile("artifacts/release-evidence/release-evidence.json", "utf8"),
+);
+if (releaseEvidence.projectVersion !== version)
+  throw new Error("Release evidence projectVersion does not match package version.");
+if (releaseEvidence.commitHash !== exactHead)
+  throw new Error("Release evidence commitHash does not match exact Git Head.");
+await readFile(`docs/release/${version}-release-notes.md`, "utf8");
+
 const sourceEntries = [];
 for (const item of sourceManifest.files) {
   assertSourcePackagePath(item.path);
@@ -60,16 +76,24 @@ const completeEntries = [
     data: await bytes(`docs/release/${version}-release-notes.md`),
   },
   {
-    path: `reports/EDIS-${version}-TEST-RESULTS.md`,
-    data: await bytes("docs/release/test-results.md"),
+    path: `reports/EDIS-${version}-RELEASE-EVIDENCE.json`,
+    data: await bytes("artifacts/release-evidence/release-evidence.json"),
   },
   {
-    path: "reports/browser-e2e-environment-unavailable.json",
-    data: await bytes("artifacts/browser-e2e/environment-unavailable.json"),
+    path: `reports/EDIS-${version}-RELEASE-EVIDENCE.md`,
+    data: await bytes("artifacts/release-evidence/release-evidence.md"),
   },
   {
-    path: "reports/browser-e2e-environment-unavailable.txt",
-    data: await bytes("artifacts/browser-e2e/environment-unavailable.txt"),
+    path: "reports/browser-qualification.json",
+    data: await bytes("artifacts/browser-e2e/browser-qualification.json"),
+  },
+  {
+    path: "reports/release-gate-command-results.json",
+    data: await bytes("artifacts/release-gate/command-results.json"),
+  },
+  {
+    path: "reports/full-release-qualification.json",
+    data: await bytes("artifacts/release-gate/full-release-qualification.json"),
   },
   {
     path: "reports/reproducibility.json",
@@ -107,6 +131,9 @@ for (const [name, data] of [
 ])
   console.log(`${name} ${data.length} bytes ${sha256(data)}`);
 
+function gitHead() {
+  return execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+}
 async function bytes(file) {
   return new Uint8Array(await readFile(file));
 }
@@ -175,7 +202,6 @@ function assertSourcePackagePath(value) {
   if (value.includes("__pycache__/") || value.endsWith(".pyc"))
     throw new Error(`Source package cache artifact is forbidden: ${value}`);
 }
-
 function validatePath(value) {
   if (!value || value.startsWith("/") || value.includes("\\") || value.includes("\0"))
     throw new Error(`Unsafe ZIP path: ${value}`);
