@@ -1,5 +1,6 @@
 import { canonicalJson, parseSafeJson } from "../domain/canonical";
 import { assertElementorMetricInvariant } from "../domain/elementorMetrics";
+import { assertExactPathSet, exactPackageInventory } from "../domain/packageInventory";
 import { sha256Digest } from "./checksum";
 import { validateJsonSchema, type SchemaRegistry } from "./schemaValidation";
 import { parseStoreZip } from "./zipReader";
@@ -24,7 +25,9 @@ export async function validateEvidencePackageArchive(
   const issues: string[] = [];
   try {
     const entries = parseStoreZip(bytes);
+    const entryPaths = entries.map((entry) => entry.path);
     const byPath = new Map(entries.map((entry) => [entry.path, entry.bytes] as const));
+    if (byPath.size !== entries.length) throw new Error("ZIP contains duplicate paths.");
     const decoder = new TextDecoder("utf-8", { fatal: true });
     const digestCache = new Map<string, Promise<string>>();
     const digestForPath = (path: string): Promise<string> => {
@@ -41,6 +44,11 @@ export async function validateEvidencePackageArchive(
       if (!entry) throw new Error(`Required package entry is missing: ${path}`);
       return parseSafeJson(decoder.decode(entry));
     };
+
+    const packageManifest = parseJson("package-manifest.json");
+    const manifestPaths = readManifestPaths(packageManifest);
+    const inventory = exactPackageInventory(manifestPaths);
+    assertExactPathSet(entryPaths, inventory.zipPaths, "ZIP");
 
     const index = parseJson("schemas/schema-index.json");
     const indexEntries = readSchemaIndex(index);
@@ -116,8 +124,8 @@ export async function validateEvidencePackageArchive(
       sourceContext,
       sourceContextReference,
     );
-    await validateManifest(byPath, parseJson("package-manifest.json"), digestForPath);
-    await validateChecksums(byPath, decoder, digestForPath);
+    await validateManifest(byPath, packageManifest, digestForPath);
+    await validateChecksums(byPath, decoder, digestForPath, inventory.checksumPaths);
     return {
       validation_state: "PASS",
       artifact_count: artifactCount,
@@ -135,6 +143,16 @@ export async function validateEvidencePackageArchive(
       issues,
     };
   }
+}
+
+function readManifestPaths(value: unknown): readonly string[] {
+  if (!isRecord(value) || !isRecord(value.data) || !Array.isArray(value.data.files))
+    throw new Error("Package manifest file inventory is invalid.");
+  return value.data.files.map((item) => {
+    if (!isRecord(item) || typeof item.path !== "string")
+      throw new Error("Package manifest contains an invalid file record.");
+    return item.path;
+  });
 }
 
 async function validateManifest(
@@ -168,18 +186,26 @@ async function validateChecksums(
   entries: ReadonlyMap<string, Uint8Array>,
   decoder: TextDecoder,
   digestForPath: (path: string) => Promise<string>,
+  expectedPaths: ReadonlySet<string>,
 ): Promise<void> {
   const checksumBytes = entries.get("checksums.sha256");
   if (!checksumBytes) throw new Error("checksums.sha256 is missing.");
   const text = decoder.decode(checksumBytes);
-  for (const line of text.trimEnd().split("\n")) {
+  const parsedLines = text.trimEnd().split("\n").map((line) => {
     const match = /^(sha256:[0-9a-f]{64}) {2}(.+)$/.exec(line);
     if (!match) throw new Error("Checksum inventory is malformed.");
-    const path = match[2] ?? "";
-    const bytes = entries.get(path);
-    if (!bytes) throw new Error(`Checksum inventory references a missing file: ${path}`);
-    if ((await digestForPath(path)) !== match[1])
-      throw new Error(`Checksum inventory mismatch: ${path}`);
+    return { digest: match[1] ?? "", path: match[2] ?? "" };
+  });
+  assertExactPathSet(
+    parsedLines.map((line) => line.path),
+    expectedPaths,
+    "Checksum",
+  );
+  for (const line of parsedLines) {
+    const bytes = entries.get(line.path);
+    if (!bytes) throw new Error(`Checksum inventory references a missing file: ${line.path}`);
+    if ((await digestForPath(line.path)) !== line.digest)
+      throw new Error(`Checksum inventory mismatch: ${line.path}`);
   }
 }
 
