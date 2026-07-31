@@ -209,7 +209,11 @@ describe("canonical Minimum Python Feed guard", () => {
       {
         ...desktop,
         source_context_reference: reference,
-        capture_readiness: { ...desktop.capture_readiness, process_state: "ERROR", availability: "ERROR" },
+        capture_readiness: {
+          ...desktop.capture_readiness,
+          process_state: "ERROR",
+          availability: "ERROR",
+        },
       },
       {
         ...desktop,
