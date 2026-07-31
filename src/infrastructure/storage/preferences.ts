@@ -49,19 +49,28 @@ export function migratePreferences(value: unknown): CollectorPreferences | null 
       value.redactionMode === "STANDARD" || value.redactionMode === "DIAGNOSTIC"
         ? value.redactionMode
         : "STRICT",
-    includeScreenshot: booleanOrDefault(value.includeScreenshot, DEFAULT_PREFERENCES.includeScreenshot),
+    includeScreenshot: booleanOrDefault(
+      value.includeScreenshot,
+      DEFAULT_PREFERENCES.includeScreenshot,
+    ),
     includeHiddenElements: booleanOrDefault(
       value.includeHiddenElements,
       DEFAULT_PREFERENCES.includeHiddenElements,
     ),
     includePath: booleanOrDefault(value.includePath, DEFAULT_PREFERENCES.includePath),
-    includePageTitle: booleanOrDefault(value.includePageTitle, DEFAULT_PREFERENCES.includePageTitle),
+    includePageTitle: booleanOrDefault(
+      value.includePageTitle,
+      DEFAULT_PREFERENCES.includePageTitle,
+    ),
     includeColors: booleanOrDefault(value.includeColors, DEFAULT_PREFERENCES.includeColors),
     includeTextPreview: booleanOrDefault(
       value.includeTextPreview,
       DEFAULT_PREFERENCES.includeTextPreview,
     ),
-    includeTextShape: booleanOrDefault(value.includeTextShape, DEFAULT_PREFERENCES.includeTextShape),
+    includeTextShape: booleanOrDefault(
+      value.includeTextShape,
+      DEFAULT_PREFERENCES.includeTextShape,
+    ),
     includeInteractionFacts: booleanOrDefault(
       value.includeInteractionFacts,
       DEFAULT_PREFERENCES.includeInteractionFacts,
@@ -75,7 +84,8 @@ export function migratePreferences(value: unknown): CollectorPreferences | null 
       DEFAULT_PREFERENCES.prepareFullDocumentImages,
     ),
     readinessHardTimeoutMs:
-      validInteger(value.readinessHardTimeoutMs, 60_000) ?? DEFAULT_PREFERENCES.readinessHardTimeoutMs,
+      validInteger(value.readinessHardTimeoutMs, 60_000) ??
+      DEFAULT_PREFERENCES.readinessHardTimeoutMs,
     maxTextPreviewChars: validInteger(value.maxTextPreviewChars, 500) ?? 160,
     maxElements,
     maxDepth,
