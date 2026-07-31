@@ -10,12 +10,10 @@ import {
   type ExportPurpose,
   type PythonFeedReadinessState,
 } from "../domain/pythonFeed";
-import { clearSelectedSessionIfMatches } from "./sessionUseCases";
 import { isExportPurposeAllowed, isRuntimeEvidenceFallbackAvailable } from "../domain/exportPolicy";
 import { downloadBytes } from "../infrastructure/download";
 import { buildEvidencePackageOffMainThread } from "../infrastructure/exportWorkerClient";
 import { EvidenceRepository } from "../infrastructure/storage/indexedDb";
-import { loadPreferences } from "../infrastructure/storage/preferences";
 import { loadSourceContextRecord } from "../infrastructure/storage/sourceContext";
 import { MAX_SESSION_EVIDENCE_BYTES } from "../domain/resourceLimits";
 
@@ -149,11 +147,6 @@ export async function exportSession(
       purpose === "MINIMUM_PYTHON_FEED" ? (sourceContextRecord?.context ?? null) : null,
   });
   downloadBytes(built.bytes, built.filename, "application/zip");
-  const preferences = await loadPreferences();
-  if (!preferences.retainAfterExport) {
-    await repository.deleteSessionArtifacts(sessionId);
-    await clearSelectedSessionIfMatches(sessionId);
-  }
   return { filename: built.filename, entryCount: built.entryCount, validation: built.validation };
 }
 
