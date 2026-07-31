@@ -214,14 +214,16 @@ describe("correctness closure contracts", () => {
   });
 
   it("T19_VERSION_ALIGNMENT: all version authorities are 1.6.20 while runtime schema remains 1.6.0", async () => {
-    const packageJson = JSON.parse(await readFile("package.json", "utf8"));
-    const packageLock = JSON.parse(await readFile("package-lock.json", "utf8"));
-    const project = JSON.parse(await readFile("project.config.json", "utf8"));
-    const chrome = JSON.parse(await readFile("src/manifest/chrome.json", "utf8"));
-    const edge = JSON.parse(await readFile("src/manifest/edge.json", "utf8"));
+    const packageJson = parseJsonRecord(await readFile("package.json", "utf8"));
+    const packageLock = parseJsonRecord(await readFile("package-lock.json", "utf8"));
+    const project = parseJsonRecord(await readFile("project.config.json", "utf8"));
+    const chrome = parseJsonRecord(await readFile("src/manifest/chrome.json", "utf8"));
+    const edge = parseJsonRecord(await readFile("src/manifest/edge.json", "utf8"));
+    const packageLockPackages = requiredRecord(packageLock, "packages");
+    const packageLockRoot = requiredRecord(packageLockPackages, "");
     expect(packageJson.version).toBe("1.6.20");
     expect(packageLock.version).toBe("1.6.20");
-    expect(packageLock.packages[""].version).toBe("1.6.20");
+    expect(packageLockRoot.version).toBe("1.6.20");
     expect(project.extensionVersion).toBe("1.6.20");
     expect(chrome.version).toBe("1.6.20");
     expect(edge.version).toBe("1.6.20");
@@ -231,6 +233,20 @@ describe("correctness closure contracts", () => {
     expect(project.schemaVersion).toBe("1.6.0");
   });
 });
+
+function parseJsonRecord(text: string): Record<string, unknown> {
+  const value: unknown = JSON.parse(text);
+  if (typeof value !== "object" || value === null || Array.isArray(value))
+    throw new Error("Expected JSON object.");
+  return value as Record<string, unknown>;
+}
+
+function requiredRecord(record: Record<string, unknown>, key: string): Record<string, unknown> {
+  const value = record[key];
+  if (typeof value !== "object" || value === null || Array.isArray(value))
+    throw new Error(`Expected object at ${key}.`);
+  return value as Record<string, unknown>;
+}
 
 function rect(left: number, top: number, width: number, height: number): DOMRect {
   return {
