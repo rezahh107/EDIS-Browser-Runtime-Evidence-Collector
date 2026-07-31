@@ -7,45 +7,44 @@ afterEach(() => {
   document.body.textContent = "";
 });
 
-describe("viewport image readiness invalidation", () => {
-  it("rechecks only the mutated image subtree instead of rescanning every image", async () => {
-    const images: HTMLImageElement[] = [];
-    for (let index = 0; index < 200; index += 1) {
-      const image = document.createElement("img");
-      image.alt = `image-${index}`;
-      document.body.append(image);
-      images.push(image);
-    }
-    const rect = {
-      x: 0,
-      y: 0,
-      top: 0,
-      right: 20,
-      bottom: 20,
-      left: 0,
-      width: 20,
-      height: 20,
-      toJSON: () => ({}),
-    } as DOMRect;
-    const geometry = vi
-      .spyOn(HTMLImageElement.prototype, "getBoundingClientRect")
-      .mockReturnValue(rect);
+describe("viewport image readiness membership", () => {
+  it("T09_IMAGE_MEMBERSHIP_LAYOUT_SHIFT: rescans every sample when geometry changes without DOM mutation", async () => {
+    const first = document.createElement("img");
+    const entering = document.createElement("img");
+    document.body.append(first, entering);
+    let enteringViewport = false;
+    const inside = rect(0, 0, 20, 20);
+    const outside = rect(0, 2_000, 20, 20);
+    vi.spyOn(first, "getBoundingClientRect").mockImplementation(() => inside);
+    const enteringGeometry = vi
+      .spyOn(entering, "getBoundingClientRect")
+      .mockImplementation(() => (enteringViewport ? inside : outside));
+
     const session = createViewportImageReadinessSession();
     try {
-      await session.observe(0);
-      const initialCalls = geometry.mock.calls.length;
-      expect(initialCalls).toBe(200);
+      const initial = await session.observe(0);
+      expect(initial.candidate_count).toBe(1);
 
-      const changedImage = images[100];
-      expect(changedImage).toBeDefined();
-      if (!changedImage) throw new Error("Expected the 101st image fixture.");
-      changedImage.classList.add("changed");
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      await session.observe(0);
-
-      expect(geometry.mock.calls.length - initialCalls).toBeLessThanOrEqual(2);
+      enteringViewport = true;
+      const final = await session.observe(0);
+      expect(final.candidate_count).toBe(2);
+      expect(enteringGeometry).toHaveBeenCalledTimes(2);
     } finally {
       session.dispose();
     }
   });
 });
+
+function rect(left: number, top: number, width: number, height: number): DOMRect {
+  return {
+    x: left,
+    y: top,
+    top,
+    right: left + width,
+    bottom: top + height,
+    left,
+    width,
+    height,
+    toJSON: () => ({}),
+  } as DOMRect;
+}
