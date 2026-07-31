@@ -82,7 +82,7 @@ function makeJob(maxSnapshotBytes: number): CaptureJob {
     expectedChunks: 1,
     receivedChunks: 0,
     config: {
-      schemaVersion: 4,
+      schemaVersion: 5,
       captureProfile: "STANDARD",
       captureIntent: "GENERAL_AUDIT",
       redactionMode: "STRICT",
@@ -98,7 +98,6 @@ function makeJob(maxSnapshotBytes: number): CaptureJob {
       prepareFullDocumentImages: false,
       readinessHardTimeoutMs: 500,
       maxTextPreviewChars: 160,
-      retainAfterExport: false,
       maxElements: 750,
       maxDepth: 24,
       maxSnapshotBytes,
