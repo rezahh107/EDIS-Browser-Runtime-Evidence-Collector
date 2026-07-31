@@ -186,6 +186,75 @@ test("main-world geometry monkeypatches cannot inject non-finite evidence into t
   await page.close();
 });
 
+test("visible descendant overrides ancestor visibility hidden without hidden-subtree pruning", async () => {
+  const page = await harness.context.newPage();
+  await fixture(page, "non-elementor.html");
+  await page.evaluate(() => {
+    document.body.replaceChildren();
+    const parent = document.createElement("section");
+    parent.id = "visibility-hidden-parent";
+    parent.style.visibility = "hidden";
+    const child = document.createElement("button");
+    child.id = "visibility-visible-child";
+    child.style.visibility = "visible";
+    child.style.width = "120px";
+    child.style.height = "40px";
+    child.textContent = "Visible child";
+    parent.append(child);
+    document.body.append(parent);
+  });
+  const { snapshot } = await captureSnapshot(control, page);
+  const child = snapshot.elements.find((item) =>
+    item.identity.stable_dom_reference.includes("visibility-visible-child"),
+  );
+  expect(child).toBeDefined();
+  expect(child?.visibility.effective_rendered).toBe(true);
+  expect(snapshot.capture_completeness.skipped_hidden_subtree_count).toBe(0);
+  await page.close();
+});
+
+test("viewport image membership refreshes after viewport geometry changes without a DOM mutation", async () => {
+  const page = await harness.context.newPage();
+  await fixture(page, "non-elementor.html");
+  await page.setViewportSize({ width: 900, height: 500 });
+  await page.evaluate(() => {
+    document.body.replaceChildren();
+    document.body.style.minHeight = "1400px";
+    for (const [id, top] of [
+      ["pending-visible", 20],
+      ["pending-enters-viewport", 800],
+    ] as const) {
+      const image = document.createElement("img");
+      image.id = id;
+      image.src = `http://192.0.2.1/${id}.png`;
+      image.style.position = "absolute";
+      image.style.left = "20px";
+      image.style.top = `${top}px`;
+      image.style.width = "40px";
+      image.style.height = "40px";
+      document.body.append(image);
+    }
+  });
+  const session = await createSession(control, "Viewport image membership rescan");
+  const job = await startCapture(control, page, session.data.session_id, { readinessHardTimeoutMs: 1500 });
+  await page.setViewportSize({ width: 900, height: 1000 });
+  const terminal = await waitForJob(control, job.id);
+  expect(terminal.status).toBe("COMPLETE");
+  const snapshot = (await readStore<RuntimeSnapshot>(control, "snapshots")).find(
+    (item) => item.snapshot_id === job.snapshotId,
+  );
+  expect(snapshot).toBeDefined();
+  const readiness = snapshot?.capture_readiness.viewport_image_readiness;
+  expect(readiness?.candidate_count).toBeGreaterThanOrEqual(2);
+  expect(
+    (readiness?.broken_count ?? 0) +
+      (readiness?.pending_count ?? 0) +
+      (readiness?.decode_failed_count ?? 0) +
+      (readiness?.timed_out_count ?? 0),
+  ).toBeGreaterThan(0);
+  await page.close();
+});
+
 test("chunk persistence and finalization remain idempotent after completed capture", async () => {
   const page = await harness.context.newPage();
   await fixture(page, "large-dom.html");
