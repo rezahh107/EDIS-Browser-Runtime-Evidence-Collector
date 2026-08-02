@@ -92,8 +92,6 @@ export async function launchExtensionHarness(options?: {
     ...(options?.locale === undefined ? {} : { locale: options.locale }),
     timeout: 30_000,
   });
-  if (captureMedia)
-    await context.tracing.start({ screenshots: true, snapshots: true, sources: true });
   context.on("page", (page) => attachPageLogging(page, logs));
   context.on("request", (request) => recordRequest(request, logs));
   context.on("serviceworker", (serviceWorker) => attachWorkerLogging(serviceWorker, logs));
@@ -114,10 +112,6 @@ export async function launchExtensionHarness(options?: {
     artifacts,
     async close(name: string): Promise<void> {
       await mkdir(artifacts, { recursive: true });
-      if (captureMedia)
-        await context.tracing
-          .stop({ path: path.join(artifacts, `${name}-trace.zip`) })
-          .catch(() => undefined);
       await writeFile(
         path.join(artifacts, `${name}-browser-log.json`),
         `${JSON.stringify(logs, null, 2)}\n`,

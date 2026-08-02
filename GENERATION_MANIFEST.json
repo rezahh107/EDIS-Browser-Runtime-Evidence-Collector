@@ -1600,8 +1600,8 @@
     },
     {
       "path": "tests/e2e/harness.ts",
-      "bytes": 24264,
-      "sha256": "787b13cadac7d79ca539ad208a7e9e2d06b64f0f78b967bc8d2ced78aa7ad3ef"
+      "bytes": 23998,
+      "sha256": "7e3f9a94b0f1e1f38ef0c1560c636bb52ff3690bf9c0e9d5efb0fa148136b4c2"
     },
     {
       "path": "tests/e2e/privacy-network-package.spec.ts",
@@ -1767,6 +1767,11 @@
       "path": "tests/integration/documentBindingAndRestrictedPages.test.ts",
       "bytes": 4479,
       "sha256": "f9ae7b2ec0fd3e353c66a3ca8bf662b8a64be0b4cdc703d351475275c691bc01"
+    },
+    {
+      "path": "tests/integration/e2eTracingOwnership.test.ts",
+      "bytes": 1060,
+      "sha256": "cc4d186100e3fc119304f5241548030f793ea4b0ffa91b3829641149165bda46"
     },
     {
       "path": "tests/integration/effectiveVisibility.test.ts",
