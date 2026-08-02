@@ -126,7 +126,9 @@ describe("persisted capture recovery flow", () => {
       expect(readinessDiagnostic).toMatchObject({
         code: "EDIS_RUNTIME_READINESS_ERROR",
         severity: "ERROR",
-        recoverable: false,
+        scope: "SEMANTIC",
+        message_key: "diagnostic.edis_runtime_readiness_error",
+        failure_boundary: "CONTENT_CAPTURE_FAILURE",
         context: { stage: expectedStage },
       });
     },

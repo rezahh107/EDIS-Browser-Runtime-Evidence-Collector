@@ -23,7 +23,7 @@ interface QualificationResult {
 }
 
 describe("browser qualification aggregation contract", () => {
-  it("accepts the current 32-test suite for both exact Stable browser targets", async () => {
+  it("accepts the canonical suite for both exact Stable browser targets", async () => {
     const temp = await makeTemp();
     try {
       await writeBrowserRun(temp.root, "chrome");
@@ -31,10 +31,10 @@ describe("browser qualification aggregation contract", () => {
       await runAggregator(temp.root, temp.output);
       const result = await readQualification(temp.output);
       expect(result.status).toBe("PASS");
-      expect(result.suite_contract.expected_total).toBe(32);
+      expect(result.suite_contract.expected_total).toBe(contract.tests.length);
       expect(result.exact_chrome_qualified).toBe(true);
       expect(result.exact_edge_qualified).toBe(true);
-      expect(result.required_target_test_executions).toBe(64);
+      expect(result.required_target_test_executions).toBe(contract.tests.length * 2);
     } finally {
       await rm(temp.base, { recursive: true, force: true });
     }

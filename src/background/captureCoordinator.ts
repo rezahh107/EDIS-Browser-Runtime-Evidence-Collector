@@ -794,6 +794,7 @@ export class CaptureCoordinator {
             ? "python_feed_readiness_error"
             : "runtime_evidence_readiness_error",
           "EDIS_RUNTIME_READINESS_ERROR",
+          "CONTENT_CAPTURE_FAILURE",
         );
 
       if (
@@ -964,8 +965,17 @@ export class CaptureCoordinator {
     message: string,
     stage: string | null = null,
     code: Diagnostic["code"] = "EDIS_RUNTIME_SERIALIZATION_FAILED",
+    failureBoundary?: Diagnostic["failure_boundary"],
   ): Promise<CoordinatorError> {
-    const item = diagnostic(code, "ERROR", message, false, stage === null ? {} : { stage });
+    const item = diagnostic(
+      code,
+      "ERROR",
+      message,
+      false,
+      stage === null ? {} : { stage },
+      "SEMANTIC",
+      failureBoundary,
+    );
     await this.#terminateJob(job, item, "FAILED");
     return new CoordinatorError(item);
   }

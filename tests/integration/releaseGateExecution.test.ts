@@ -5,7 +5,7 @@ describe("clean release gate contract", () => {
   it("executes preparation, repository tests, and verification in order", () => {
     const source = readFileSync("scripts/release-gate.mjs", "utf8");
     const prepare = source.indexOf('step("repository-test-prepare"');
-    const run = source.indexOf('"repository-test-run"');
+    const run = source.indexOf('step("repository-test-run"');
     const verify = source.indexOf('step("repository-test-verify"');
     expect(prepare).toBeGreaterThan(0);
     expect(run).toBeGreaterThan(prepare);
@@ -15,9 +15,9 @@ describe("clean release gate contract", () => {
 
   it("requires source packaging and source-to-build provenance before completion", () => {
     const source = readFileSync("scripts/release-gate.mjs", "utf8");
-    const manifest = source.indexOf('step("source-manifest"');
+    const manifest = source.indexOf('step("source-manifest-check"');
     const sourcePackage = source.indexOf('step("source-package"');
-    const provenance = source.indexOf('"release-artifact-provenance"');
+    const provenance = source.indexOf('step("release-artifact-provenance"');
     expect(manifest).toBeGreaterThan(0);
     expect(sourcePackage).toBeGreaterThan(manifest);
     expect(provenance).toBeGreaterThan(sourcePackage);

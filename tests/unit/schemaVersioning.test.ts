@@ -16,9 +16,9 @@ const registry = {
 };
 
 describe("independent schema and collector versioning", () => {
-  it("uses runtime schema 1.6.0 and collector 1.6.19", () => {
+  it("uses runtime schema 1.6.0 and collector 1.6.20", () => {
     expect(SCHEMA_VERSION).toBe("1.6.0");
-    expect(COLLECTOR_VERSION).toBe("1.6.19");
+    expect(COLLECTOR_VERSION).toBe("1.6.20");
   });
 
   it("accepts semantic extension versions instead of one hard-coded release", () => {

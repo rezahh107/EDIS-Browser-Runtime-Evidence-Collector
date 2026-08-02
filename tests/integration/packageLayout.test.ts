@@ -56,8 +56,8 @@ describe("runtime package 1.4.0 layout", () => {
       (item) => item.code === "EDIS_RUNTIME_EXPORT_PROVENANCE",
     );
     if (!provenance) throw new Error("Runtime provenance diagnostic missing");
-    expect(provenance.context.collector_engine_version).toBe("1.6.19");
-    expect(provenance.context.extension_release_version).toBe("1.6.19");
+    expect(provenance.context.collector_engine_version).toBe("1.6.20");
+    expect(provenance.context.extension_release_version).toBe("1.6.20");
     expect(provenance.context.indexeddb_name).toBe("edis-runtime-collector");
     expect(provenance.context.indexeddb_version).toBe(4);
     expect(provenance.context.extension_zip_sha256_status).toBe("UNAVAILABLE_AT_RUNTIME");

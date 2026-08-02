@@ -28,7 +28,8 @@ describe("viewport image readiness membership", () => {
       enteringViewport = true;
       const final = await session.observe(0);
       expect(final.candidate_count).toBe(2);
-      expect(enteringGeometry).toHaveBeenCalledTimes(2);
+      // Each observation performs an initial scan and an authoritative final scan.
+      expect(enteringGeometry).toHaveBeenCalledTimes(4);
     } finally {
       session.dispose();
     }

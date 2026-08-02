@@ -19,6 +19,7 @@ const storageArea = {
 };
 
 beforeAll(() => {
+  vi.stubGlobal("navigator", { storage: { estimate: vi.fn(async () => ({ usage: 0 })) } });
   vi.stubGlobal("chrome", {
     runtime: {
       id: "extension-id",

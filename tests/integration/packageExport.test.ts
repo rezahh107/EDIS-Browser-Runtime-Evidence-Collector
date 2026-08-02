@@ -1,5 +1,5 @@
 import "fake-indexeddb/auto";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { exportSession } from "../../src/application/exportUseCase";
 import { downloadBytes } from "../../src/infrastructure/download";
 import { buildEvidencePackage } from "../../src/infrastructure/packageBuilder";
@@ -13,6 +13,10 @@ describe("capture to package export", () => {
     vi.stubGlobal("Worker", undefined);
     vi.mocked(downloadBytes).mockClear();
     await new EvidenceRepository().clearAll();
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it("creates a local ZIP with required entries", async () => {
@@ -61,8 +65,13 @@ describe("capture to package export", () => {
     },
   );
 
-  it("rejects malformed readiness through controlled runtime validation", async () => {
-    const malformed = { ...makeSnapshot(), capture_readiness: undefined };
+  it.each([
+    ["undefined", undefined],
+    ["null", null],
+    ["empty object", {}],
+    ["invalid process state", { ...makeSnapshot().capture_readiness, process_state: "invalid" }],
+  ])("rejects %s readiness through controlled runtime validation", async (_name, readiness) => {
+    const malformed = { ...makeSnapshot(), capture_readiness: readiness };
     await expect(
       buildEvidencePackage({
         session: makeSession(),

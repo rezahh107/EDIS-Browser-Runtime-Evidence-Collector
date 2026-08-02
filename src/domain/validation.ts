@@ -375,6 +375,7 @@ export function isRuntimeSnapshot(value: unknown): value is RuntimeSnapshot {
     !Array.isArray(value.document_instances) ||
     value.document_instances.length > 10_000 ||
     !isRecord(value.source_runtime_cardinality) ||
+    !isCaptureReadiness(value.capture_readiness) ||
     !isRecord(value.capture_state) ||
     !isRecord(value.capture_environment) ||
     !isRecord(value.viewport) ||
@@ -408,6 +409,48 @@ export function isRuntimeSnapshot(value: unknown): value is RuntimeSnapshot {
   )
     return false;
   return allNumbersFinite(value);
+}
+
+function isCaptureReadiness(value: unknown): boolean {
+  if (
+    !isRecord(value) ||
+    !hasOnlyKeys(value, [
+      "availability",
+      "process_state",
+      "document_ready_state",
+      "fonts_api_available",
+      "fonts_status",
+      "incomplete_image_count",
+      "incomplete_image_count_total",
+      "incomplete_image_count_in_viewport",
+      "viewport_image_readiness",
+      "active_animation_count",
+      "initial_document_width",
+      "final_document_width",
+      "initial_document_height",
+      "final_document_height",
+      "initial_viewport_width",
+      "final_viewport_width",
+      "initial_viewport_height",
+      "final_viewport_height",
+      "sample_count",
+      "settle_duration_ms",
+      "hard_timeout_ms",
+      "timeout_reached",
+    ])
+  )
+    return false;
+  return (
+    ["AVAILABLE", "PARTIAL", "UNAVAILABLE", "FAILED"].includes(String(value.availability)) &&
+    ["STABLE", "UNSTABLE", "TIMEOUT", "INSUFFICIENT", "ERROR"].includes(
+      String(value.process_state),
+    ) &&
+    ["loading", "interactive", "complete"].includes(String(value.document_ready_state)) &&
+    typeof value.fonts_api_available === "boolean" &&
+    (value.fonts_status === null || typeof value.fonts_status === "string") &&
+    isRecord(value.viewport_image_readiness) &&
+    typeof value.timeout_reached === "boolean"
+  );
 }
 
 function isCaptureConfiguration(value: unknown): value is CaptureConfiguration {
