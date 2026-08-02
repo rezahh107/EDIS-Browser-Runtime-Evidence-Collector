@@ -35,8 +35,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 5141,
-      "sha256": "a181d44cb99fb3c581ae68cfd7cb27870be969132db9bf68f8eef5ee12eebac7"
+      "bytes": 6119,
+      "sha256": "b057609c15e31039a3482f4d454c1094b0edac5e8b53c51d1174f8d09d3080cb"
     },
     {
       "path": ".github/workflows/release.yml",
@@ -100,13 +100,13 @@
     },
     {
       "path": "_locales/en/messages.json",
-      "bytes": 20872,
-      "sha256": "ab231e9c8dd639b306776d89780da3a354ee21fa8b871f852516fde90ec1d460"
+      "bytes": 21064,
+      "sha256": "ee6789a64b65627ff372f2b66fdadeceef156cd55c964d51d1cc139064780d0e"
     },
     {
       "path": "_locales/fa/messages.json",
-      "bytes": 25910,
-      "sha256": "983111d72dbb97b2538beee2ddc43938f9849b848e06d9114daf366f28b67aa6"
+      "bytes": 26210,
+      "sha256": "6c04af05d08d0840ce4d92b674f5429117ad94adff227f9e5013c1d510100452"
     },
     {
       "path": "build.mjs",
@@ -1325,8 +1325,8 @@
     },
     {
       "path": "src/sidepanel/index.ts",
-      "bytes": 31107,
-      "sha256": "1ddbfa0b6f5a0a26777f62d0db8c646bb443197bc4e3c7471a00da513d158183"
+      "bytes": 31176,
+      "sha256": "c591704db84b3224ca1dfe1cc1fdb283b0e421e4f3b1010e0e077721db75f54c"
     },
     {
       "path": "src/workers/exportWorker.ts",
@@ -1749,6 +1749,11 @@
       "sha256": "590867b37c37c358fafb9e522bec4c5d2700635ece8d1b5e6615ec925f07c7fe"
     },
     {
+      "path": "tests/integration/ciWorkspaceIntegrity.test.ts",
+      "bytes": 2123,
+      "sha256": "3abeb4f0d2b48987eb7d830c4ecb23c3c742446dee7fc0aaf69b399902e1672d"
+    },
+    {
       "path": "tests/integration/correctnessClosure.test.ts",
       "bytes": 10813,
       "sha256": "a4110183facffdb4187063755dcfc8278d63f06ea757593c25267260f63188e8"
@@ -2002,6 +2007,11 @@
       "path": "tests/unit/pageFingerprint.test.ts",
       "bytes": 1192,
       "sha256": "df113fffef4ac416613cb7a6cb4251767b8f3c7539f7e624c866c9ec173e710b"
+    },
+    {
+      "path": "tests/unit/preflightLocalization.test.ts",
+      "bytes": 1140,
+      "sha256": "3a6fd435d9a8d654ebfc18f62face92cae9f305f8cbc95203d61ccbeb75d4f02"
     },
     {
       "path": "tests/unit/redaction.test.ts",

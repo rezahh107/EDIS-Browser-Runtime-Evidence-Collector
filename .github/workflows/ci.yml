@@ -20,7 +20,9 @@ jobs:
         with:
           node-version: "20"
           cache: npm
-      - name: Normalize npm lockfile registry URLs
+      - name: Preserve canonical npm lockfile
+        run: cp package-lock.json "$RUNNER_TEMP/package-lock.canonical.json"
+      - name: Normalize npm lockfile registry URLs for installation
         run: |
           node <<'NODE'
           const fs = require('node:fs');
@@ -36,6 +38,10 @@ jobs:
           fs.writeFileSync(lockPath, lock);
           NODE
       - run: npm ci --registry=https://registry.npmjs.org/
+      - name: Restore canonical npm lockfile
+        run: |
+          cp "$RUNNER_TEMP/package-lock.canonical.json" package-lock.json
+          git diff --exit-code -- package-lock.json
       - run: npm run release:gate:no-browser
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
@@ -60,7 +66,9 @@ jobs:
         with:
           node-version: "20"
           cache: npm
-      - name: Normalize npm lockfile registry URLs
+      - name: Preserve canonical npm lockfile
+        run: cp package-lock.json "$RUNNER_TEMP/package-lock.canonical.json"
+      - name: Normalize npm lockfile registry URLs for installation
         run: |
           node <<'NODE'
           const fs = require('node:fs');
@@ -76,6 +84,10 @@ jobs:
           fs.writeFileSync(lockPath, lock);
           NODE
       - run: npm ci --registry=https://registry.npmjs.org/
+      - name: Restore canonical npm lockfile
+        run: |
+          cp "$RUNNER_TEMP/package-lock.canonical.json" package-lock.json
+          git diff --exit-code -- package-lock.json
       - run: npx playwright install --with-deps chromium
       - run: npm run build:chrome
       - run: xvfb-run --auto-servernum npm run test:e2e:smoke
@@ -101,7 +113,9 @@ jobs:
         with:
           node-version: "20"
           cache: npm
-      - name: Normalize npm lockfile registry URLs
+      - name: Preserve canonical npm lockfile
+        run: cp package-lock.json "$RUNNER_TEMP/package-lock.canonical.json"
+      - name: Normalize npm lockfile registry URLs for installation
         run: |
           node <<'NODE'
           const fs = require('node:fs');
@@ -117,6 +131,10 @@ jobs:
           fs.writeFileSync(lockPath, lock);
           NODE
       - run: npm ci --registry=https://registry.npmjs.org/
+      - name: Restore canonical npm lockfile
+        run: |
+          cp "$RUNNER_TEMP/package-lock.canonical.json" package-lock.json
+          git diff --exit-code -- package-lock.json
       - run: npx playwright install --with-deps chromium
       - run: xvfb-run --auto-servernum npm run release:gate:chrome
         env:

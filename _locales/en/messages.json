@@ -705,5 +705,8 @@
   },
   "preflightBlockingStorageBudget": {
     "message": "The session evidence exceeds the deterministic local export budget."
+  },
+  "preflightBlockingReadinessError": {
+    "message": "Export is blocked because one or more captures ended with a readiness error. Capture the affected viewport again before exporting."
   }
 }

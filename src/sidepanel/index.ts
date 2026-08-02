@@ -620,6 +620,7 @@ function preflightWarningMessage(code: string): string {
     EDIS_RUNTIME_VIEWPORT_IMAGES_NOT_READY: "preflightBlockingImagesNotReady",
     EDIS_RUNTIME_SESSION_WORKFLOW_MODE_MISMATCH: "preflightBlockingWorkflowMode",
     EDIS_RUNTIME_STORAGE_QUOTA_EXCEEDED: "preflightBlockingStorageBudget",
+    EDIS_RUNTIME_READINESS_ERROR: "preflightBlockingReadinessError",
   };
   const key = keyByCode[code];
   return key ? chrome.i18n.getMessage(key) : code;
