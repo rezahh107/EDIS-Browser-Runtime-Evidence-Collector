@@ -10,14 +10,20 @@ export const CANONICALIZATION_PROFILE = "EDIS-CJ-1";
 export const URL_NORMALIZATION_PROFILE = "EDIS-URL-1";
 
 export type HashDigest = `sha256:${string}`;
-export type RuntimeAvailability =
-  | "AVAILABLE"
-  | "PARTIAL"
-  | "INSUFFICIENT"
-  | "DISABLED"
-  | "UNAVAILABLE"
-  | "NOT_APPLICABLE"
-  | "ERROR";
+export const RUNTIME_AVAILABILITIES = [
+  "AVAILABLE",
+  "PARTIAL",
+  "INSUFFICIENT",
+  "DISABLED",
+  "UNAVAILABLE",
+  "NOT_APPLICABLE",
+  "ERROR",
+] as const;
+export type RuntimeAvailability = (typeof RUNTIME_AVAILABILITIES)[number];
+
+export function isRuntimeAvailability(value: unknown): value is RuntimeAvailability {
+  return typeof value === "string" && (RUNTIME_AVAILABILITIES as readonly string[]).includes(value);
+}
 export type ValidationState = "PASS" | "FAIL" | "NOT_RUN";
 export type BindingState = "EXACT" | "PROBABLE" | "AMBIGUOUS" | "UNMATCHED";
 export type ConfirmationState = "NOT_CONFIRMED" | "CONFIRMED";

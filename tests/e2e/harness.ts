@@ -7,11 +7,20 @@ import path from "node:path";
 import type {
   CaptureJob,
   CaptureSession,
+  CaptureIntent,
+  CaptureWorkflowMode,
+  CollectorPreferences,
+  RequestedViewportProfile,
   RuntimeSnapshot,
   ScreenshotRecord,
 } from "../../src/domain/model";
 import { canonicalJson, canonicalSemanticJson } from "../../src/domain/canonical";
-import { PROTOCOL_VERSION } from "../../src/domain/messages";
+import {
+  PROTOCOL_VERSION,
+  type CaptureStartPayload,
+  type MessagePayloadMap,
+  type MessageType,
+} from "../../src/domain/messages";
 
 import {
   chromium,
@@ -148,11 +157,12 @@ export async function openExtensionPage(
   return page;
 }
 
-export async function extensionRequest<T>(
+export async function extensionRequest<M extends MessageType, T = unknown>(
   controlPage: Page,
-  type: string,
-  payload?: unknown,
+  type: M,
+  ...payloadArgument: MessagePayloadMap[M] extends undefined ? [] : [payload: MessagePayloadMap[M]]
 ): Promise<T> {
+  const payload = payloadArgument[0];
   messageSequence += 1;
   const requestId = `10000000-0000-4000-8000-${String(messageSequence).padStart(12, "0")}`;
   return controlPage.evaluate(
@@ -199,51 +209,73 @@ export async function createSession(
   controlPage: Page,
   name = "E2E session",
 ): Promise<CaptureSession> {
-  return extensionRequest(controlPage, "SESSION_CREATE", { name });
+  return extensionRequest<"SESSION_CREATE", CaptureSession>(controlPage, "SESSION_CREATE", {
+    name,
+  });
 }
 
 export async function startCapture(
   controlPage: Page,
   fixturePage: Page,
   sessionId: string,
-  options?: {
-    readonly label?: string;
-    readonly screenshot?: boolean;
-    readonly includePath?: boolean;
-    readonly includeTitle?: boolean;
-    readonly includeHidden?: boolean;
-    readonly includeTextPreview?: boolean;
-    readonly readinessHardTimeoutMs?: number;
-    readonly maxTextPreviewChars?: number;
-    readonly maxElements?: number;
-    readonly maxDepth?: number;
-  },
+  options?: CaptureStartOptions,
 ): Promise<CaptureJob> {
   await grantActiveTab(fixturePage);
-  return extensionRequest(controlPage, "CAPTURE_START", {
+  return extensionRequest<"CAPTURE_START", CaptureJob>(
+    controlPage,
+    "CAPTURE_START",
+    makeCaptureStartPayload(sessionId, options),
+  );
+}
+
+export interface CaptureStartOptions {
+  readonly label?: string;
+  readonly screenshot?: boolean;
+  readonly includePath?: boolean;
+  readonly includeTitle?: boolean;
+  readonly includeHidden?: boolean;
+  readonly includeTextPreview?: boolean;
+  readonly readinessHardTimeoutMs?: number;
+  readonly maxTextPreviewChars?: number;
+  readonly maxElements?: number;
+  readonly maxDepth?: number;
+  readonly requestedProfileId?: RequestedViewportProfile;
+  readonly workflowMode?: CaptureWorkflowMode;
+  readonly captureIntent?: CaptureIntent;
+}
+
+export function makeCaptureStartPayload(
+  sessionId: string,
+  options?: CaptureStartOptions,
+): CaptureStartPayload {
+  const overrides: Partial<CollectorPreferences> = {
+    ...(options?.screenshot === undefined ? {} : { includeScreenshot: options.screenshot }),
+    ...(options?.includePath === undefined ? {} : { includePath: options.includePath }),
+    ...(options?.includeTitle === undefined ? {} : { includePageTitle: options.includeTitle }),
+    ...(options?.includeHidden === undefined
+      ? {}
+      : { includeHiddenElements: options.includeHidden }),
+    ...(options?.includeTextPreview === undefined
+      ? {}
+      : { includeTextPreview: options.includeTextPreview }),
+    ...(options?.readinessHardTimeoutMs === undefined
+      ? {}
+      : { readinessHardTimeoutMs: options.readinessHardTimeoutMs }),
+    ...(options?.maxTextPreviewChars === undefined
+      ? {}
+      : { maxTextPreviewChars: options.maxTextPreviewChars }),
+    ...(options?.maxElements === undefined ? {} : { maxElements: options.maxElements }),
+    ...(options?.maxDepth === undefined ? {} : { maxDepth: options.maxDepth }),
+  };
+  return {
     sessionId,
     userLabel: options?.label ?? "E2E viewport",
     evidenceLabel: "USER_LABELED_VIEWPORT",
-    overrides: {
-      ...(options?.screenshot === undefined ? {} : { includeScreenshot: options.screenshot }),
-      ...(options?.includePath === undefined ? {} : { includePath: options.includePath }),
-      ...(options?.includeTitle === undefined ? {} : { includePageTitle: options.includeTitle }),
-      ...(options?.includeHidden === undefined
-        ? {}
-        : { includeHiddenElements: options.includeHidden }),
-      ...(options?.includeTextPreview === undefined
-        ? {}
-        : { includeTextPreview: options.includeTextPreview }),
-      ...(options?.readinessHardTimeoutMs === undefined
-        ? {}
-        : { readinessHardTimeoutMs: options.readinessHardTimeoutMs }),
-      ...(options?.maxTextPreviewChars === undefined
-        ? {}
-        : { maxTextPreviewChars: options.maxTextPreviewChars }),
-      ...(options?.maxElements === undefined ? {} : { maxElements: options.maxElements }),
-      ...(options?.maxDepth === undefined ? {} : { maxDepth: options.maxDepth }),
-    },
-  });
+    requestedProfileId: options?.requestedProfileId ?? "DESKTOP",
+    workflowMode: options?.workflowMode ?? "RUNTIME_EVIDENCE",
+    ...(options?.captureIntent === undefined ? {} : { captureIntent: options.captureIntent }),
+    overrides,
+  };
 }
 
 export interface BrowserActionPopup {
@@ -452,9 +484,11 @@ export async function waitForJob(
 ): Promise<CaptureJob> {
   const deadline = Date.now() + 60_000;
   while (Date.now() < deadline) {
-    const job = await extensionRequest<CaptureJob | undefined>(controlPage, "CAPTURE_STATUS", {
-      jobId,
-    });
+    const job = await extensionRequest<"CAPTURE_STATUS", CaptureJob | undefined>(
+      controlPage,
+      "CAPTURE_STATUS",
+      { jobId },
+    );
     if (job && terminal.includes(job.status)) return job;
     await new Promise((resolve) => setTimeout(resolve, 100));
   }

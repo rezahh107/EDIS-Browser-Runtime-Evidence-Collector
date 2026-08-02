@@ -1095,8 +1095,8 @@
     },
     {
       "path": "src/domain/model.ts",
-      "bytes": 34366,
-      "sha256": "11d524326cf415d5768ba2c22ce6545636dc1c638d24a1c1af7d66247d7d662d"
+      "bytes": 34641,
+      "sha256": "edf97a35e264ab75f59aebfa84e6a3e5e222cc7c651404b3eda8cab080286ccd"
     },
     {
       "path": "src/domain/packageInventory.ts",
@@ -1160,8 +1160,8 @@
     },
     {
       "path": "src/domain/validation.ts",
-      "bytes": 22766,
-      "sha256": "07141f90f319e405985899eba4b3839315867bfd17f01fbc7fa4c69577d7c159"
+      "bytes": 22746,
+      "sha256": "829f9e71329bfdefe8990a65311f1e80b0b250cc33d5a056928c1757aaabed3f"
     },
     {
       "path": "src/guide/index.css",
@@ -1600,8 +1600,8 @@
     },
     {
       "path": "tests/e2e/harness.ts",
-      "bytes": 23998,
-      "sha256": "7e3f9a94b0f1e1f38ef0c1560c636bb52ff3690bf9c0e9d5efb0fa148136b4c2"
+      "bytes": 25030,
+      "sha256": "dc3689b81bb2fa33d708de6470f9b7e252dc252063ba8f3005b665c3e57bc4cf"
     },
     {
       "path": "tests/e2e/privacy-network-package.spec.ts",
@@ -1610,8 +1610,8 @@
     },
     {
       "path": "tests/e2e/resilience.spec.ts",
-      "bytes": 11501,
-      "sha256": "c060a1fbd6c4fd1be97f4f1f19a5a888e2ad7048a5ad4fa09ba1c9d82f4df047"
+      "bytes": 11560,
+      "sha256": "3360916877b78aa50f80eca86399e1de3232c8d51b32230dd646de915aacac21"
     },
     {
       "path": "tests/e2e/runtime.spec.ts",
@@ -1745,8 +1745,8 @@
     },
     {
       "path": "tests/integration/captureRecoveryFlow.test.ts",
-      "bytes": 10917,
-      "sha256": "7c9895394a69d2eafc790649a0145149248941c968996ca47a97a11af9e1186d"
+      "bytes": 10979,
+      "sha256": "1dc6341c47373159271e19f870e10decef7a1f01b7880803e57876ab0e4622b8"
     },
     {
       "path": "tests/integration/chunking.test.ts",
@@ -1790,8 +1790,8 @@
     },
     {
       "path": "tests/integration/exportPreflight.test.ts",
-      "bytes": 4415,
-      "sha256": "1494e942199c1339566237362ad1a28431acb1287ec6380b27f981383ca453e1"
+      "bytes": 4477,
+      "sha256": "b163c2a91eec6e94a715c121f6c8bfffab3e834da1193d80a41bf34f2278e1d9"
     },
     {
       "path": "tests/integration/exportWorkerTransferRetry.test.ts",
@@ -1830,8 +1830,8 @@
     },
     {
       "path": "tests/integration/packageExport.test.ts",
-      "bytes": 4145,
-      "sha256": "e2d9900f993e9291e757e83968aba5ab5c02c5da2fb4ee7f91a944f7ee3ed4f3"
+      "bytes": 4285,
+      "sha256": "8d0b2deb198a470c11f0d4816aa995c9b0c93182396a7748b3b71fc302618c94"
     },
     {
       "path": "tests/integration/packageLayout.test.ts",
@@ -1979,6 +1979,11 @@
       "sha256": "23d2b56aeb8378c441c0e67b0bc85931b8adbb99713c5fbe9cfe7c261d2fec1f"
     },
     {
+      "path": "tests/unit/e2eCaptureStartPayload.test.ts",
+      "bytes": 1317,
+      "sha256": "fa499bcd671884cd5b9e2fb13af42235ee753c556456f0bcfd31db210f92a8e2"
+    },
+    {
       "path": "tests/unit/elementorMarker.test.ts",
       "bytes": 1691,
       "sha256": "2deb4724fa4340cbca0edca73b7db3e3d34af602a881af3c648d7bd41af47673"
@@ -2037,6 +2042,11 @@
       "path": "tests/unit/responseEnvelopeValidation.test.ts",
       "bytes": 1340,
       "sha256": "a904587647e00c97ffcdeab6ebea1e9752c23f0ec26395d3dfcf9be91a00f471"
+    },
+    {
+      "path": "tests/unit/runtimeAvailabilityContract.test.ts",
+      "bytes": 734,
+      "sha256": "d59967f75db15e65a5ecf5fa77c7576ceeb5e56e6e42001d4b99587587239438"
     },
     {
       "path": "tests/unit/runtimeSnapshotValidation.test.ts",

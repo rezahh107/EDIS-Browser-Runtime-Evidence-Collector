@@ -38,10 +38,13 @@ test("idle service-worker termination preserves persisted sessions and reconstru
   await fixture(page, "non-elementor.html");
   const capture = await captureSnapshot(control, page);
   await terminateServiceWorker(harness);
-  const state = await extensionRequest<{
-    currentSessionId: string | null;
-    sessions: Array<{ data: { session_id: string; captures: unknown[] } }>;
-  }>(control, "STATE_GET");
+  const state = await extensionRequest<
+    "STATE_GET",
+    {
+      currentSessionId: string | null;
+      sessions: Array<{ data: { session_id: string; captures: unknown[] } }>;
+    }
+  >(control, "STATE_GET");
   await waitForReplacementWorker(harness);
   expect(
     state.sessions.some((session) => session.data.session_id === capture.session.data.session_id),
@@ -263,9 +266,11 @@ test("chunk persistence and finalization remain idempotent after completed captu
   const { job, snapshot } = await captureSnapshot(control, page, { maxElements: 1000 });
   expect(await readStore(control, "chunks")).toHaveLength(0);
   const before = await readStore<RuntimeSnapshot>(control, "snapshots");
-  const status = await extensionRequest<CaptureJob | undefined>(control, "CAPTURE_STATUS", {
-    jobId: job.id,
-  });
+  const status = await extensionRequest<"CAPTURE_STATUS", CaptureJob | undefined>(
+    control,
+    "CAPTURE_STATUS",
+    { jobId: job.id },
+  );
   expect(status?.status).toBe("COMPLETE");
   const after = await readStore<RuntimeSnapshot>(control, "snapshots");
   expect(after.filter((item) => item.snapshot_id === snapshot.snapshot_id)).toHaveLength(1);

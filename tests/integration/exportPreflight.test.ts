@@ -86,7 +86,11 @@ describe("export preflight", () => {
       });
       await repository.putSnapshot({
         ...snapshot,
-        capture_readiness: { ...snapshot.capture_readiness, process_state: "ERROR" },
+        capture_readiness: {
+          ...snapshot.capture_readiness,
+          availability: "ERROR",
+          process_state: "ERROR",
+        },
       });
 
       const report = await getExportPreflight(sessionId, purpose);

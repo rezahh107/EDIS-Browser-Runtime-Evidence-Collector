@@ -49,7 +49,11 @@ describe("capture to package export", () => {
           snapshots: [
             {
               ...snapshot,
-              capture_readiness: { ...snapshot.capture_readiness, process_state: "ERROR" },
+              capture_readiness: {
+                ...snapshot.capture_readiness,
+                availability: "ERROR",
+                process_state: "ERROR",
+              },
             },
           ],
           screenshots: [],
@@ -87,7 +91,11 @@ describe("capture to package export", () => {
     await repository.putSession(makeSession());
     await repository.putSnapshot({
       ...snapshot,
-      capture_readiness: { ...snapshot.capture_readiness, process_state: "ERROR" },
+      capture_readiness: {
+        ...snapshot.capture_readiness,
+        availability: "ERROR",
+        process_state: "ERROR",
+      },
     });
 
     await expect(exportSession(sessionId)).rejects.toThrow("EDIS_RUNTIME_READINESS_ERROR");

@@ -105,7 +105,11 @@ describe("persisted capture recovery flow", () => {
       const snapshot = makeSnapshot();
       const { repository, job, bytes } = await prepareRecoverableCapture(workflowMode, {
         ...snapshot,
-        capture_readiness: { ...snapshot.capture_readiness, process_state: "ERROR" },
+        capture_readiness: {
+          ...snapshot.capture_readiness,
+          availability: "ERROR",
+          process_state: "ERROR",
+        },
       });
 
       await expect(

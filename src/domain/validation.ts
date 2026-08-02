@@ -4,6 +4,7 @@ import {
   DEFAULT_PREFERENCES,
   SCHEMA_VERSION,
   isRequestedViewportProfile,
+  isRuntimeAvailability,
   type CaptureConfiguration,
   type CaptureJob,
   type CaptureSession,
@@ -441,7 +442,7 @@ function isCaptureReadiness(value: unknown): boolean {
   )
     return false;
   return (
-    ["AVAILABLE", "PARTIAL", "UNAVAILABLE", "FAILED"].includes(String(value.availability)) &&
+    isRuntimeAvailability(value.availability) &&
     ["STABLE", "UNSTABLE", "TIMEOUT", "INSUFFICIENT", "ERROR"].includes(
       String(value.process_state),
     ) &&
