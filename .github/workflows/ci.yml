@@ -90,6 +90,20 @@ jobs:
           git diff --exit-code -- package-lock.json
       - run: npx playwright install --with-deps chromium
       - run: npm run build:chrome
+      - name: Package exact Chrome release artifact
+        run: node scripts/package-release.mjs --target chrome
+      - name: Verify exact Chrome release artifact
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const metadata = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const target = `artifacts/packages/edis-runtime-collector-chrome-${metadata.version}.zip`;
+          const stat = fs.statSync(target);
+          if (!stat.isFile() || stat.size === 0) {
+            throw new Error(`Exact Chrome package is missing or empty: ${target}`);
+          }
+          console.log(`Verified exact Chrome package: ${target} (${stat.size} bytes)`);
+          NODE
       - run: xvfb-run --auto-servernum npm run test:e2e:smoke
         env:
           EDIS_E2E_HEADLESS: "false"

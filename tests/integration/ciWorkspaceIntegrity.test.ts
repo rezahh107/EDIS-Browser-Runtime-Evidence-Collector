@@ -26,6 +26,34 @@ describe("CI canonical workspace integrity", () => {
     );
     expect(job.slice(restore, validation)).toContain("git diff --exit-code -- package-lock.json");
   });
+
+  it("builds and verifies the exact Chrome package before E2E smoke", async () => {
+    const workflow = await readFile(".github/workflows/ci.yml", "utf8");
+    const job = jobBlock(workflow, "e2e-smoke");
+    const restore = job.indexOf("- name: Restore canonical npm lockfile");
+    const browserInstall = job.indexOf("- run: npx playwright install --with-deps chromium");
+    const build = job.indexOf("- run: npm run build:chrome");
+    const packageChrome = job.indexOf("- name: Package exact Chrome release artifact");
+    const verifyPackage = job.indexOf("- name: Verify exact Chrome release artifact");
+    const smoke = job.indexOf("- run: xvfb-run --auto-servernum npm run test:e2e:smoke");
+
+    expect(restore).toBeGreaterThanOrEqual(0);
+    expect(browserInstall).toBeGreaterThan(restore);
+    expect(build).toBeGreaterThan(browserInstall);
+    expect(packageChrome).toBeGreaterThan(build);
+    expect(verifyPackage).toBeGreaterThan(packageChrome);
+    expect(smoke).toBeGreaterThan(verifyPackage);
+
+    const packageStep = job.slice(packageChrome, verifyPackage);
+    expect(packageStep).toContain("node scripts/package-release.mjs --target chrome");
+    const verificationStep = job.slice(verifyPackage, smoke);
+    expect(verificationStep).toContain("metadata.version");
+    expect(verificationStep).toContain(
+      "artifacts/packages/edis-runtime-collector-chrome-${metadata.version}.zip",
+    );
+    expect(verificationStep).toContain("stat.isFile()");
+    expect(verificationStep).toContain("stat.size === 0");
+  });
 });
 
 function jobBlock(workflow: string, jobName: (typeof JOBS)[number]): string {

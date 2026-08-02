@@ -35,8 +35,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 6119,
-      "sha256": "b057609c15e31039a3482f4d454c1094b0edac5e8b53c51d1174f8d09d3080cb"
+      "bytes": 6839,
+      "sha256": "bafdfca02528e5c5d4d42995855d1d2a0b5b26a58b2697b3205eb1a59835cea5"
     },
     {
       "path": ".github/workflows/release.yml",
@@ -1750,8 +1750,8 @@
     },
     {
       "path": "tests/integration/ciWorkspaceIntegrity.test.ts",
-      "bytes": 2123,
-      "sha256": "3abeb4f0d2b48987eb7d830c4ecb23c3c742446dee7fc0aaf69b399902e1672d"
+      "bytes": 3662,
+      "sha256": "deebd77a26357d31d5438303f4cfc6aa7c1beec07339de757c4deb63a2af13f3"
     },
     {
       "path": "tests/integration/correctnessClosure.test.ts",
