@@ -16,6 +16,7 @@ import { buildEvidencePackageOffMainThread } from "../infrastructure/exportWorke
 import { EvidenceRepository } from "../infrastructure/storage/indexedDb";
 import { loadSourceContextRecord } from "../infrastructure/storage/sourceContext";
 import { MAX_SESSION_EVIDENCE_BYTES } from "../domain/resourceLimits";
+import { hasReadinessError } from "../domain/readinessState";
 
 export interface ExportPreflightReport {
   readonly observations: number;
@@ -68,8 +69,14 @@ export async function getExportPreflight(
     runtimeBlockingErrors.push("EDIS_RUNTIME_SESSION_WORKFLOW_MODE_MISMATCH");
   if (evidence.usage.totalBytes > MAX_SESSION_EVIDENCE_BYTES)
     runtimeBlockingErrors.push("EDIS_RUNTIME_STORAGE_QUOTA_EXCEEDED");
-  const blockingErrors = [...runtimeBlockingErrors];
-  if (purpose === "MINIMUM_PYTHON_FEED") blockingErrors.push(...pythonFeed.blocking_codes);
+  if (evidence.snapshots.some((snapshot) => hasReadinessError(snapshot.capture_readiness)))
+    runtimeBlockingErrors.push("EDIS_RUNTIME_READINESS_ERROR");
+  const blockingErrors = [
+    ...new Set([
+      ...runtimeBlockingErrors,
+      ...(purpose === "MINIMUM_PYTHON_FEED" ? pythonFeed.blocking_codes : []),
+    ]),
+  ];
   const warnings: string[] = [];
   if (!evidence.session.data.source_context_reference) warnings.push("SOURCE_CONTEXT_NOT_IMPORTED");
   if (distinctViewports < 2) warnings.push("SINGLE_VIEWPORT_ONLY");

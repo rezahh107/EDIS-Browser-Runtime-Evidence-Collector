@@ -786,14 +786,14 @@ export class CaptureCoordinator {
           "python_feed_capture_changed",
         );
 
-      if (
-        job.config.workflowMode === "MINIMUM_PYTHON_FEED" &&
-        hasReadinessError(snapshot.capture_readiness)
-      )
+      if (hasReadinessError(snapshot.capture_readiness))
         throw await this.#failFinalization(
           job,
-          "The canonical Python Feed capture readiness entered ERROR.",
-          "python_feed_readiness_error",
+          "The capture readiness entered ERROR.",
+          job.config.workflowMode === "MINIMUM_PYTHON_FEED"
+            ? "python_feed_readiness_error"
+            : "runtime_evidence_readiness_error",
+          "EDIS_RUNTIME_READINESS_ERROR",
         );
 
       if (
@@ -963,14 +963,9 @@ export class CaptureCoordinator {
     job: CaptureJob,
     message: string,
     stage: string | null = null,
+    code: Diagnostic["code"] = "EDIS_RUNTIME_SERIALIZATION_FAILED",
   ): Promise<CoordinatorError> {
-    const item = diagnostic(
-      "EDIS_RUNTIME_SERIALIZATION_FAILED",
-      "ERROR",
-      message,
-      false,
-      stage === null ? {} : { stage },
-    );
+    const item = diagnostic(code, "ERROR", message, false, stage === null ? {} : { stage });
     await this.#terminateJob(job, item, "FAILED");
     return new CoordinatorError(item);
   }

@@ -37,6 +37,7 @@ import type {
   ScreenshotRecord,
 } from "../domain/model";
 import { isRuntimeSnapshot, isScreenshotRecord } from "../domain/validation";
+import { hasReadinessError } from "../domain/readinessState";
 import { sha256Digest, sha256Hex } from "./checksum";
 import { validateJsonSchema, type SchemaRegistry } from "./schemaValidation";
 import { validateEvidencePackageArchive } from "./externalPackageValidation";
@@ -1002,11 +1003,14 @@ async function validateFinalEntries(
   }
 
   const checksumText = decoder.decode(entries.get("checksums.sha256") ?? new Uint8Array());
-  const checksumLines = checksumText.trimEnd().split("\n").map((line) => {
-    const match = /^(sha256:[0-9a-f]{64}) {2}(.+)$/.exec(line);
-    if (!match) throw new Error("Final checksum inventory is malformed.");
-    return { digest: match[1] ?? "", path: match[2] ?? "" };
-  });
+  const checksumLines = checksumText
+    .trimEnd()
+    .split("\n")
+    .map((line) => {
+      const match = /^(sha256:[0-9a-f]{64}) {2}(.+)$/.exec(line);
+      if (!match) throw new Error("Final checksum inventory is malformed.");
+      return { digest: match[1] ?? "", path: match[2] ?? "" };
+    });
   assertExactPathSet(
     checksumLines.map((line) => line.path),
     inventory.checksumPaths,
@@ -1045,6 +1049,8 @@ async function validateInput(input: EvidencePackageInput): Promise<void> {
   const snapshotIds = new Set<string>();
   for (const snapshot of input.snapshots) {
     if (!isRuntimeSnapshot(snapshot)) throw new Error("Stored snapshot failed runtime validation.");
+    if (hasReadinessError(snapshot.capture_readiness))
+      throw new Error("EDIS_RUNTIME_READINESS_ERROR");
     if (snapshot.session_id !== input.session.data.session_id)
       throw new Error("Snapshot belongs to a different session.");
     if (snapshotIds.has(snapshot.snapshot_id)) throw new Error("Duplicate snapshot identifier.");

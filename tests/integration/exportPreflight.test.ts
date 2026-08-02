@@ -70,4 +70,41 @@ describe("export preflight", () => {
     const runtimeReport = await getExportPreflight(sessionId, "RUNTIME_EVIDENCE");
     expect(runtimeReport.blockingErrors).toEqual([]);
   });
+
+  it.each([
+    ["RUNTIME_EVIDENCE", "RUNTIME_EVIDENCE"],
+    ["MINIMUM_PYTHON_FEED", "MINIMUM_PYTHON_FEED"],
+  ] as const)(
+    "blocks readiness ERROR for %s sessions exporting %s",
+    async (workflowMode, purpose) => {
+      const repository = new EvidenceRepository();
+      const session = makeSession();
+      const snapshot = makeSnapshot();
+      await repository.putSession({
+        ...session,
+        data: { ...session.data, workflow_mode: workflowMode },
+      });
+      await repository.putSnapshot({
+        ...snapshot,
+        capture_readiness: { ...snapshot.capture_readiness, process_state: "ERROR" },
+      });
+
+      const report = await getExportPreflight(sessionId, purpose);
+
+      expect(report.blockingErrors[0]).toBe("EDIS_RUNTIME_READINESS_ERROR");
+      expect(
+        report.blockingErrors.filter((code) => code === "EDIS_RUNTIME_READINESS_ERROR"),
+      ).toHaveLength(1);
+      expect(report.blockingErrors.length).toBeGreaterThan(0);
+      expect(report.runtimeEvidenceFallbackAvailable).toBe(false);
+      if (purpose === "MINIMUM_PYTHON_FEED") {
+        expect(report.blockingErrors.slice(1)).toEqual([
+          "EDIS_RUNTIME_INSUFFICIENT_DISTINCT_VIEWPORTS",
+          "EDIS_RUNTIME_INSUFFICIENT_RUNTIME_OBSERVATIONS",
+          "EDIS_RUNTIME_REQUIRED_VIEWPORT_PROFILE_MISSING",
+          "EDIS_RUNTIME_SOURCE_CONTEXT_REQUIRED",
+        ]);
+      }
+    },
+  );
 });

@@ -96,6 +96,42 @@ describe("persisted capture recovery flow", () => {
     expect(await repository.listChunks(job.id)).toEqual([]);
   });
 
+  it.each([
+    ["RUNTIME_EVIDENCE", "runtime_evidence_readiness_error"],
+    ["MINIMUM_PYTHON_FEED", "python_feed_readiness_error"],
+  ] as const)(
+    "fails %s finalization before committing a readiness-ERROR snapshot",
+    async (workflowMode, expectedStage) => {
+      const snapshot = makeSnapshot();
+      const { repository, job, bytes } = await prepareRecoverableCapture(workflowMode, {
+        ...snapshot,
+        capture_readiness: { ...snapshot.capture_readiness, process_state: "ERROR" },
+      });
+
+      await expect(
+        new CaptureCoordinator().complete(job.tabId, job.documentUrl, job.documentId, {
+          jobId: job.id,
+          total: 1,
+          snapshotSha256: await sha256Hex(bytes),
+          byteLength: bytes.length,
+        }),
+      ).rejects.toThrow();
+
+      const storedJob = await repository.getJob(job.id);
+      const readinessDiagnostic = storedJob?.diagnostics.find(
+        (item) => item.code === "EDIS_RUNTIME_READINESS_ERROR",
+      );
+      expect(storedJob?.status).toBe("FAILED");
+      expect(await repository.getSnapshot(snapshotId)).toBeUndefined();
+      expect(readinessDiagnostic).toMatchObject({
+        code: "EDIS_RUNTIME_READINESS_ERROR",
+        severity: "ERROR",
+        recoverable: false,
+        context: { stage: expectedStage },
+      });
+    },
+  );
+
   it("accepts a legacy zero-hash chunk only when the supplied full checksum verifies", async () => {
     const { repository, job, serialized, bytes } = await prepareLegacyCapture(
       "323e4567-e89b-52d3-a456-426614174010",
@@ -140,9 +176,13 @@ describe("persisted capture recovery flow", () => {
   });
 });
 
-async function prepareRecoverableCapture(): Promise<{
+async function prepareRecoverableCapture(
+  workflowMode: "RUNTIME_EVIDENCE" | "MINIMUM_PYTHON_FEED" = "RUNTIME_EVIDENCE",
+  snapshot = makeSnapshot(),
+): Promise<{
   repository: EvidenceRepository;
   job: CaptureJob;
+  bytes: Uint8Array;
 }> {
   const repository = new EvidenceRepository();
   const baseSession = makeSession();
@@ -152,7 +192,7 @@ async function prepareRecoverableCapture(): Promise<{
   };
   await repository.putSession(session);
 
-  const serialized = canonicalJson(makeSnapshot());
+  const serialized = canonicalJson(snapshot);
   const bytes = new TextEncoder().encode(serialized);
   const job: CaptureJob = {
     id: "323e4567-e89b-52d3-a456-426614174001",
@@ -176,9 +216,11 @@ async function prepareRecoverableCapture(): Promise<{
       userLabel: "Desktop",
       evidenceLabel: "USER_LABELED_VIEWPORT",
       requestedProfileId: "DESKTOP",
-      workflowMode: "RUNTIME_EVIDENCE",
-      expectedPageFingerprint: null,
-      expectedViewportWidth: null,
+      workflowMode,
+      expectedPageFingerprint:
+        workflowMode === "MINIMUM_PYTHON_FEED" ? snapshot.page.page_fingerprint : null,
+      expectedViewportWidth:
+        workflowMode === "MINIMUM_PYTHON_FEED" ? snapshot.viewport.inner_width : null,
       capturedAt,
       bindingContext: null,
     },
@@ -194,7 +236,7 @@ async function prepareRecoverableCapture(): Promise<{
     byteLength: bytes.length,
   };
   await repository.commitChunk(job, chunk, job.config.maxSnapshotBytes);
-  return { repository, job };
+  return { repository, job, bytes };
 }
 
 async function prepareLegacyCapture(id: string): Promise<{
