@@ -89,6 +89,16 @@ jobs:
           cp "$RUNNER_TEMP/package-lock.canonical.json" package-lock.json
           git diff --exit-code -- package-lock.json
       - run: npx playwright install --with-deps chromium
+      - name: Select Playwright Chrome for Testing for automated smoke
+        run: |
+          node --input-type=module <<'NODE'
+          import { appendFileSync } from 'node:fs';
+          import { chromium } from '@playwright/test';
+          const output = process.env.GITHUB_ENV;
+          if (!output) throw new Error('GITHUB_ENV is unavailable.');
+          appendFileSync(output, `EDIS_CHROME_EXECUTABLE_PATH=${chromium.executablePath()}\n`);
+          appendFileSync(output, 'EDIS_E2E_ALLOW_CHROMIUM_FALLBACK=true\n');
+          NODE
       - run: npm run build:chrome
       - name: Package exact Chrome release artifact
         run: node scripts/package-release.mjs --target chrome
@@ -109,6 +119,28 @@ jobs:
           EDIS_E2E_HEADLESS: "false"
           EDIS_E2E_CAPTURE_MEDIA: "true"
           EDIS_E2E_ARTIFACT_DIR: artifacts/browser-e2e-smoke
+      - name: Verify automated smoke browser identity
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const evidence = JSON.parse(
+            fs.readFileSync('artifacts/browser-e2e-smoke/environment.json', 'utf8')
+          );
+          const expected = {
+            requested_target: 'chrome',
+            browser_family: 'chromium',
+            exact_requested_product: false,
+            qualification_scope: 'AUTOMATED_PLAYWRIGHT_CHROMIUM',
+            source_under_test: 'exact_packaged_zip_extracted',
+            extension_target: 'chrome',
+            extension_artifact_hash_profile: 'EDIS-PACKAGED-ZIP-SHA256-1',
+          };
+          for (const [key, value] of Object.entries(expected)) {
+            if (evidence[key] !== value) {
+              throw new Error(`Automated smoke identity mismatch for ${key}.`);
+            }
+          }
+          NODE
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:

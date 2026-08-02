@@ -35,8 +35,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 6839,
-      "sha256": "bafdfca02528e5c5d4d42995855d1d2a0b5b26a58b2697b3205eb1a59835cea5"
+      "bytes": 8292,
+      "sha256": "2a3efb084ae48e54eff5d71ba8e7ee7fb88612bab2283debc2e3318eecc9c819"
     },
     {
       "path": ".github/workflows/release.yml",
@@ -739,9 +739,14 @@
       "sha256": "ac67e87e7a8c9e56f1d4cc11ff0b340c85cc3a1b72dfa94e26f24768ff978025"
     },
     {
+      "path": "scripts/e2e-environment.d.mts",
+      "bytes": 126,
+      "sha256": "cb1a442311911f33d156cee39a96e129bc2b602b8edb21536f545658352ab5cb"
+    },
+    {
       "path": "scripts/e2e-environment.mjs",
-      "bytes": 19120,
-      "sha256": "c8159ccce66c585696e61751ab310e7fb6bb03e921ae5547030697b5ff6c16a2"
+      "bytes": 19300,
+      "sha256": "b91b4130375bfe30e7f2cbb367b65f0bc98a764d61b0c32173ace591cca18f1b"
     },
     {
       "path": "scripts/force-exit-reporter.mjs",
@@ -1750,8 +1755,8 @@
     },
     {
       "path": "tests/integration/ciWorkspaceIntegrity.test.ts",
-      "bytes": 3662,
-      "sha256": "deebd77a26357d31d5438303f4cfc6aa7c1beec07339de757c4deb63a2af13f3"
+      "bytes": 5211,
+      "sha256": "664e035cacc3829d4d054c9c4bda869796a86118a7000ca602a4a64cb183ca55"
     },
     {
       "path": "tests/integration/correctnessClosure.test.ts",
@@ -1962,6 +1967,11 @@
       "path": "tests/unit/diagnostics.test.ts",
       "bytes": 1414,
       "sha256": "ac23b8ebe3678be38258ce639440d98805fd0bd53c301206a584ae60d63997a3"
+    },
+    {
+      "path": "tests/unit/e2eBrowserIdentity.test.ts",
+      "bytes": 967,
+      "sha256": "23d2b56aeb8378c441c0e67b0bc85931b8adbb99713c5fbe9cfe7c261d2fec1f"
     },
     {
       "path": "tests/unit/elementorMarker.test.ts",

@@ -442,11 +442,18 @@ function managedPolicyDirectories(executablePath) {
   return [];
 }
 
-function classifyBrowserFamily(executablePath, versionCommand) {
+export function classifyBrowserFamily(executablePath, versionCommand) {
   const value = `${path.basename(executablePath)} ${versionCommand}`.toLowerCase();
   if (value.includes("microsoft edge") || value.includes("msedge") || value.includes(" edg/"))
     return "edge";
-  if (value.includes("chrome-for-testing")) return "chromium";
+  if (
+    value.includes("google chrome for testing") ||
+    value.includes("chrome-for-testing") ||
+    value.includes("ms-playwright") ||
+    value.includes("playwright") ||
+    value.includes("chromium-")
+  )
+    return "chromium";
   if (value.includes("google chrome")) return "chrome";
   return "chromium";
 }

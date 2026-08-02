@@ -32,17 +32,29 @@ describe("CI canonical workspace integrity", () => {
     const job = jobBlock(workflow, "e2e-smoke");
     const restore = job.indexOf("- name: Restore canonical npm lockfile");
     const browserInstall = job.indexOf("- run: npx playwright install --with-deps chromium");
+    const selectAutomation = job.indexOf(
+      "- name: Select Playwright Chrome for Testing for automated smoke",
+    );
     const build = job.indexOf("- run: npm run build:chrome");
     const packageChrome = job.indexOf("- name: Package exact Chrome release artifact");
     const verifyPackage = job.indexOf("- name: Verify exact Chrome release artifact");
     const smoke = job.indexOf("- run: xvfb-run --auto-servernum npm run test:e2e:smoke");
+    const verifyIdentity = job.indexOf("- name: Verify automated smoke browser identity");
 
     expect(restore).toBeGreaterThanOrEqual(0);
     expect(browserInstall).toBeGreaterThan(restore);
-    expect(build).toBeGreaterThan(browserInstall);
+    expect(selectAutomation).toBeGreaterThan(browserInstall);
+    expect(build).toBeGreaterThan(selectAutomation);
     expect(packageChrome).toBeGreaterThan(build);
     expect(verifyPackage).toBeGreaterThan(packageChrome);
     expect(smoke).toBeGreaterThan(verifyPackage);
+    expect(verifyIdentity).toBeGreaterThan(smoke);
+
+    const automationStep = job.slice(selectAutomation, build);
+    expect(automationStep).toContain("import { chromium } from '@playwright/test'");
+    expect(automationStep).toContain("chromium.executablePath()");
+    expect(automationStep).toContain("EDIS_CHROME_EXECUTABLE_PATH=");
+    expect(automationStep).toContain("EDIS_E2E_ALLOW_CHROMIUM_FALLBACK=true");
 
     const packageStep = job.slice(packageChrome, verifyPackage);
     expect(packageStep).toContain("node scripts/package-release.mjs --target chrome");
@@ -53,6 +65,22 @@ describe("CI canonical workspace integrity", () => {
     );
     expect(verificationStep).toContain("stat.isFile()");
     expect(verificationStep).toContain("stat.size === 0");
+
+    const identityStep = job.slice(verifyIdentity);
+    expect(identityStep).toContain("artifacts/browser-e2e-smoke/environment.json");
+    expect(identityStep).toContain("AUTOMATED_PLAYWRIGHT_CHROMIUM");
+    expect(identityStep).toContain("exact_packaged_zip_extracted");
+    expect(identityStep).toContain("EDIS-PACKAGED-ZIP-SHA256-1");
+  });
+
+  it("keeps exact nightly qualification free of automation overrides", async () => {
+    const workflow = await readFile(".github/workflows/ci.yml", "utf8");
+    const nightly = jobBlock(workflow, "e2e-nightly");
+
+    expect(nightly).toContain("npm run release:gate:chrome");
+    expect(nightly).not.toContain("EDIS_CHROME_EXECUTABLE_PATH");
+    expect(nightly).not.toContain("EDIS_E2E_ALLOW_CHROMIUM_FALLBACK");
+    expect(nightly).not.toContain("Select Playwright Chrome for Testing for automated smoke");
   });
 });
 
