@@ -43,7 +43,7 @@ jobs:
           cp "$RUNNER_TEMP/package-lock.canonical.json" package-lock.json
           git diff --exit-code -- package-lock.json
       - run: npm run release:gate:no-browser
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: no-browser-release-evidence
@@ -141,7 +141,7 @@ jobs:
             }
           }
           NODE
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: chromium-export-fallback-smoke-evidence
@@ -187,7 +187,7 @@ jobs:
           EDIS_E2E_HEADLESS: "false"
       - run: npm run release:evidence
         if: always()
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: automated-chromium-browser-release-evidence
